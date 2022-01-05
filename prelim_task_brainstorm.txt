@@ -19,6 +19,8 @@ Install scripts for additional packages (check for updates, install necessary pa
 Randomization algorithm
     -> maybe based on # questions answered
 Flagging algorithm
+    -> flag if student is on deck for certain amount of time (meaning they are avoiding Qs)
+    -> flag if sutdent has low number or quality of Qs
 Notes for students
 Cloud/online backup? EXTRA
 
