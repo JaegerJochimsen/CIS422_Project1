@@ -5,9 +5,10 @@ Documentation:
     Purpose of Meeting: read and discuss project handout, make note of specifications
 
 Key: 
-    (#) bullet number for case
-    * Mandatory Subconditions
-    -> Option/possible add-on or interpretation or implementation options
+    CCS     Cold Call System
+    (#)     Bullet number for case
+    *       Mandatory Subconditions
+    ->      Option/possible add-on or interpretation or implementation options
 
 
 +++++++++++++++++++++++
@@ -45,11 +46,26 @@ Key:
     (3-5) Should incorporate student photos as a roster in addition to or as another option for last names
 
 
++++++++++++++++++++++++++++++++++++++++
+| Instructor-System Interaction (GUI) |
++++++++++++++++++++++++++++++++++++++++
 
+Input Options:
+        Arrow Keys: (Preferred)
+            *Left key starts inverted text highlighting of GUI On-Deck roster from left, right arrow key from right
+            *Highlighting on GUI reflects movement with L and R arrow keys 
+            *Down arrow key removes from list
+            *Up arrow key removes from list and flags student
+            -> option for undo key stroke?
 
+        Numeric Keys:
+           *Keys 1-4 relate to positions in On-Deck Queue 
+           *Pressing number removes student from On-Deck
+           *Pressing <flag-key> within time limit after pressing 1,2,3,4 flags that student
+           *Flag key includes all of the following: <Q> <W> <E> <R>
 
-
-
+Application Activity:
+        *CCS 
 
 
 
