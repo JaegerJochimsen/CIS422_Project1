@@ -6,8 +6,8 @@ Documentation:
 
 Key: 
     (#) bullet number for case
-    -> Option/possible add-on or interpretation or implementation options
     * Mandatory Subconditions
+    -> Option/possible add-on or interpretation or implementation options
 
 
 +++++++++++++++++++++++
@@ -37,7 +37,12 @@ Key:
     Use Case D:
     (1) Long-term/multi-run performance/review file (different from log files)
         -> Updated at the end of each run prior to shutdown
-
+        *Tab delimited
+        *Formatted performance data (see pg. 4)
+    (4) -> maybe have formula built in
+        
+    Use Case E:
+    (3-5) Should incorporate student photos as a roster in addition to or as another option for last names
 
 
 
