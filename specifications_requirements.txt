@@ -46,11 +46,11 @@ Key:
     (3-5) Should incorporate student photos as a roster in addition to or as another option for last names
 
 
-+++++++++++++++++++++++++++++++++++++++
-| Instructor-System Interaction (GUI) |
-+++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++
+| Instructor-System Interaction |
++++++++++++++++++++++++++++++++++
 
-Input Options:
+Input Options: 4.1, 4.5
         Arrow Keys: (Preferred)
             *Left key starts inverted text highlighting of GUI On-Deck roster from left, right arrow key from right
             *Highlighting on GUI reflects movement with L and R arrow keys 
@@ -64,10 +64,44 @@ Input Options:
            *Pressing <flag-key> within time limit after pressing 1,2,3,4 flags that student
            *Flag key includes all of the following: <Q> <W> <E> <R>
 
-Application Activity:
+        *All numerical parameters and all keystroke assignments should be at tope of a source code file (and easily changeable by a programmer during
+         development and maitenance of code)
+        *Key-mappings should be easily changeable
+            -> read key mappings from config file
+
+
+Application Activity: 4.2
         *CCS must sit in the background to allow use of other applications
         *CCS GUI must sit in the foreground while other applications are open
             -> consider Zoom-like pop-out
+
+Display: 4.3, 5.2
+        *GUI is a compact horizontal list of names that appears at top of the screen
+        *Follows format: <first><last> <first><last> <first><lasst> <first><last>
+        *Student ID numbers should never be displayed
+
+Roster Input/Output: 4.4, 4.5
+        *CCS includes command to import a file and a command to output a file
+        *CCS will check formatting of imported file and if incorrect, not load file, and output usefule error message
+        *CCS should allow changes from tab-delimited files to comma-delimited files "by modifying only 1 line of source code and by converting each
+         tab to a comma in each data file"
+
+
+++++++++++++++++++++
+| Data Constraints |    
+++++++++++++++++++++
+    Student Ordering: 5.1, 5.2
+        *Student order will be randomized
+        *After being called on, student will be removed from the front of the queue and placed in the back n% of the queue (where n is configurable
+         at the top of the file) to delay their reentry into the On-Deck portion of the queue.
+        *n should be set to create equal distribution across runs
+        *Every student from the roster should be in the queue
+        *Number of students should not cause issues
+        
+
+
+
+
 
 
 
