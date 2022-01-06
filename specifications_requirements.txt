@@ -65,7 +65,9 @@ Input Options:
            *Flag key includes all of the following: <Q> <W> <E> <R>
 
 Application Activity:
-        *CCS 
+        *CCS must sit in the background to allow use of other applications
+        *CCS GUI must sit in the foreground while other applications are open
+            -> consider Zoom-like pop-out
 
 
 
