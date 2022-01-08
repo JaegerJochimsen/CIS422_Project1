@@ -1,5 +1,6 @@
 import tkinter as tkr
-
+# Credit for base code: https://www.youtube.com/watch?v=d9sHDjoXlP0
+# Arrow Key codes: https://stackoverflow.com/questions/19895877/tkinter-cant-bind-arrow-key-events
 
 def char(event):
     print(f'pressed: {repr(event.char)}')
