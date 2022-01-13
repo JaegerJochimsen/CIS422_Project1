@@ -1,4 +1,5 @@
 import random
+from Student import Student
 
 class Classroom():
     """Classroom data structure class. Contains 3 lists that organize the cold
@@ -13,9 +14,27 @@ class Classroom():
         itself to create the deck. The remaining students stay in preDeck."""
 
         self.roster = roster
-        self.preDeck = roster
+
         self.postDeck = []
+        self.preDeck = []
+        
+        # build the pre and post deck structures
+        for s in roster:
+            # new student without spoken field
+            newS = Student(s[0], s[1], s[2], s[3], s[4], s[5]) 
+
+            # set spoken field, default is to set it to False (in the case of the initial roster)
+            if s[6] == "True": spoken = True
+            else: spoken = False
+            newS.setSpoken(spoken) 
+            
+            # add student object to appropriate list
+            if spoken: self.postDeck.append(newS)
+            else:      self.preDeck.append(newS)
+
         self.deckSize = deckSize
+
+        # create deck with respect to self.preDeck
         self.deck = self.createDeck()
 
 
@@ -65,8 +84,11 @@ class Classroom():
         Returns: list[Student], which will be used by InstructorInterface"""
 
         self.postDeck.append(self.deck[index])
+        self.deck[index].setSpoken(True)    # student has spoken, set that field
+
         self.deck.remove(self.deck[index])
         self.moveToDeck()
+
         print("Modified")
         print(self.deck,self.preDeck,self.postDeck)
         return self.deck
@@ -81,8 +103,14 @@ class Classroom():
         """Called by: moveToDeck from the same class
         
         When a student is needed from preDeck but it is empty, this function is
-        called. Moves every student in postDeck to preDeck."""
+        called. Moves every student in postDeck to preDeck and resets the spoken field."""
 
         for student in self.postDeck:
-            self.preDeck.append(student)
+            # remove student from postDeck
             self.postDeck.remove(student)
+
+            # preDeck students have a False val for spoken 
+            student.setSpoken(False)
+            self.preDeck.append(student)
+
+
