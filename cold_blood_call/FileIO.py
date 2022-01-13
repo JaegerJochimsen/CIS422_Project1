@@ -2,37 +2,55 @@ import sys
 from os import listdir
 
 
-def checkInitialBootStatus()->bool:
+def _checkInitialBootStatus()->bool:
     if ".saved_boot.txt" in listdir():
         return False
     return True
 
 def readRoster()->list:
     """This function will return a list of lists"""
-    if checkInitialBootStatus():
+    initial = _checkInitialBootStatus()
+    if initial:
         roster = open("initial_roster.txt", "r")
     else:
         roster = open(".saved_boot.txt", "r")
+        print("READING THIS")
 
-    result = list()
+    student_list = list()
     for line in roster:
-        result.append(line.strip().split('\t'))
+        student_list.append(line.strip().split('\t'))
+
+    if initial:
+        for student in student_list:
+            student.append("False")
 
     roster.close()
-    return result
+    return student_list
 
 
 def writeToSavedBootRoster(students:list)->None:
     new_roster = open(".saved_boot.txt", "w")
     for student in students:
-        for i, attribute in enumerate(student):
+        for i in range(7):
             if i == 6:
-                new_roster.write(attribute)
+                new_roster.write(student[i])
             else:
-                new_roster.write(f"{attribute}\t")
+                new_roster.write(f"{student[i]}\t")
         new_roster.write("\n")
     new_roster.close()
 
-rosty = readRoster()
 
-writeToSavedBootRoster(rosty)
+if __name__ == "__main__":
+    """Testing"""
+    """
+    rosty = readRoster()
+    print(rosty)
+    print("\n")
+    test_roster = rosty.copy()
+    test_roster[2][6] = "True"
+    test_roster[1][6] = "True"
+    print(test_roster)
+
+    writeToSavedBootRoster(test_roster)
+    """
+
