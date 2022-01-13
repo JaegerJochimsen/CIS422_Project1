@@ -13,14 +13,17 @@ class InstructorInterface():
         self.root.grid()
         self.root.geometry("+1000+0")
         self.roster = given
-        self.index = -1
+        self.index = 0
         self.callback = callback
         self.deckSize = 4
         self.nameLabels = []
 
         y = 15
         for i in range(self.deckSize):
-            label = Label(self.root,text=f"{self.roster[i]}")
+            if (i==self.index):
+                label = Label(self.root,text=f"{self.roster[i]}",bg = "red")
+            else:
+                label = Label(self.root,text=f"{self.roster[i]}",bg = "green")
             label.pack(padx=5, pady=y, side=tk.LEFT)
             y+=10
             self.nameLabels.append(label)
@@ -39,11 +42,20 @@ class InstructorInterface():
     def buttonHit(self):
 
         print("asd")
-        self.callback(1)
+        self.callback(self.index)
+        if (self.index == 3):
+            self.index = 0
+        else:
+            self.index += 1
+
+
         # Wait for two seconds
         self.root.update_idletasks()
         for index,label in enumerate(self.nameLabels):
-            label.config(text=f"{self.roster[index]}")
+            if (index == self.index):
+                label.config(text=f"{self.roster[index]}", bg="red")
+            else:
+                label.config(text=f"{self.roster[index]}", bg="green")
             label.update()
 
         print("roster")
