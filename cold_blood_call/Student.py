@@ -62,7 +62,11 @@ class Student(object):
         self.spoken = status
         return None
 
+def main():
+    s = Student("Nick", "Johnstone", "951******", "nsj@gmail.com", "nook", "848fsdfhkjhe8f9", "True")
+    print(s.toStrList())
 
-
+if __name__ == "__main__":
+    main()
 
 
