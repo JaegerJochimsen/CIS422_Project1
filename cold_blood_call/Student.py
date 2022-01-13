@@ -9,25 +9,34 @@ Credit:
 class Student(object):
     """
     Student Class Definition
-    - Holds a single student's information 
+    - Holds a single student's information
     - Gives methods for changing/reading student information
     """
     # FIXME: may need to reorder this based on file input format
     # Default to None vals, then use getters and setters to fill out if not
     # given in the constructor call
-    def __init__(self, first_name:str = None, last_name:str = None, id_num:str = None, email:str = None, phonetic:str = None, reveal:str = None, spoken:bool = False):
+    def __init__(self, first_name:str = None, last_name:str = None,
+            id_num:str = None, email:str = None, phonetic:str = None,
+            reveal:str = None, spoken:bool = False, previous_contributions:int = 0,
+            previous_flags:int = 0):
+
         self.first_name = first_name
         self.last_name = last_name
         self.id_num = id_num    # this could be int maybe?
         self.email = email
         self.phonetic = phonetic
         self.reveal_code = reveal
-        self.spoken = False     # default to not spoken on class start
+        self.spoken = spoken
         self.flagged = False    # default to unflagged on class start
-        self.contributions = 0  # default to 0 contributions on class start
+        self.contributions = 0
+        self.previous_contributions = previous_contributions  # number of contributions throughout the term
+        self.previous_flags = previous_flags # number of flags throughout the term
 
     def toStrList(self)->list:
-        return [self.first_name, self.last_name, self.id_num, self.email, self.phonetic, self.reveal_code, str(self.spoken), str(self.flagged), str(self.contributions)]
+        return [self.first_name, self.last_name, self.id_num, self.email,
+                self.phonetic, self.reveal_code, str(self.spoken),
+                str(self.flagged), str(self.contributions),
+                str(self.previous_contributions), str(self.previous_flags)]
 
     def getFirst(self)->str:
         return self.first_name
@@ -40,7 +49,7 @@ class Student(object):
 
     def getEmail(self)->str:
         return self.email
-    
+
     def getPhonetic(self)->str:
         return self.phonetic
 
@@ -63,7 +72,8 @@ class Student(object):
         return None
 
 def main():
-    s = Student("Nick", "Johnstone", "951******", "nsj@gmail.com", "nook", "848fsdfhkjhe8f9", "True")
+    s = Student("Nick", "Johnstone", "951******", "nsj@gmail.com", "nook",
+            "848fsdfhkjhe8f9", "True", 5, 4)
     print(s.toStrList())
 
 if __name__ == "__main__":
