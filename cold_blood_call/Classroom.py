@@ -85,6 +85,7 @@ class Classroom():
 
         self.postDeck.append(self.deck[index])
         self.deck[index].setSpoken(True)    # student has spoken, set that field
+        self.deck[index].incrementContributions()
 
         self.deck.remove(self.deck[index])
         self.moveToDeck()
