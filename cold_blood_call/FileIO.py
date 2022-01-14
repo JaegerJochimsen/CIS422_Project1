@@ -75,13 +75,13 @@ def writeToSavedBootRoster(students:list)->None:
     new_roster.close()
 
 
-def _strBoolToPrint(bl:str)->str:
+def _formatResponseCode(bl:str)->str:
     if bl == "True":
-        return "Yes"
+        return "X"
     elif bl == "False":
-        return "No"
+        return ""
     else:
-        return None
+        return "ERROR"
 
 
 def writeToLogFile(students:list)->None:
@@ -113,60 +113,45 @@ def writeToLogFile(students:list)->None:
 
     log_name = "LogFile-" + str(date.today())
     log_file = open(f"MetaData/{log_name}", "w")
-    log_file.write(f"Log File for {str(date.today())}:\n\n")
+    log_file.write(f"Log File for Cold Call Assist Program\n\
+            {str(date.today())}:\n\n")
 
     log_file.write("----------------------------------------------------\n")
 
     for student in students:
-        log_file.write(f"First Name: {student[0]}\n")
-        log_file.write(f"Last Name: {student[1]}\n")
-        log_file.write(f"UO ID: {student[2]}\n")
-        log_file.write(f"Email: {student[3]}\n")
-        log_file.write(f"Phonetic: {student[4]}\n")
-        log_file.write(f"Reveal Code: {student[5]}\n")
-        log_file.write(f"Contributions This Session: {student[8]}\n")
-        log_file.write(f"Flagged: {_strBoolToPrint(student[7])}\n")
-        log_file.write("----------------------------------------------------\n")
+        if int(student[8]) > 0:
+            log_file.write(f"{_formatResponseCode(student[7])}\t")
+            log_file.write(f"{student[0]} {student[1]}\t")
+            log_file.write(f"{student[3]}\n")
 
     log_file.close()
 
 
+def _tests():
+        # readRoster tests
+        rosty = readRoster()
+        print(rosty)
+
+
+        # writeToSavedBootRoster
+        test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
+            'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4']]
+
+        writeToSavedBootRoster(test_function_input)
+        # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
+        #    'nook', '848fsdfhkjhe8f9', 'True', '6', '5']
+
+
+
+        # writeToLogFile tests
+        test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
+            'nook', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']]
+        writeToLogFile(test_function_input)
+        # this should produce:
+        # X	Nick Johnstone	nsj@uoregon.edu
 
 if __name__ == "__main__":
     """Testing"""
-
-    """
-    # readRoster tests
-    rosty = readRoster()
-    print(rosty)
-    """
-
-
-    """
-    # writeToSavedBootRoster
-    test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@gmail.com',
-        'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4']]
-
-    writeToSavedBootRoster(test_function_input)
-    # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@gmail.com',
-    #    'nook', '848fsdfhkjhe8f9', 'True', '6', '5']
-    """
-
-
-
-    """
-    # writeToLogFile tests
-    test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@gmail.com',
-        'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4']]
-    writeToLogFile(test_function_input)
-    # this should produce:
-    #   First Name: Nick
-    #   Last Name: Johnstone
-    #   UO ID: 951******
-    #   Email: nsj@gmail.com
-    #   Phonetic: nook
-    #   Reveal: 848fsdfhkjhe8f9
-    #   Contributions This Session: 1
-    #   Flagged: Yes
-    """
+    if not __debug__:
+        test()
 
