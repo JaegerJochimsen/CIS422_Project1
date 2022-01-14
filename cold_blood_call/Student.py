@@ -38,6 +38,9 @@ class Student(object):
                 str(self.flagged), str(self.current_contributions),
                 str(self.previous_contributions), str(self.previous_flags)]
 
+    def getSpoken(self)->bool:
+        return self.spoken
+
     def getFirst(self)->str:
         return self.first_name
 

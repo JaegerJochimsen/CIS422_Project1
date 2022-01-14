@@ -1,6 +1,6 @@
-
 from Classroom import Classroom
 from InstructorInterface import InstructorInterface
+from FileIO import *
 
 data = [
 "Jaeger",
@@ -14,9 +14,14 @@ data = [
 ]
 
 def main():
-
-    ourClassroom = Classroom(data,4)
-    ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)
-    ourGUI.startGUI()
+    rosterStringList = readRoster()
+    #print(len(rosterStringList))
+    #print(rosterStringList[0])
+    ourClassroom = Classroom(rosterStringList, 4)
+    test = ourClassroom.postDeck
+    for student in test:
+        print(student.getFirst())
+    #ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)
+    #ourGUI.startGUI()
 
 main()

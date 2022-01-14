@@ -7,30 +7,35 @@ class Classroom():
 
     def __init__(self, roster, deckSize):
         """Takes in:
-        roster: a list of Student objects(only names rn), for the class roster
+        roster: a list of lists of string that represent attributes of a student
+        for the class roster
         deckSize: integer, to decide the size of deck.
 
         Initializes an empty postDeck, and calls the createDeck() method from
         itself to create the deck. The remaining students stay in preDeck."""
 
-        self.roster = roster
+        self.roster = list()
+
+        for student in roster:
+            spoken = False
+            if student[6] == "True": spoken = True
+
+            self.roster.append(Student(student[0], student[1], student[2],
+                student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
+
 
         self.postDeck = []
         self.preDeck = []
-        
-        # build the pre and post deck structures
-        for s in roster:
-            # new student without spoken field
-            newS = Student(s[0], s[1], s[2], s[3], s[4], s[5]) 
 
+        # build the pre and post deck structures
+        for student in self.roster:
+            # new student without spoken field
             # set spoken field, default is to set it to False (in the case of the initial roster)
-            if s[6] == "True": spoken = True
-            else: spoken = False
-            newS.setSpoken(spoken) 
-            
-            # add student object to appropriate list
-            if spoken: self.postDeck.append(newS)
-            else:      self.preDeck.append(newS)
+            if student.getSpoken():
+                self.postDeck.append(student)
+            else:
+                self.preDeck.append(student)
+
 
         self.deckSize = deckSize
 
@@ -51,7 +56,7 @@ class Classroom():
             gonnaBeDeck.append(self.preDeck[chosen])
             self.preDeck.remove(self.preDeck[chosen])
         # print("Deck Created")
-        print(gonnaBeDeck, self.preDeck)
+        #print(gonnaBeDeck, self.preDeck)
         return gonnaBeDeck
 
 
@@ -90,8 +95,8 @@ class Classroom():
         self.deck.remove(self.deck[index])
         self.moveToDeck()
 
-        print("Modified")
-        print(self.deck,self.preDeck,self.postDeck)
+        #print("Modified")
+        #print(self.deck,self.preDeck,self.postDeck)
         return self.deck
 
 
@@ -102,7 +107,7 @@ class Classroom():
 
     def refresh(self):
         """Called by: moveToDeck from the same class
-        
+
         When a student is needed from preDeck but it is empty, this function is
         called. Moves every student in postDeck to preDeck and resets the spoken field."""
 
@@ -110,7 +115,7 @@ class Classroom():
             # remove student from postDeck
             self.postDeck.remove(student)
 
-            # preDeck students have a False val for spoken 
+            # preDeck students have a False val for spoken
             student.setSpoken(False)
             self.preDeck.append(student)
 
