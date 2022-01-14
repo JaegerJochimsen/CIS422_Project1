@@ -14,33 +14,43 @@ class Classroom():
         Initializes an empty postDeck, and calls the createDeck() method from
         itself to create the deck. The remaining students stay in preDeck."""
 
-        self.roster = list()
-
-        for student in roster:
-            spoken = False
-            if student[6] == "True": spoken = True
-
-            self.roster.append(Student(student[0], student[1], student[2],
-                student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
-
-
-        self.postDeck = []
-        self.preDeck = []
+        # build the roster of Student objects from list of 
+        self.roster = self._buildRoster(roster)
 
         # build the pre and post deck structures
-        for student in self.roster:
-            # new student without spoken field
-            # set spoken field, default is to set it to False (in the case of the initial roster)
-            if student.getSpoken():
-                self.postDeck.append(student)
-            else:
-                self.preDeck.append(student)
+        self.preDeck, self.postDeck = self._buildPrePostDeck(self.roster)
 
+        
 
         self.deckSize = deckSize
 
         # create deck with respect to self.preDeck
         self.deck = self.createDeck()
+
+    def _buildPrePostDeck(self, roster):
+        preDeck = []
+        postDeck = []
+        for student in roster:
+            # new student without spoken field
+            # set spoken field, default is to set it to False (in the case of the initial roster)
+            if student.getSpoken():
+                postDeck.append(student)
+            else:
+                preDeck.append(student)
+
+        return preDeck, postDeck
+
+
+    def _buildRoster(self, studentList):
+        roster = list()
+        for student in studentList:
+            spoken = False
+            if student[6] == "True": spoken = True
+
+            roster.append(Student(student[0], student[1], student[2],
+                student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
+
+        return roster
 
 
     def createDeck(self):
