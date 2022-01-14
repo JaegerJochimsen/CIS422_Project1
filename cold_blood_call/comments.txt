@@ -28,10 +28,6 @@ Classroom.py                    Make init and maitenance methods (those called o
 Classroom.py                    set spoken = False and then flick to True if s[6] == "True", eliminate else
 line: 27-28
 
-Classroom.py                    Embrace pythonic style 5 lines -> 2 lines:
-line(s):49-52                       rands = [random.randint(0,len(self.preDeck) - 1) for i in range(self.deckSize)]
-                                    gonnaBeDeck = [self.preDeck.pop(chosen) for chosen in rands]
-                                    
 Classroom.py 
 line(s): 67-69                  self.deck.append(self.preDeck.pop(random.randint(...)))
                                 *No need to do the weird remove call here
