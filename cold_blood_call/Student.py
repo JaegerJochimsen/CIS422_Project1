@@ -35,7 +35,7 @@ class Student(object):
     def toStrList(self)->list:
         return [self.first_name, self.last_name, self.id_num, self.email,
                 self.phonetic, self.reveal_code, str(self.spoken),
-                str(self.flagged), str(self.contributions),
+                str(self.flagged), str(self.current_contributions),
                 str(self.previous_contributions), str(self.previous_flags)]
 
     def getFirst(self)->str:
@@ -54,7 +54,7 @@ class Student(object):
         return self.phonetic
 
     def getContributions(self)->int:
-        return self.contributions
+        return self.curent_contributions
 
     def getFlag(self)->bool:
         return self.flagged
