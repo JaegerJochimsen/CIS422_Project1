@@ -115,7 +115,7 @@ def writeToLogFile(students:list)->None:
     log_file = open(f"MetaData/{log_name}", "w")
     log_file.write(f"Log File for {str(date.today())}:\n\n")
 
-    log_file.write(f"-----------------------------------------------------\n")
+    log_file.write("----------------------------------------------------\n")
 
     for student in students:
         log_file.write(f"First Name: {student[0]}\n")
