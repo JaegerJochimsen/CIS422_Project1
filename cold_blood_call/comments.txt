@@ -37,6 +37,7 @@ line(s): 67-69                  self.deck.append(self.preDeck.pop(random.randint
                                 *No need to do the weird remove call here
 
 Classroom.py                    Remove testing prints or add debug statements that are toggleable
+                                https://stackoverflow.com/questions/13352677/python-equivalent-for-ifdef-debug
 
 Classroom.py                    moveToPost(): flag=0?? flag is a bool; flag also isn't used by this function
 
