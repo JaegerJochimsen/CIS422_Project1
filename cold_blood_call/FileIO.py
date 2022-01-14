@@ -16,13 +16,27 @@ def _checkInitialBootStatus()->bool:
         return False
     return True
 
+def _checkIfAnyRoster()->bool:
+    if ".saved_boot.txt" in listdir():
+        return True
+    elif "initial_roster.txt" in listdir():
+        return True
+    else:
+        return False
+
 def _checkIfFileDir()->bool:
     if "MetaData" in listdir():
         return True
     return False
 
-def readRoster()->list:
-    """This function will return a list of lists"""
+def readRoster()->list or bool:
+    """This function will return a list of lists
+    or if a roster is unable to be found it returns False
+    """
+
+    if not _checkIfAnyRoster(): # check if any roster exists
+        return _checkIfAnyRoster()
+
     initial = _checkInitialBootStatus()
     if initial:
         roster = open("initial_roster.txt", "r")
