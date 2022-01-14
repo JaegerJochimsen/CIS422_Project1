@@ -28,7 +28,7 @@ class Student(object):
         self.reveal_code = reveal
         self.spoken = spoken
         self.flagged = False    # default to unflagged on class start
-        self.contributions = 0
+        self.current_contributions = 0
         self.previous_contributions = previous_contributions  # number of contributions throughout the term
         self.previous_flags = previous_flags # number of flags throughout the term
 
@@ -64,7 +64,7 @@ class Student(object):
         return None
 
     def incrementContributions(self, n:int = 1)->None:
-        self.contributions += n
+        self.current_contributions += n
         return None
 
     def setSpoken(self, status:bool)->None:
@@ -72,6 +72,7 @@ class Student(object):
         return None
 
 def main():
+    """Testing"""
     s = Student("Nick", "Johnstone", "951******", "nsj@gmail.com", "nook",
             "848fsdfhkjhe8f9", "True", 5, 4)
     print(s.toStrList())
