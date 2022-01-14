@@ -3,6 +3,7 @@ File: Student.py
 Description: contains Student class definition for holding student information
 Dependencies: None
 Author(s): Jaeger Jochimsen 1/12/22
+
 Credit:
 """
 
@@ -12,9 +13,6 @@ class Student(object):
     - Holds a single student's information
     - Gives methods for changing/reading student information
     """
-    # FIXME: may need to reorder this based on file input format
-    # Default to None vals, then use getters and setters to fill out if not
-    # given in the constructor call
     def __init__(self, first_name:str = None, last_name:str = None,
             id_num:str = None, email:str = None, phonetic:str = None,
             reveal:str = None, spoken:bool = False, previous_contributions:int = 0,
