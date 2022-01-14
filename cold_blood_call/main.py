@@ -18,10 +18,13 @@ def main():
     #print(len(rosterStringList))
     #print(rosterStringList[0])
     ourClassroom = Classroom(rosterStringList, 4)
-    test = ourClassroom.postDeck
-    for student in test:
-        print(student.getFirst())
-    #ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)
-    #ourGUI.startGUI()
+    #for student in test:
+    #    print(student.getFirst())
+
+    ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)
+    ourGUI.startGUI()
+
+    save = ourClassroom.mergeDecksToList()
+    writeToSavedBootRoster(save)
 
 main()

@@ -129,4 +129,14 @@ class Classroom():
             student.setSpoken(False)
             self.preDeck.append(student)
 
+    def mergeDecksToList(self):
+        studentList = list()
+        for student in self.postDeck:
+            studentList.append(student.toStrList())
+        for student in self.preDeck:
+            studentList.append(student.toStrList())
+        for student in self.deck:
+            studentList.append(student.toStrList())
+        return studentList
+
 
