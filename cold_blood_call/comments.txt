@@ -38,3 +38,12 @@ line(s): 67-69                  self.deck.append(self.preDeck.pop(random.randint
 
 Classroom.py                    Remove testing prints or add debug statements that are toggleable
 
+Classroom.py                    moveToPost(): flag=0?? flag is a bool; flag also isn't used by this function
+
+Instructorinterface.py          why import threading? why random?
+
+main.py                         data should come from FileIO calls
+
+
+Extra:
+README.md                       Make it pretty + descriptive
