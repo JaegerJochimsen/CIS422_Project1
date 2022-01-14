@@ -22,5 +22,6 @@ def main():
 
     save = ourClassroom.mergeDecksToList()
     writeToSavedBootRoster(save)
+    writeToLogFile(save)
 
 main()

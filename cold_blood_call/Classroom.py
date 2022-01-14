@@ -130,13 +130,10 @@ class Classroom():
             self.preDeck.append(student)
 
     def mergeDecksToList(self):
-        studentList = list()
-        for student in self.postDeck:
-            studentList.append(student.toStrList())
-        for student in self.preDeck:
-            studentList.append(student.toStrList())
-        for student in self.deck:
-            studentList.append(student.toStrList())
-        return studentList
+        master_list = self.postDeck + self.preDeck + self.deck
+        student_list = []
+        for student in master_list:
+            student_list.append(student.toStrList())
+        return student_list
 
 
