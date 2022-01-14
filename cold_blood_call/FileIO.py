@@ -28,6 +28,7 @@ def readRoster()->list:
         roster = open("initial_roster.txt", "r")
     else:
         roster = open(".saved_boot.txt", "r")
+        print("READING SAVED BOOT")
 
     student_list = list()
     for line in roster:
@@ -71,7 +72,7 @@ def writeToSavedBootRoster(students:list)->None:
             new_roster.write(f"{str(int(student[10]) + 1)}\n") # increment the flagged count
         else:
             new_roster.write(f"{student[10]}\n") # not flagged, no increment
-        new_roster.write("\n")
+        #new_roster.write("\n")
     new_roster.close()
 
 

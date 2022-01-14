@@ -15,11 +15,7 @@ data = [
 
 def main():
     rosterStringList = readRoster()
-    #print(len(rosterStringList))
-    #print(rosterStringList[0])
     ourClassroom = Classroom(rosterStringList, 4)
-    #for student in test:
-    #    print(student.getFirst())
 
     ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)
     ourGUI.startGUI()
