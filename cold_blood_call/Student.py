@@ -72,6 +72,9 @@ class Student(object):
         self.spoken = status
         return None
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 def main():
     """Testing"""
     s = Student("Nick", "Johnstone", "951******", "nsj@gmail.com", "nook",
