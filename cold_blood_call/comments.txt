@@ -15,10 +15,7 @@ FileIO.py                       We should consider just pattern matching for an 
 line: 28                        named "initial_roster.txt" which isn't a common Non-CS naming convention
 
 FileIO.py                       Define global option for tab or comma, then just throw that in the call to split()
-line: 34
-
-FileIO.py                       number of "-" does not match 
-line(s): 118, 129
+line: 34                        Use list comprehensions
 
 Student.py                      May need to make member vars protected and only use the module interface to alter them
 
