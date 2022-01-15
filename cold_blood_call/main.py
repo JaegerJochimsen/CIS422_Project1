@@ -18,7 +18,7 @@ def main():
 
     rosterStringList = False
 
-    while not rosterStringList:
+    if not rosterStringList:
 
         rosterFileInputGUI = InstructorInterface(rosterStringList, None)
         newRosterFile = rosterFileInputGUI.getRosterFileInput()
