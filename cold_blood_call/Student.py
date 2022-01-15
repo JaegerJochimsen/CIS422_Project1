@@ -4,6 +4,8 @@ Description: contains Student class definition for holding student information
 Dependencies: None
 Author(s): Jaeger Jochimsen 1/12/22
 Credit: n/a
+Modifications:
+    1/15/21 12:45 PM    Jaeger Jochimsen    Added documentation and changed member vars
 """
 
 class Student(object):
@@ -16,17 +18,17 @@ class Student(object):
     Members:
         Member Name:                : Type  : Default Val  -> Description
         -----------------------------------------------------------------
-        self.first_name             : str   : None         -> student first name
-        self.last_name              : str   : None         -> student last name
-        self.id_num                 : str   : None         -> student id_number 
-        self.email                  : str   : None         -> student email address
-        self.phonetic               : str   : None         -> student preferred first name pronunciation
-        self.reveal                 : str   : None         -> reveal code associated with student
-        self.spoken                 : bool  : False        -> represents whether or not student has spoken recently (this class or end of last class)
-        self.flagged                : bool  : False        -> represents whether or not the student has been flagged by instructor
-        self.previous_flags         : int   : 0            -> number of total times student has been flagged by instructor
-        self.current_contributions  : int   : 0            -> number of times student has contributed to class discussion for current session
-        self.previous_contributions : int   : 0            -> number of total times student has contributed to class discussion
+        self.__first_name             : str   : None         -> student first name
+        self.__last_name              : str   : None         -> student last name
+        self.__id_num                 : str   : None         -> student id_number 
+        self.__email                  : str   : None         -> student email address
+        self.__phonetic               : str   : None         -> student preferred first name pronunciation
+        self.__reveal                 : str   : None         -> reveal code associated with student (whether to display student photo or not)
+        self.__spoken                 : bool  : False        -> represents whether or not student has spoken recently (this class or end of last class)
+        self.__flagged                : bool  : False        -> represents whether or not the student has been flagged by instructor
+        self.__previous_flags         : int   : 0            -> number of total times student has been flagged by instructor
+        self.__current_contributions  : int   : 0            -> number of times student has contributed to class discussion for current session
+        self.__previous_contributions : int   : 0            -> number of total times student has contributed to class discussion
 
     Methods:
         Example Student : student = Student("Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", "REVEAL1", False, True, 1, 3, 4)
@@ -70,7 +72,19 @@ class Student(object):
             Description:    getPrevFlags(self)->int         :   return the previous_flags field of the Student object
             Usage:          student.getPrevFlags()          ->  1
 
+            Description:    setFlag(self, status:bool)->None    :   set Student object member field to status; return None
+            Usage:          student.setFlag(True)               ->  None
+            
+            Description:    setSpoken(self, status:bool)->None  :   set Student object member field to status; return None
+            Usage:          student.setSpoken(True)             ->  None
+
+            Description:    incrementContributions(self, n:int)->None   :   increment the Student object current_contributions field by n; n = 1 by
+                                                                            default
+            Usage:          student.incrementContributions(5)           ->  None
+
+
     Additional Notes:
+        member variables are marked as private and can only be accessed through methods
 
     """
     def __init__(self, first_name:str = None, last_name:str = None,
@@ -78,62 +92,73 @@ class Student(object):
             reveal:str = None, spoken:bool = False, previous_contributions:int = 0,
             previous_flags:int = 0):
 
-        self.first_name = first_name
-        self.last_name = last_name
-        self.id_num = id_num    # this could be int maybe?
-        self.email = email
-        self.phonetic = phonetic
-        self.reveal_code = reveal
-        self.spoken = spoken
-        self.flagged = False    # default to unflagged on class start
-        self.current_contributions = 0
-        self.previous_contributions = previous_contributions  # number of contributions throughout the term
-        self.previous_flags = previous_flags # number of flags throughout the term
+        self.__first_name = first_name
+        self.__last_name = last_name
+        self.__id_num = id_num    # this could be int maybe?
+        self.__email = email
+        self.__phonetic = phonetic
+        self.__reveal_code = reveal
+        self.__spoken = spoken
+        self.__flagged = False    # default to unflagged on class start
+        self.__current_contributions = 0
+        self.__previous_contributions = previous_contributions  # number of contributions throughout the term
+        self.__previous_flags = previous_flags # number of flags throughout the term
 
     def toStrList(self)->list:
-        return [self.first_name, self.last_name, self.id_num, self.email,
-                self.phonetic, self.reveal_code, str(self.spoken),
-                str(self.flagged), str(self.current_contributions),
-                str(self.previous_contributions), str(self.previous_flags)]
+        """Produce list of strings representing the attributes of the Student object"""
+        return [self.__first_name, self.__last_name, self.__id_num, self.__email,
+                self.__phonetic, self.__reveal_code, str(self.__spoken),
+                str(self.__flagged), str(self.__current_contributions),
+                str(self.__previous_contributions), str(self.__previous_flags)]
 
-    def getSpoken(self)->bool:
-        return self.spoken
 
     def getFirst(self)->str:
-        return self.first_name
+        return self.__first_name
 
     def getLast(self)->str:
-        return self.last_name
+        return self.__last_name
 
     def getID(self)->str:
-        return self.id_num
+        return self.__id_num
 
     def getEmail(self)->str:
-        return self.email
+        return self.__email
 
     def getPhonetic(self)->str:
-        return self.phonetic
+        return self.__phonetic
 
-    def getContributions(self)->int:
-        return self.curent_contributions
+    def getReveal(self)->str:
+        return self.__reveal_code
+
+    def getSpoken(self)->bool:
+        return self.__spoken
 
     def getFlag(self)->bool:
-        return self.flagged
+        return self.__flagged
+
+    def getContributions(self)->int:
+        return self.__curent_contributions
+
+    def getPrevContributions(self)->int:
+        return self.__previous_contributions
+
+    def getPrevFlags(self)->int:
+        return self.__previous_flags
 
     def setFlag(self, status:bool)->None:
-        self.flagged = status
-        return None
-
-    def incrementContributions(self, n:int = 1)->None:
-        self.current_contributions += n
+        self.__flagged = status
         return None
 
     def setSpoken(self, status:bool)->None:
-        self.spoken = status
+        self.__spoken = status
+        return None
+
+    def incrementContributions(self, n:int = 1)->None:
+        self.__current_contributions += n
         return None
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.__first_name} {self.__last_name}"
 
 def main():
     """Testing"""
