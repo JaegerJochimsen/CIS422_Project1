@@ -12,7 +12,7 @@ class InstructorInterface():
         if not given:
             self.rosterFile = filedialog.askopenfilename(initialdir="", title="Please choose your roster file")
             return
-
+            
         # self.frame = Frame(self.root, padding=50)
         # self.frame.grid()
         self.root.grid()
@@ -39,6 +39,7 @@ class InstructorInterface():
 
 
     def startGUI(self):
+        self.root.attributes("-topmost", True)
         self.root.mainloop()
 
     def kill(self):
