@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+from tkinter import filedialog
 import random
 from threading import Thread
 import time
@@ -7,6 +8,9 @@ import time
 
 class InstructorInterface():
     def __init__(self, given, callback):
+        if not given:
+            self.rosterFile = filedialog.askopenfilename(initialdir="", title="Please choose your roster file")
+            return
         self.root = Tk()
         # self.frame = Frame(self.root, padding=50)
         # self.frame.grid()
@@ -61,3 +65,6 @@ class InstructorInterface():
         print("roster")
         print(self.roster)
         time.sleep(0.1)
+
+    def getRosterFileInput(self):
+        return self.rosterFile

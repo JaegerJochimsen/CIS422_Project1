@@ -15,9 +15,16 @@ data = [
 
 def main():
     rosterStringList = readRoster()
+
+    rosterStringList = False
+
     if not rosterStringList:
-        print("CANNOT FIND ROSTER")
+
+        rosterFileInputGUI = InstructorInterface(rosterStringList, None)
+        newRosterFile = rosterFileInputGUI.getRosterFileInput()
+        print(newRosterFile)
         return False
+
     ourClassroom = Classroom(rosterStringList, 4)
 
     ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)
