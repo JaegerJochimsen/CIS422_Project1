@@ -1,11 +1,50 @@
+""" 
+File: Classroom.py
+Description: contains Classroom class definition for populating and maintaining the internal structures of the CCS
+Local Dependencies: 
+        Student.py  -   Used for the Student class definition, used to hold student information passed to the constructor
+Imports/Modules:
+        random      -   Used for random integer generation in createDeck() and moveToDeck()
+Author(s): 
+        Mert Yapucuoglu (MY)
+        Jaeger Jochimsen (JJ)
+Credit:
+Modifications:
+       1/11/22      MY      Initial class creation and method dev                    
+       1/13/22      JJ      Integration with Student.py functionality               
+       1/15/22      JJ      Privatization of members and methods, documentation     
+"""
 import random
 from Student import Student
 
 class Classroom():
-    """Classroom data structure class. Contains 3 lists that organize the cold
-    call order of the classroom, and functions that manipulate these lists"""
+    """
+    Create and maintain the 3 CCS internal data structures used for tracking the state of the class room
+    
+    Used By:
+        main.py
 
-    def __init__(self, roster, deckSize):
+    Members:
+        Member Name:    : Type          : Default Val  -> Description
+        --------------------------------------------------------------
+        self.roster     : list[Student] : -            -> a list of Student objects representing the class
+
+        self.preDeck    : list[Student] : -            -> a list of Student objects that represent students who haven't spoken yet (student.spoken
+                                                          == False)
+ 
+        self.postDeck   : list[Student] : -            -> a list of Student objects that represent students who have spoken (student.spoken == True)
+        
+        self.deck       : list[Student] : -            -> a list of Student objects that represent students "On Deck"; these 
+                                                          are randomly chosen from the self.preDeck
+
+        self.deckSize   : int           : 4            -> the number of students "On Deck" over the course of the run
+
+    Methods:
+        Private:
+            _buildRoster(self, roster:list[list[str]])->list[Student]
+    """
+
+    def __init__(self, roster, deckSize=4):
         """Takes in:
         roster: a list of lists of string that represent attributes of a student
         for the class roster
@@ -20,12 +59,23 @@ class Classroom():
         # build the pre and post deck structures
         self.preDeck, self.postDeck = self._buildPrePostDeck(self.roster)
 
-        
-
+        # number of students On Deck 
         self.deckSize = deckSize
 
         # create deck with respect to self.preDeck
         self.deck = self.createDeck()
+        
+
+    def _buildRoster(self, studentList):
+        roster = list()
+        for student in studentList:
+            spoken = False
+            if student[6] == "True": spoken = True
+
+            roster.append(Student(student[0], student[1], student[2],
+                student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
+
+        return roster
 
     def _buildPrePostDeck(self, roster):
         preDeck = []
@@ -40,17 +90,6 @@ class Classroom():
 
         return preDeck, postDeck
 
-
-    def _buildRoster(self, studentList):
-        roster = list()
-        for student in studentList:
-            spoken = False
-            if student[6] == "True": spoken = True
-
-            roster.append(Student(student[0], student[1], student[2],
-                student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
-
-        return roster
 
 
     def createDeck(self):

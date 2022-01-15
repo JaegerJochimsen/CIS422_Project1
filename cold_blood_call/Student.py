@@ -26,9 +26,9 @@ class Student(object):
         self.__reveal                 : str   : None         -> reveal code associated with student (whether to display student photo or not)
         self.__spoken                 : bool  : False        -> represents whether or not student has spoken recently (this class or end of last class)
         self.__flagged                : bool  : False        -> represents whether or not the student has been flagged by instructor
-        self.__previous_flags         : int   : 0            -> number of total times student has been flagged by instructor
         self.__current_contributions  : int   : 0            -> number of times student has contributed to class discussion for current session
         self.__previous_contributions : int   : 0            -> number of total times student has contributed to class discussion
+        self.__previous_flags         : int   : 0            -> number of total times student has been flagged by instructor
 
     Methods:
         Example Student : student = Student("Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", "REVEAL1", False, True, 1, 3, 4)
