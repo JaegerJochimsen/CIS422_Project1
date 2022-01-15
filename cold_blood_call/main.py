@@ -16,7 +16,7 @@ data = [
 def main():
     rosterStringList = readRoster()
 
-    rosterStringList = False
+    #rosterStringList = False
 
     while not rosterStringList:
         rosterFileInputGUI = InstructorInterface(rosterStringList, None)
