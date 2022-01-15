@@ -8,10 +8,11 @@ import time
 
 class InstructorInterface():
     def __init__(self, given, callback):
+        self.root = Tk()
         if not given:
             self.rosterFile = filedialog.askopenfilename(initialdir="", title="Please choose your roster file")
             return
-        self.root = Tk()
+
         # self.frame = Frame(self.root, padding=50)
         # self.frame.grid()
         self.root.grid()

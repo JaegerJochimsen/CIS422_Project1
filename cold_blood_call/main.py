@@ -18,11 +18,13 @@ def main():
 
     rosterStringList = False
 
-    if not rosterStringList:
+    while not rosterStringList:
 
         rosterFileInputGUI = InstructorInterface(rosterStringList, None)
         newRosterFile = rosterFileInputGUI.getRosterFileInput()
         rosterStringList = readRoster(newRosterFile)
+        if rosterStringList:
+            rosterFileInputGUI.kill()
 
     ourClassroom = Classroom(rosterStringList, 4)
 
