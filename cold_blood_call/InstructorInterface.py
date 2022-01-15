@@ -37,7 +37,6 @@ class InstructorInterface():
         button.pack(padx=5, pady=30, side=tk.LEFT)
 
 
-
     def startGUI(self):
         self.root.wm_attributes("-topmost", "true")
         self.root.lift()
@@ -46,17 +45,10 @@ class InstructorInterface():
     def kill(self):
         self.root.destroy()
 
-    def buttonHit(self):
-
-        print("asd")
-        self.callback(self.index)
-        if (self.index == 3):
-            self.index = 0
-        else:
-            self.index += 1
-
-
-        # Wait for two seconds
+    def updateGUI(self):
+        """Will be called by keybind callback functions to update the GUI after
+        the changes. It stops the mainloop and takes care of the waiting functions.
+         It recolorizes the labels and updates the name with the new deck"""
         self.root.update_idletasks()
         for index,label in enumerate(self.nameLabels):
             if (index == self.index):
@@ -65,8 +57,6 @@ class InstructorInterface():
                 label.config(text=f"{self.roster[index]}", bg="green")
             label.update()
 
-        print("roster")
-        print(self.roster)
         time.sleep(0.1)
 
     def getRosterFileInput(self):
