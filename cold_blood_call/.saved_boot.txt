@@ -1,5 +1,0 @@
-Kai	Xiong	951xxxxxx	kxiong@uoregon.edu	PHONETIC3	REAVEAL_CODE3	True	3	0
-Nick	Johnstone	951xxxxxx	nsj@uoregon.edu	PHONETIC4	REAVEAL_CODE4	False	2	0
-Stephen	Levekis	951xxxxxx	slevecki@uoregon.edu	PHONETIC5	REAVEAL_CODE5	False	0	0
-Mert	Yapucuoglu	951xxxxxx	merty@uoregon.edu	PHONETIC2	REAVEAL_CODE2	False	2	0
-Jaeger	Jochimsen	951xxxxxx	jaegerj@uoregon.edu	PHONETIC1	REAVEAL_CODE1	False	4	0
