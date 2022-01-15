@@ -50,6 +50,9 @@ def readRoster()->list or bool:
 
     if initial:
         for student in student_list:
+            if len(student) == 4: # if no phonetic and no reveal code
+                student.append("None") # no phonetic
+                student.append("None") # no reveal code
             student.append("False") # spoken initially False (first class)
             student.append("0") # previous contributions initially 0 (first class)
             student.append("0") # previous flags initially 0 (first class)

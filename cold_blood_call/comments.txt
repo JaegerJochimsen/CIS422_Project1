@@ -2,7 +2,7 @@ File:                           Comment:
 ALL                             We should do docstrings like we did in the SDS
                                     Called By:
                                     Modifies:
-                                    Returns: 
+                                    Returns:
                                     Description:
 
 Instructorinterface.py          import tkinter as tk but also import *, can probably do one or the other, preferably import only what we need
