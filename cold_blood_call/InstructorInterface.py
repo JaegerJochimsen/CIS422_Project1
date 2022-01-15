@@ -39,9 +39,8 @@ class InstructorInterface():
 
 
     def startGUI(self):
-        self.root.overrideredirect(True)
-        self.root.overrideredirect(False)
         self.root.wm_attributes("-topmost", "true")
+        self.root.lift()
         self.root.mainloop()
 
     def kill(self):
