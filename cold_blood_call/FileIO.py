@@ -10,6 +10,8 @@ import sys
 from os import listdir, getcwd, mkdir
 from datetime import date
 
+DELIMETER = '\t'
+
 
 def _checkInitialBootStatus()->bool:
     if ".saved_boot.txt" in listdir():
@@ -46,7 +48,7 @@ def readRoster(rosterFile="initial_roster.txt")->list or bool:
 
     student_list = list()
     for line in roster:
-        student_list.append(line.strip().split('\t'))
+        student_list.append(line.strip().split(f'{DELIMETER}'))
 
     if initial:
         for student in student_list:
@@ -76,15 +78,15 @@ def writeToSavedBootRoster(students:list)->None:
     """
     new_roster = open(".saved_boot.txt", "w")
     for student in students:
-        new_roster.write(f"{student[0]}\t") # first name
-        new_roster.write(f"{student[1]}\t") # last name
-        new_roster.write(f"{student[2]}\t") # UO ID
-        new_roster.write(f"{student[3]}\t") # email
-        new_roster.write(f"{student[4]}\t") # phonetic
-        new_roster.write(f"{student[5]}\t") # reveal code
-        new_roster.write(f"{student[6]}\t") # spoken (True/False)
+        new_roster.write(f"{student[0]}{DELIMETER}") # first name
+        new_roster.write(f"{student[1]}{DELIMETER}") # last name
+        new_roster.write(f"{student[2]}{DELIMETER}") # UO ID
+        new_roster.write(f"{student[3]}{DELIMETER}") # email
+        new_roster.write(f"{student[4]}{DELIMETER}") # phonetic
+        new_roster.write(f"{student[5]}{DELIMETER}") # reveal code
+        new_roster.write(f"{student[6]}{DELIMETER}") # spoken (True/False)
         previous_contributions = (int(student[9]) + int(student[8]))
-        new_roster.write(f"{previous_contributions}\t") # previous contributions = previous_contributions + contributions
+        new_roster.write(f"{previous_contributions}{DELIMETER}") # previous contributions = previous_contributions + contributions
         if student[7] == "True": # check if the student was flagged this session
             new_roster.write(f"{str(int(student[10]) + 1)}\n") # increment the flagged count
         else:
@@ -138,8 +140,8 @@ def writeToLogFile(students:list)->None:
 
     for student in students:
         if int(student[8]) > 0:
-            log_file.write(f"{_formatResponseCode(student[7])}\t")
-            log_file.write(f"{student[0]} {student[1]}\t")
+            log_file.write(f"{_formatResponseCode(student[7])}{DELIMETER}")
+            log_file.write(f"{student[0]} {student[1]}{DELIMETER}")
             log_file.write(f"{student[3]}\n")
 
     log_file.close()
