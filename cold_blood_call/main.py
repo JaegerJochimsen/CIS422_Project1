@@ -16,10 +16,7 @@ data = [
 def main():
     rosterStringList = readRoster()
 
-    rosterStringList = False
-
-    if not rosterStringList:
-
+    while not rosterStringList:
         rosterFileInputGUI = InstructorInterface(rosterStringList, None)
         newRosterFile = rosterFileInputGUI.getRosterFileInput()
         rosterStringList = readRoster(newRosterFile)
@@ -35,4 +32,5 @@ def main():
     writeToSavedBootRoster(save)
     writeToLogFile(save)
 
-main()
+if __name__ == "__main__":
+    main()
