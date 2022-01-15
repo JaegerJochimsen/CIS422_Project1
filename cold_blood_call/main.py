@@ -22,8 +22,7 @@ def main():
 
         rosterFileInputGUI = InstructorInterface(rosterStringList, None)
         newRosterFile = rosterFileInputGUI.getRosterFileInput()
-        print(newRosterFile)
-        return False
+        rosterStringList = readRoster(newRosterFile)
 
     ourClassroom = Classroom(rosterStringList, 4)
 

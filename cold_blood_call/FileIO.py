@@ -29,7 +29,7 @@ def _checkIfFileDir()->bool:
         return True
     return False
 
-def readRoster()->list or bool:
+def readRoster(rosterFile="initial_roster.txt")->list or bool:
     """This function will return a list of lists
     or if a roster is unable to be found it returns False
     """
@@ -39,7 +39,7 @@ def readRoster()->list or bool:
 
     initial = _checkInitialBootStatus()
     if initial:
-        roster = open("initial_roster.txt", "r")
+        roster = open(rosterFile, "r")
     else:
         roster = open(".saved_boot.txt", "r")
         print("READING SAVED BOOT")
