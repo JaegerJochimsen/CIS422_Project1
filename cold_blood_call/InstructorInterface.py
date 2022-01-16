@@ -13,7 +13,7 @@ class InstructorInterface():
         self.win = tk.Tk()
         # All text starts as white by default
         self.text_colors = ["white", "white", "white", "white"]
-
+        self.deck = given
         # Leftmost value is True (highlighted) by default
         self.highlight_list = [True, False, False, False]
 
@@ -30,7 +30,7 @@ class InstructorInterface():
         # 19 is a scalar modifier that happens to create a decent
         # screen height for our self.win based on original native screen height
         self.win_h = screen_h/22
-        self.win_w = screen_w 
+        self.win_w = screen_w
 
         # Make a string "widthxheight" to pass to geometry function
         dimensions = "%dx%d" % (self.win_w, self.win_h)
@@ -57,23 +57,23 @@ class InstructorInterface():
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
 
-        self.canvas.create_text(5,15, text=self.name1, fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/4, 15, text=self.name2, fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/2, 15, text=self.name3, fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.name4, fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
         self.canvas.pack(fill=BOTH, expand=True)
-    
+
 
     """
-        Deletes all old text objects and replaces them with updated ones based on the 
+        Deletes all old text objects and replaces them with updated ones based on the
         text_colors list.
     """
     def displayText(self):
         self.canvas.delete("all")
-        self.canvas.create_text(5,15, text=self.name1, fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/4, 15, text=self.name2, fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/2, 15, text=self.name3, fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.name4, fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
 
     """
     Increases highlight_counter with a bound that prevents it from
@@ -93,7 +93,7 @@ class InstructorInterface():
     def decreaseCounter(self):
         #global highlight_counter
         if((self.highlight_counter -1) < 0):
-            self.highlight_counter = 0 
+            self.highlight_counter = 0
         else:
             self.highlight_counter = self.highlight_counter - 1
 
@@ -104,7 +104,7 @@ class InstructorInterface():
     def leftArrowKey(self, event):
         #global highlight_counter
         # Set the boolean list to reflect which index
-        # in the list we want to be highlighted 
+        # in the list we want to be highlighted
         self.decreaseCounter()
         self.highlight_list[self.highlight_counter+1] = False
         self.highlight_list[self.highlight_counter] = True
@@ -115,7 +115,7 @@ class InstructorInterface():
             else:
                 self.text_colors[i] = "white"
 
-        self.displayText()    
+        self.displayText()
 
     """
         Current index starts at 0, the furthest left displayed name.
@@ -148,4 +148,3 @@ class InstructorInterface():
     # Let it rip
     def startGUI(self):
         self.win.mainloop()
-
