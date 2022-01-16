@@ -101,7 +101,7 @@ class InstructorInterface():
     """
 
     """
-    def leftArrowKey(event, self):
+    def leftArrowKey(self, event):
         #global highlight_counter
         # Set the boolean list to reflect which index
         # in the list we want to be highlighted 
@@ -115,7 +115,7 @@ class InstructorInterface():
             else:
                 self.text_colors[i] = "white"
 
-        displayText()    
+        self.displayText()    
 
     """
         Current index starts at 0, the furthest left displayed name.
@@ -130,7 +130,7 @@ class InstructorInterface():
         going from white to red
 
     """
-    def rightArrowKey(event, self):
+    def rightArrowKey(self, event):
         #global highlight_counter
         self.increaseCounter()
 
@@ -143,7 +143,7 @@ class InstructorInterface():
             else:
                 self.text_colors[i] = "white"
 
-        displayText()
+        self.displayText()
 
     # Let it rip
     def startGUI(self):
