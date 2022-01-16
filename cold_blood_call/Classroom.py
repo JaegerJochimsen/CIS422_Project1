@@ -116,7 +116,10 @@ class Classroom():
         """
         Param:
             roster: list of list of str where each list contains a single Student object's information (to be passed to constructor)
-
+            deckSize: the number of Student objects On-Deck at any given point, this defualts to 4 as per the SRS
+            
+        Called By:
+            main.py     -   called when Classroom is initialized 
         Takes in:
         roster: a list of lists of string that represent attributes of a student
         for the class roster
