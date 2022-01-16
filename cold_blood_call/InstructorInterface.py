@@ -168,7 +168,6 @@ class InstructorInterface():
 
     # Let it rip
     def startGUI(self):
-        self.win.wm_attributes('-type', 'splash')
         self.win.wm_attributes("-topmost", "true")
         self.win.lift()
         self.win.mainloop()
