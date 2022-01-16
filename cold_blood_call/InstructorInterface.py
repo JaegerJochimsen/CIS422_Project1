@@ -14,6 +14,7 @@ class InstructorInterface():
         # All text starts as white by default
         self.text_colors = ["white", "white", "white", "white"]
         self.deck = given
+        self.callback = callback
         # Leftmost value is True (highlighted) by default
         self.highlight_list = [True, False, False, False]
 
@@ -22,6 +23,8 @@ class InstructorInterface():
         # Key listeners as part of the Tkinter library, waits for key press
         self.win.bind('<Right>', self.rightArrowKey)
         self.win.bind('<Left>', self.leftArrowKey)
+        self.win.bind('<Up>', self.UpArrowKey)
+        self.win.bind('<Down>', self.DownArrowKey)
 
         # Gets native screen resolution width and height
         screen_w = self.win.winfo_screenwidth()
@@ -143,6 +146,24 @@ class InstructorInterface():
             else:
                 self.text_colors[i] = "white"
 
+        self.displayText()
+
+    def UpArrowKey(self, event):
+        #global highlight_counter
+
+        for i in range(len(self.highlight_list)):
+            if (self.highlight_list[i] is True):
+                self.callback(i,True)
+                break
+        self.displayText()
+
+    def DownArrowKey(self, event):
+        #global highlight_counter
+
+        for i in range(len(self.highlight_list)):
+            if (self.highlight_list[i] is True):
+                self.callback(i)
+                break
         self.displayText()
 
     # Let it rip
