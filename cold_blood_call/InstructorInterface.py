@@ -5,16 +5,104 @@
     Installs Requried:
         Tkinter: sudo apt-get install python3.6-tk
 """
+"""
+Create and allow interaction with a GUI window using tkinter.
+
+Used By:
+    main.py
+
+Members:
+    Member Name:        : Type          : Default Val           -> Description
+    ------------------------------------------------------------------------------------------------------------------------------------------
+    self.win            : tkinter       : Tk()                  -> the main tkinter window that will hold the names and accept input
+
+    self.text_colors    : list[string]  : ["white", "white",    -> The color array defining the color of text for each student name on the window
+                                           "white", "white"]
+
+    self.deck           : list[Student] : deck(parameter)       -> a list of Student objects that show who are currently on deck
+
+    self.moveToPost     : method        : moveToPost(parameter) -> a method given to the class on initialization, used to modify deck upon user input
+
+    self.highlight_list : list[bool]    : [True, False,         -> A list of bools showing which label is indexed on the GUI.
+                                           False, False]
+
+Methods:
+
+    Private:                                                                     Return:
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self._buildRoster(self, roster : list[list[str]] )          |   ->  list[Student]
+                                                                                |
+    Usage:          self._buildRoster(roster)                                   |   ->  [Student(), Student(), ...]
+                                                                                |
+    Description:    Create a list of Student objects from the lists of lists of |
+                    string representing student data                            |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self._buildPrePostDeck(self, roster : list[list[Student]])  |   ->  list[Student] , list[Student]
+                                                                                |
+    Usage:          self._buildPrePostDeck(roster)                              |   ->  preDeck:[Student()] , postDeck:[Student()]
+                                                                                |
+    Description:    Create a tuple of Student lists, sorting the input roster   |
+                    of Students based on their spoken fields. The first         |
+                    list is the preDeck (all Student objects with spoken=False),|
+                    the second is the postDeck (all Student objects with        |
+                    spoken=True)                                                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.createDeck(self)                                       |   ->  list[Student]
+                                                                                |
+    Usage:          self._createDeck(self)                                      |   ->  deck:list[Student]
+                                                                                |
+                                                                                |
+    Description:    Create the deck of size self.deckSize by adding random      |
+                    Student objects from self.preDeck to self.deck              |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+
+    Public:                                                                      Return:
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.moveToDeck(self)                                       |   ->  None
+                                                                                |
+    Usage:          instance.moveToDeck()                                       |
+                                                                                |
+    Description:    Move a random Student object from self.preDeck to           |
+                    self.deck                                                   |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.moveToPost(self, index:int, flag:bool = False)         |   ->  list[Student]
+                                                                                |
+    Usage:          instance.moveToPost(1, False)                               |   ->  updated deck:list[Student]
+                                                                                |
+    Description:    Move the Student object at index to the self.postDeck,      |
+                    setting that Student's flagged field to flag                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.getDeck(self)                                          |   ->  list[Student]
+                                                                                |
+    Usage:          instance.getDeck()                                          |   ->  deck:list[Student]
+                                                                                |
+    Description:    Return the current deck (self.deck)                         |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.refresh(self)                                          |   ->  None
+                                                                                |
+    Usage:          self.refresh()                                              |   ->  None
+                                                                                |
+    Description:    Move all Students in the postDeck to the preDeck, resetting |
+                    their spoken fields to be False.                            |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.mergeDecksToList(self)                                 |   -> list[list[str]]
+                                                                                |
+    Usage:          instance.mergeDecksToList()                                 |   -> list[list[str]]
+                                                                                |
+    Description:    Add string representation of each Student object to a list, |
+                    this is the current state of the class                      |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+"""
 import tkinter as tk
 from tkinter import *
 
 class InstructorInterface():
-    def __init__(self, given, callback):
+    def __init__(self, deck, moveToPost):
         self.win = tk.Tk()
         # All text starts as white by default
         self.text_colors = ["white", "white", "white", "white"]
-        self.deck = given
-        self.callback = callback
+        self.deck = deck
+        self.moveToPost = moveToPost
         # Leftmost value is True (highlighted) by default
         self.highlight_list = [True, False, False, False]
 
@@ -148,12 +236,12 @@ class InstructorInterface():
 
         self.displayText()
 
+
     def UpArrowKey(self, event):
-        #global highlight_counter
 
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
-                self.callback(i,True)
+                self.moveToPost(i,True)
                 break
         self.displayText()
 
@@ -162,7 +250,7 @@ class InstructorInterface():
 
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
-                self.callback(i)
+                self.moveToPost(i)
                 break
         self.displayText()
 
