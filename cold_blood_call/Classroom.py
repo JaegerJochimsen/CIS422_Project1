@@ -173,7 +173,7 @@ class Classroom():
 
         gonnaBeDeck = []
         for i in range(self.deckSize):
-            chosen = random.randint(0,len(self.preDeck)-1)
+            chosen = randint(0,len(self.preDeck)-1)
             student = self.preDeck.pop(chosen)
             gonnaBeDeck.append(student)
         #    gonnaBeDeck.append(self.preDeck[chosen])
@@ -192,7 +192,7 @@ class Classroom():
 
         if (len(self.preDeck) == 0):
             self.refresh()
-        nextIndex = random.randint(0,len(self.preDeck)-1)
+        nextIndex = randint(0,len(self.preDeck)-1)
 
         item = self.preDeck.pop(nextIndex)
         self.deck.append(item)
