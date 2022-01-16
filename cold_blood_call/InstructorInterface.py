@@ -23,8 +23,8 @@ class InstructorInterface():
         # Key listeners as part of the Tkinter library, waits for key press
         self.win.bind('<Right>', self.rightArrowKey)
         self.win.bind('<Left>', self.leftArrowKey)
-        self.win.bind('<Up>', self.UpArrowKey)
-        self.win.bind('<Down>', self.DownArrowKey)
+        self.win.bind('<r>', self.UpArrowKey)
+        self.win.bind('<e>', self.DownArrowKey)
 
         # Gets native screen resolution width and height
         screen_w = self.win.winfo_screenwidth()
