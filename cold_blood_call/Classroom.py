@@ -112,7 +112,7 @@ class Classroom():
         ----------------------------------------------------------------------------|-------------------------------------------------
     """
 
-    def __init__(self, roster:list[list[str]], deckSize:int = 4):
+    def __init__(self, roster, deckSize:int = 4):
         """
         Param:
             roster: list of list of str where each list contains a single Student object's information (to be passed to constructor)
