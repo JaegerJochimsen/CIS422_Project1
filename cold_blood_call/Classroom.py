@@ -221,7 +221,7 @@ class Classroom():
 
         self.deck[index].setSpoken(True)    # student has spoken, set that field
         self.deck[index].incrementContributions()
-        self.deck[index].setFlag(True)
+        self.deck[index].setFlag(flag)
         self.postDeck.append(self.deck[index])
         #self.deck.pop(index)
         self.deck.remove(self.deck[index])
