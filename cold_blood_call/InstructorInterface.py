@@ -168,4 +168,6 @@ class InstructorInterface():
 
     # Let it rip
     def startGUI(self):
+        self.root.wm_attributes("-topmost", "true")
+        self.root.lift()
         self.win.mainloop()
