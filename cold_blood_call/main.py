@@ -33,6 +33,7 @@ def main():
     save = ourClassroom.mergeDecksToList()
     writeToSavedBootRoster(save)
     writeToLogFile(save)
+    updatePerforanceFile(save)
 
 if __name__ == "__main__":
     main()

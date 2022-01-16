@@ -9,6 +9,7 @@ Credit:
 import sys
 from os import listdir, getcwd, mkdir
 from datetime import date
+from operator import itemgetter
 
 DELIMETER = '\t'
 
@@ -85,7 +86,7 @@ def writeToSavedBootRoster(students:list)->None:
         new_roster.write(f"{student[4]}{DELIMETER}") # phonetic
         new_roster.write(f"{student[5]}{DELIMETER}") # reveal code
         new_roster.write(f"{student[6]}{DELIMETER}") # spoken (True/False)
-        previous_contributions = (int(student[9]) + int(student[8]))
+        previous_contributions = str((int(student[9]) + int(student[8])))
         new_roster.write(f"{previous_contributions}{DELIMETER}") # previous contributions = previous_contributions + contributions
         if student[7] == "True": # check if the student was flagged this session
             new_roster.write(f"{str(int(student[10]) + 1)}\n") # increment the flagged count
@@ -147,31 +148,133 @@ def writeToLogFile(students:list)->None:
     log_file.close()
 
 
+def updatePerforanceFile(students:list):
+
+    # This is the case when there is no current performance file
+    if "Performance-File.txt" not in listdir("MetaData"):
+        performance_file = open("MetaData/Performance-File.txt", "w")
+
+        performance_file.write("Performance File for Cold Call Assist Program\n")
+        performance_file.write("Total Times  Called\tNumber of Flags\t")
+        performance_file.write("First Name\tLast Name\tUO ID\tEmail\t")
+        performance_file.write("Phonetic Spelling\tReveal Code\tList of Dates\n")
+
+        for student in students:
+            performance_file.write(f"{student[8]}\t") # add the contributions line
+            #print(f"ADDED CONTRIBUTIONS for {student[0]}: {student[8]}")
+            if student[7] == "True":
+                performance_file.write(f"1\t") # add the flag count line
+                #print(f"ADDED FLAGS for {student[0]}: 1")
+            else:
+                performance_file.write(f"0\t") # add the flag count line
+                #print(f"ADDED FLAGS for {student[0]}: 0")
+            performance_file.write(f"{student[0]}\t") # add the first name
+            performance_file.write(f"{student[1]}\t") # add the last name
+            performance_file.write(f"{student[2]}\t") # add the id num
+            performance_file.write(f"{student[3]}\t") # add the email
+            performance_file.write(f"{student[4]}\t") # add the email
+            if int(student[8]) > 0:
+                performance_file.write(f"{student[5]}\t") # add the reveal code
+                performance_file.write(f"{str(date.today())}\n") # add the date
+            else:
+                performance_file.write(f"{student[5]}\n") # add the reveal code
+
+        performance_file.close()
+        return None
+
+
+    # when the file exists but needs to be updated after the session
+    performance_file = open("MetaData/Performance-File.txt", "r")
+
+    # skip the head and collumns lines
+    performance_file.readline()
+    performance_file.readline()
+
+
+    # put each student in the old performance_file into a list and split each
+    # of their fields into a a seperate element of the internal list
+    prev_file = list()
+    for student in performance_file:
+        prev_file.append(student.strip().split("\t"))
+
+    performance_file.close()
+
+    # sort the list by last name so it lines up with the data that is passed in
+    prev_file_sorted = sorted(prev_file, key=itemgetter(3))
+
+    # sort the list that is passed in so it lines up with the old performance_file order
+    current_list = sorted(students, key=itemgetter(1))
+
+    # go through each student from the current session and check if they spoke
+    # if they did add the date to the list that will be written to the performance_file
+    # this includes incrementing the contributions field, as well as the flag field (when applicable)
+    for i, student in enumerate(current_list):
+        if int(student[8]) > 0:
+            # add the number of times the student contributed in the current session to the total
+            prev_file_sorted[i][0] = str((int(student[9]) + int(student[8])))
+            if student[7] == "True":
+                prev_file_sorted[i][1] = str(int(prev_file_sorted[i][1]) + 1)
+            prev_file_sorted[i].append(str(date.today()))
+
+
+    #ready to write to file
+    # create a new file, overwriting the old one
+    performance_file = open("MetaData/Performance-File.txt", "w")
+
+    performance_file.write("Performance File for Cold Call Assist Program\n")
+    performance_file.write("Total Times  Called\tNumber of Flags\t")
+    performance_file.write("First Name\tLast Name\tUO ID\tEmail\t")
+    performance_file.write("Phonetic Spelling\tReveal Code\tList of Dates\n")
+
+    # add each of the students to the new file
+    for student in prev_file_sorted:
+        for item in student:
+            performance_file.write(f"{item}\t")
+        performance_file.write("\n")
+
+    performance_file.close()
+
+    return None
+
+
 def _tests():
-        # readRoster tests
-        rosty = readRoster()
-        print(rosty)
+    """
+    # readRoster tests
+    rosty = readRoster()
+    print(rosty)
 
 
-        # writeToSavedBootRoster
-        test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
-            'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4']]
+    # writeToSavedBootRoster
+    test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
+        'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4']]
 
-        writeToSavedBootRoster(test_function_input)
-        # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
-        #    'nook', '848fsdfhkjhe8f9', 'True', '6', '5']
+    writeToSavedBootRoster(test_function_input)
+    # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
+    #    'nook', '848fsdfhkjhe8f9', 'True', '6', '5']
 
 
 
-        # writeToLogFile tests
-        test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
-            'nook', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']]
-        writeToLogFile(test_function_input)
-        # this should produce:
-        # X	Nick Johnstone	nsj@uoregon.edu
+    # writeToLogFile tests
+    test_function_input = [['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
+        'nook', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']]
+    writeToLogFile(test_function_input)
+    # this should produce:
+    # X	Nick Johnstone	nsj@uoregon.edu
+    """
+
+    # update performance files test
+    test_function_input = [
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']
+            ]
+    updatePerforanceFile(test_function_input)
+
 
 if __name__ == "__main__":
     """Testing"""
     if not __debug__:
-        test()
+        _tests()
 
