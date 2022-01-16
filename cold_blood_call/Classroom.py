@@ -102,8 +102,10 @@ class Classroom():
         gonnaBeDeck = []
         for i in range(self.deckSize):
             chosen = random.randint(0,len(self.preDeck)-1)
-            gonnaBeDeck.append(self.preDeck[chosen])
-            self.preDeck.remove(self.preDeck[chosen])
+            student = self.preDeck.pop(chosen)
+            gonnaBeDeck.append(student)
+        #    gonnaBeDeck.append(self.preDeck[chosen])
+        #    self.preDeck.remove(self.preDeck[chosen])
         # print("Deck Created")
         #print(gonnaBeDeck, self.preDeck)
         return gonnaBeDeck
@@ -119,8 +121,9 @@ class Classroom():
         if (len(self.preDeck) == 0):
             self.refresh()
         nextIndex = random.randint(0,len(self.preDeck)-1)
-        self.deck.append(self.preDeck[nextIndex])
-        self.preDeck.remove(self.preDeck[nextIndex])
+
+        item = self.preDeck.pop(nextIndex)
+        self.deck.append(item)
 
 
     def moveToPost(self,index,flag=0):
@@ -141,8 +144,9 @@ class Classroom():
         self.deck[index].setSpoken(True)    # student has spoken, set that field
         self.deck[index].incrementContributions()
 
-        self.deck.remove(self.deck[index])
-        self.moveToDeck()
+        self.deck.pop(index)
+        # self.deck.remove(self.deck[index])
+        self.moveTDeck()
 
         #print("Modified")
         #print(self.deck,self.preDeck,self.postDeck)
