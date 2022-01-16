@@ -174,10 +174,10 @@ class Classroom():
         gonnaBeDeck = []
         for i in range(self.deckSize):
             chosen = randint(0,len(self.preDeck)-1)
-            student = self.preDeck.pop(chosen)
-            gonnaBeDeck.append(student)
-        #    gonnaBeDeck.append(self.preDeck[chosen])
-        #    self.preDeck.remove(self.preDeck[chosen])
+        #    student = self.preDeck.pop(chosen)
+        #   gonnaBeDeck.append(student)
+            gonnaBeDeck.append(self.preDeck[chosen])
+            self.preDeck.remove(self.preDeck[chosen])
         # print("Deck Created")
         #print(gonnaBeDeck, self.preDeck)
         return gonnaBeDeck
@@ -194,8 +194,10 @@ class Classroom():
             self.refresh()
         nextIndex = randint(0,len(self.preDeck)-1)
 
-        item = self.preDeck.pop(nextIndex)
-        self.deck.append(item)
+        self.deck.append(self.preDeck[nextIndex])
+        self.preDeck.remove(self.preDeck[nextIndex])
+        #item = self.preDeck.pop(nextIndex)
+        #self.deck.append(item)
         return None
 
 
@@ -217,8 +219,8 @@ class Classroom():
         self.deck[index].setSpoken(True)    # student has spoken, set that field
         self.deck[index].incrementContributions()
 
-        self.deck.pop(index)
-        # self.deck.remove(self.deck[index])
+        #self.deck.pop(index)
+        self.deck.remove(self.deck[index])
         self.moveToDeck()
 
         #print("Modified")
