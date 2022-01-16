@@ -1,19 +1,19 @@
-""" 
+"""
 File: Classroom.py
 Description: contains Classroom class definition for populating and maintaining the internal structures of the CCS
-Local Dependencies: 
+Local Dependencies:
         Student.py  -   Used for the Student class definition, used to hold student information passed to the constructor
 Imports/Modules:
         random.randint  -   Used for random integer generation in createDeck() and moveToDeck()
         Student.Student -   Used for Student class definition (see Student.py)
-Author(s): 
+Author(s):
         Mert Yapucuoglu (MY)
         Jaeger Jochimsen (JJ)
 Credit:
 Modifications:
-       1/11/22      MY      Initial class creation and method dev                    
-       1/13/22      JJ      Integration with Student.py functionality               
-       1/15/22      JJ      Privatization of members and methods, documentation     
+       1/11/22      MY      Initial class creation and method dev
+       1/13/22      JJ      Integration with Student.py functionality
+       1/15/22      JJ      Privatization of members and methods, documentation
 """
 
 # used for random integer generation in createDeck() and moveToDeck()
@@ -25,7 +25,7 @@ from Student import Student
 class Classroom():
     """
     Create and maintain the 3 CCS internal data structures used for tracking the state of the class room
-    
+
     Used By:
         main.py
 
@@ -36,37 +36,37 @@ class Classroom():
 
         self.preDeck    : list[Student] : -            -> a list of Student objects that represent students who haven't spoken yet (student.spoken
                                                           == False)
- 
+
         self.postDeck   : list[Student] : -            -> a list of Student objects that represent students who have spoken (student.spoken == True)
-        
-        self.deck       : list[Student] : -            -> a list of Student objects that represent students "On Deck"; these 
+
+        self.deck       : list[Student] : -            -> a list of Student objects that represent students "On Deck"; these
                                                           are randomly chosen from the self.preDeck
 
         self.deckSize   : int           : 4            -> the number of students "On Deck" over the course of the run
 
     Methods:
-        
+
         Private:                                                                     Return:
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self._buildRoster(self, roster : list[list[str]] )          |   ->  list[Student]     
+        Declaration:    self._buildRoster(self, roster : list[list[str]] )          |   ->  list[Student]
                                                                                     |
         Usage:          self._buildRoster(roster)                                   |   ->  [Student(), Student(), ...]
                                                                                     |
-        Description:    Create a list of Student objects from the lists of lists of |   
-                        string representing student data                            | 
+        Description:    Create a list of Student objects from the lists of lists of |
+                        string representing student data                            |
         ----------------------------------------------------------------------------|-------------------------------------------------
         Declaration:    self._buildPrePostDeck(self, roster : list[list[Student]])  |   ->  list[Student] , list[Student]
                                                                                     |
-        Usage:          self._buildPrePostDeck(roster)                              |   ->  preDeck:[Student()] , postDeck:[Student()] 
+        Usage:          self._buildPrePostDeck(roster)                              |   ->  preDeck:[Student()] , postDeck:[Student()]
                                                                                     |
-        Description:    Create a tuple of Student lists, sorting the input roster   |  
-                        of Students based on their spoken fields. The first         | 
-                        list is the preDeck (all Student objects with spoken=False),| 
+        Description:    Create a tuple of Student lists, sorting the input roster   |
+                        of Students based on their spoken fields. The first         |
+                        list is the preDeck (all Student objects with spoken=False),|
                         the second is the postDeck (all Student objects with        |
                         spoken=True)                                                |
         ----------------------------------------------------------------------------|-------------------------------------------------
         Declaration:    self.createDeck(self)                                       |   ->  list[Student]
-                                                                                    | 
+                                                                                    |
         Usage:          self._createDeck(self)                                      |   ->  deck:list[Student]
                                                                                     |
                                                                                     |
@@ -78,7 +78,7 @@ class Classroom():
         ----------------------------------------------------------------------------|-------------------------------------------------
         Declaration:    self.moveToDeck(self)                                       |   ->  None
                                                                                     |
-        Usage:          instance.moveToDeck()                                       |    
+        Usage:          instance.moveToDeck()                                       |
                                                                                     |
         Description:    Move a random Student object from self.preDeck to           |
                         self.deck                                                   |
@@ -90,7 +90,7 @@ class Classroom():
         Description:    Move the Student object at index to the self.postDeck,      |
                         setting that Student's flagged field to flag                |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.getDeck(self)                                          |   ->  list[Student] 
+        Declaration:    self.getDeck(self)                                          |   ->  list[Student]
                                                                                     |
         Usage:          instance.getDeck()                                          |   ->  deck:list[Student]
                                                                                     |
@@ -108,7 +108,7 @@ class Classroom():
         Usage:          instance.mergeDecksToList()                                 |   -> list[list[str]]
                                                                                     |
         Description:    Add string representation of each Student object to a list, |
-                        this is the current state of the class                      | 
+                        this is the current state of the class                      |
         ----------------------------------------------------------------------------|-------------------------------------------------
     """
 
@@ -117,9 +117,9 @@ class Classroom():
         Param:
             roster: list of list of str where each list contains a single Student object's information (to be passed to constructor)
             deckSize: the number of Student objects On-Deck at any given point, this defualts to 4 as per the SRS
-            
+
         Called By:
-            main.py     -   called when Classroom is initialized 
+            main.py     -   called when Classroom is initialized
         Takes in:
         roster: a list of lists of string that represent attributes of a student
         for the class roster
@@ -128,18 +128,18 @@ class Classroom():
         Initializes an empty postDeck, and calls the createDeck() method from
         itself to create the deck. The remaining students stay in preDeck."""
 
-        # build the roster of Student objects from list of 
+        # build the roster of Student objects from list of
         self.roster = self._buildRoster(roster)
 
         # build the pre and post deck structures
         self.preDeck, self.postDeck = self._buildPrePostDeck(self.roster)
 
-        # number of students On Deck 
+        # number of students On Deck
         self.deckSize = deckSize
 
         # create deck with respect to self.preDeck
         self.deck = self._createDeck()
-        
+
 
     def _buildRoster(self, studentList):
         roster = list()
@@ -218,10 +218,11 @@ class Classroom():
 
         Returns: list[Student], which will be used by InstructorInterface"""
 
-        self.postDeck.append(self.deck[index])
+
         self.deck[index].setSpoken(True)    # student has spoken, set that field
         self.deck[index].incrementContributions()
-
+        self.deck[index].setFlag(True)
+        self.postDeck.append(self.deck[index])
         #self.deck.pop(index)
         self.deck.remove(self.deck[index])
         self.moveToDeck()
@@ -258,5 +259,3 @@ class Classroom():
         for student in master_list:
             student_list.append(student.toStrList())
         return student_list
-
-
