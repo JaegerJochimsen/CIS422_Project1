@@ -17,39 +17,65 @@ from re import search
 DELIMITER = '\t'
 
 
-def _checkIfFileDir()->bool:
-    if "MetaData" in listdir():
-        return True
-    return False
-
 def _checkValidRoster(rosterFile:str)->str:
+    """
+    Parameter:
+        rosterFile  -   a string that represents a file name of a roster
+
+    Called by:
+        FileIO.py - readRoster()
+
+    Calls:
+        re  -   search()
+
+    Modifies:
+        Opens rosterFile
+
+    Return:
+        string that is either VALID or an error message
+
+    Description:
+        This functions makes sure that the roster file passed in is a valid file.
+        It does this by first checking that the length of each line which should
+        represent each student is correct. Then the function uses regular
+        expressions to check that the student IDs and emails are in the
+        correct format. If the file does not pass these checks a specific error
+        message is returned to be displayed on the GUI. If the file does pass
+        all of the tests the string "VALID" is returned.
+    """
+
+    # store the open file object in open_roster
     open_roster = open(rosterFile, "r")
+    # initial a list to store each line in the file
     roster_list = list()
     for line in open_roster:
         roster_list.append(line.strip().split(f"{DELIMITER}"))
 
-    # this is where I will check that the length of each line is corrent
-    # if not I will return false right away
+    # check that the length of each line is corrent
+    # if not return false right away
+    # then check for valid ID and email
     for i, student in enumerate(roster_list):
-        # length of fields check
+        # check length of each line
         if (len(student) != 4) and (len(student) != 6):
+            open_roster.close()
             return (f"Invalid number of fields for student on line: {i+1}")
-            return False
-        # regex check for UO ID
+
+        # regex check for ID (3rd element should always be ID according to SRS)
         if search("[0-9]{9}", student[2]) == None:
+            open_roster.close()
             return (f"Invalid student ID number on line: {i+1}")
-            #return False
 
-        # regex check for email
+        # regex check for email (4th element should always be email according to SRS)
         if search("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", student[3]) == None:
+            open_roster.close()
             return (f"Invalid email on line: {i+1}")
-            #return False
 
-    # return True if all fields for all students are valid
+    # will only reach here if roster is valid
     open_roster.close()
     return "VALID"
 
-def readRoster(rosterFile="initial_roster.txt")->list or str:
+
+def readRoster(rosterFile:str="initial_roster.txt")->list or str:
     """This function will return a list of lists
     or if a roster is unable to be found it returns False
     """
@@ -132,6 +158,12 @@ def _formatResponseCode(bl:str)->str:
         return ""
     else:
         return "ERROR"
+
+
+def _checkIfFileDir()->bool:
+    if "MetaData" in listdir():
+        return True
+    return False
 
 
 def writeToLogFile(students:list)->None:
