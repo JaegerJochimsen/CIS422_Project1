@@ -376,7 +376,7 @@ class Classroom():
         """ 
         Parameter: N/A
         Called By:
-            Main.py     -   called in instantiation of
+            main.py     -   called in instantiation of
                             InstructorInterface object to give
                             initial state of deck.
         Calls: N/A
@@ -401,29 +401,68 @@ class Classroom():
         Modifies:
             self.preDeck
             self.postDeck
-            Student object
+            Student objects in self.postDeck
 
         Return: None
         Description:
+            Move all Student objects in self.postDeck to self.preDeck 
+            and reset their spoken fields to False. Called when the
+            self.preDeck is empty and a new Student is to be moved to
+            self.deck.
         """
-        """Called by: moveToDeck from the same class
-
-        When a student is needed from preDeck but it is empty, this function is
-        called. Moves every student in postDeck to preDeck and resets the spoken field."""
-
+        # for each Student object in postDeck
         for student in self.postDeck:
+
             # remove student from postDeck
             self.postDeck.remove(student)
 
-            # preDeck students have a False val for spoken
+            # reset spoken field of Student
             student.setSpoken(False)
+
+            # re-add Student to preDeck
             self.preDeck.append(student)
 
             return None
 
     def mergeDecksToList(self):
+        """ 
+        Parameter: N/A
+
+        Called By:
+            main.py     -   called to save the current state of the
+                            program for writing to files
+
+        Calls: 
+            Student.py  -   toStrList()
+
+        Modifies: N/A
+
+        Return: 
+            list of list of str, where each list in the outer list is
+            a comprised of a Student object's information as strings.
+
+        Description:
+            Compile a list of all Student objects' string
+            representations (as lists of strings) across self.deck,
+            self.preDeck, and self.postDeck. This will be used to
+            write to files.
+        """
+        # compile list of ALL Student objects
         master_list = self.postDeck + self.preDeck + self.deck
-        student_list = []
+
+        # init list for holding Student info lists
+        student_list = list()
+
+        # for each of the Student objects
         for student in master_list:
+
+            # add the current Student object's information as a list
+            # of strings to the return list
             student_list.append(student.toStrList())
+
         return student_list
+
+
+
+
+
