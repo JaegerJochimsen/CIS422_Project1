@@ -190,7 +190,8 @@ class InstructorInterface():
 
 
     """
-
+    Increases highlight_counter with a bound that prevents it from
+    going past the decksize.
     """
     def leftArrowKey(self, event):
         #global highlight_counter
