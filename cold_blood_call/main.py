@@ -1,7 +1,7 @@
 """
     File: main.py
     Description: The main function is a driver to start the software system
-    with three modules. The sofeware system will read the roster from 
+    with three modules. The sofeware system will read the roster from
     initial_roster.txt file or Saved/boot roster file to load student infomation.
     The system will output three files when program exit. (Log file, Saved/Boot file
     and perfermance file)
@@ -23,15 +23,14 @@ def main():
     # readRoster() failed then return False
     rosterStringList = readRoster()
 
-    #rosterStringList = False
+    # rosterStringList = "tits"
 
-    while not rosterStringList:                                             # if rosterStringList is false, trying get roster from File Input
+    while not isinstance(rosterStringList,list):                            # if rosterStringList is false, trying get roster from File Input
         rosterFileInputGUI = InstructorInterface(rosterStringList, None)    # setting the input roster into GUI module
         newRosterFile = rosterFileInputGUI.getRosterFileInput()             # getting the updated roster from GUI module
         rosterStringList = readRoster(newRosterFile)                        # renewing the roster in system
-        if rosterStringList:
-            # turn off the file input part
-            rosterFileInputGUI.kill()
+        # turn off the file input part
+        rosterFileInputGUI.kill()
 
     ourClassroom = Classroom(rosterStringList, 4)                                   # call Classroom module to create students on-deck/predeck/postdeck with roster
     ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)   # setting GUI with current roster and method for move student to post deck
@@ -44,4 +43,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
