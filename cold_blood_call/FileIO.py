@@ -23,8 +23,6 @@ def _checkIfFileDir()->bool:
     return False
 
 def _checkValidRoster(rosterFile:str)->str:
-    if rosterFile not in listdir():
-        return f"File: {rosterFile} does not exist"
     open_roster = open(rosterFile, "r")
     roster_list = list()
     for line in open_roster:
@@ -68,13 +66,15 @@ def readRoster(rosterFile="initial_roster.txt")->list or str:
             roster = open("initial_roster.txt", "r")
         else:
             return roster_status
-    else:
+    elif rosterFile != "initial_roster.txt":
         roster_status = _checkValidRoster(rosterFile)
         if roster_status == "VALID":
             print("READING CUSTOM")
             roster = open(rosterFile, "r")
         else:
             return roster_status
+    else:
+        return "Please provide an initial roster"
 
     student_list = list()
     for line in roster:
