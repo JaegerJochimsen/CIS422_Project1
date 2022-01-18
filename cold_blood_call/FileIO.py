@@ -162,7 +162,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
             return (roster_status, True)
     # no roster is provided return a message that prompts the user to input a file
     else:
-        return "Please provide an initial roster"
+        return ("Please provide an initial roster", True)
 
     # initialize a list that will hold each student
     student_list = list()

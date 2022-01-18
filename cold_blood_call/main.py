@@ -37,7 +37,7 @@ def main():
             exitProgram = 1
             break
 
-        rosterStringList = readRoster(newRosterFile)            # Check and try to read the new given roster file path
+        (rosterStringList, isInitialBoot) = readRoster(newRosterFile)            # Check and try to read the new given roster file path
 
         trial += 1
 
@@ -46,7 +46,7 @@ def main():
         return
 
     ourClassroom = Classroom(rosterStringList, 4)
-    ourGUI.insertDeck(ourClassroom.getDeck(), ourClassroom.moveToPost, rosterStringList)                # call Classroom module to create students on-deck/predeck/postdeck with roster
+    ourGUI.insertDeck(ourClassroom.getDeck(), ourClassroom.moveToPost, rosterStringList, isInitialBoot)                # call Classroom module to create students on-deck/predeck/postdeck with roster
 
     save = ourClassroom.mergeDecksToList()  # save the current student info on the post-deck/pre-deck/on-deck
     writeToSavedBootRoster(save)            # Write the Saved/Boot roster file
