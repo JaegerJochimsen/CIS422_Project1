@@ -23,6 +23,8 @@ def _checkIfFileDir()->bool:
     return False
 
 def _checkValidRoster(rosterFile:str)->str:
+    if rosterFile not in listdir():
+        return f"File: {rosterFile} does not exist"
     open_roster = open(rosterFile, "r")
     roster_list = list()
     for line in open_roster:
