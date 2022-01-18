@@ -14,6 +14,7 @@ Modifications:
        1/11/22      MY      Initial class creation and method dev
        1/13/22      JJ      Integration with Student.py functionality
        1/15/22      JJ      Privatization of members and methods, documentation
+       1/17/22      JJ      Documentation
 """
 
 # used for random integer generation in createDeck() and moveToDeck()
@@ -114,20 +115,38 @@ class Classroom():
 
     def __init__(self, roster, deckSize:int = 4):
         """
-        Param:
-            roster: list of list of str where each list contains a single Student object's information (to be passed to constructor)
-            deckSize: the number of Student objects On-Deck at any given point, this defualts to 4 as per the SRS
+        Parameter:
+            roster:     list of list of str where each list contains
+                        a single Student object's information (to be 
+                        passed to constructor)
+            deckSize:   the number of Student objects On-Deck at any 
+                        given point, this defualts to 4 as per the SRS
 
-        Called By:
+        Called By: 
             main.py     -   called when Classroom is initialized
-        Takes in:
-        roster: a list of lists of string that represent attributes of a student
-        for the class roster
-        deckSize: integer, to decide the size of deck.
 
-        Initializes an empty postDeck, and calls the createDeck() method from
-        itself to create the deck. The remaining students stay in preDeck."""
+        Calls: 
+            _buildRoster()
+            _buildPrePostDeck()
+            _createDeck()
 
+        Modifies: N/A
+
+        Return:
+            Instance of Classroom object
+
+        Description: 
+            - Builds the initial roster of Student objects from the
+              list of list of strings containing student information
+            - Builds the initial preDeck and postDeck from the roster
+                -> students who spoke at the end of last class are
+                   placed in the postDeck
+                -> students who were in the deck (i.e. "On-Deck") or
+                   in the preDeck last class are loaded back into
+                   preDeck
+            - Loads deck with the appropriate number of Student
+              objects (defined by deckSize member)
+        """
         # build the roster of Student objects from list of
         self.roster = self._buildRoster(roster)
 
@@ -142,102 +161,251 @@ class Classroom():
 
 
     def _buildRoster(self, studentList):
+        """ 
+        Parameter: 
+            studentList     -   A list of list of str where each inner list
+                                contains the info for a single student 
+                                object
+
+        Called By: 
+            __init__()
+
+        Calls: 
+            Student.py   -   Student.__init__()
+
+        Modifies/Side Effects: N/A
+
+        Return: A new list of Student objects 
+
+        Description: 
+            Create a list of Student objects from the passed in roster 
+        """
+        # init new list
         roster = list()
+
+        # for each list containing student info
         for student in studentList:
+
+            # init the spoken field to False
             spoken = False
+
+            # if the student's info has spoken explicitly set to 
+            # "True" then set it to the boolean True
             if student[6] == "True": spoken = True
 
+            # add a new Student object containing this student's info 
+            # to the output roster
             roster.append(Student(student[0], student[1], student[2],
                 student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
 
+        # reutrn the roster of Student objects
         return roster
 
     def _buildPrePostDeck(self, roster):
-        preDeck = []
-        postDeck = []
+        """ 
+        Parameter: 
+            roster  -   a list of Student objects
+
+        Called By:
+            __init__()
+
+        Calls:
+            Student.py  -   Student.getSpoken()
+
+        Modifies/Side Effects: N/A
+
+        Return: A tuple of two lists of Student objects 
+
+        Description:
+            Sort the input roster into two lists:
+                1)  preDeck, which contains only Student objects with 
+                    their spoken field set to False
+                2)  postDeck, which contains only Student objects with
+                    their spoken field set to True
+        """
+        # initialize the two lists
+        preDeck = list()
+        postDeck = list()
+
+        # for each Student object in the list <roster>
         for student in roster:
-            # new student without spoken field
-            # set spoken field, default is to set it to False (in the case of the initial roster)
+
+            # if the student has spoken, add them to the postDeck
             if student.getSpoken():
                 postDeck.append(student)
             else:
+                # if the student has not spoken, add them to the preDeck
                 preDeck.append(student)
 
+        # return both lists as a tuple
         return preDeck, postDeck
 
 
 
     def _createDeck(self):
-        """Uses random library to choose random students from preDeck and
-        creates a temporary list for the deck.
+        """ 
+        Parameter: N/A
 
-        Returns: list[Student], deck that will
-        be initialized as the self.deck"""
+        Called By:
+            __init__()
 
-        gonnaBeDeck = []
+        Calls:
+            random  -   randint()
+
+        Modifies/Side Effects: self.preDeck
+
+        Return: list of Student objects of length deckSize
+
+        Description:
+            Add deckSize number of randomly selected Student objects
+            from self.preDeck to the list which will be used to fill
+            self.deck. Remove those Student objects from self.preDeck.
+        """
+        # init temp deck
+        tempDeck = list()
+
+        # add self.deckSize number of students
         for i in range(self.deckSize):
-            chosen = randint(0,len(self.preDeck)-1)
-        #    student = self.preDeck.pop(chosen)
-        #   gonnaBeDeck.append(student)
-            gonnaBeDeck.append(self.preDeck[chosen])
-            self.preDeck.remove(self.preDeck[chosen])
-        # print("Deck Created")
-        #print(gonnaBeDeck, self.preDeck)
-        return gonnaBeDeck
+
+            # generate the random index into self.preDeck
+            index = randint(0,len(self.preDeck)-1)
+
+            # add the random Student to the temporary deck
+            tempDeck.append(self.preDeck[index])
+
+            # remove that random Student from self.preDeck
+            self.preDeck.remove(self.preDeck[index])
+
+        # return the temp deck
+        return tempDeck
 
 
     def moveToDeck(self):
-        """Called by: moveToPost() from the same class
+        """ 
+        Parameter: N/A
 
-        Uses random to choose a student from preDeck and moves it to deck.
-        If the preDeck is empty, calls the refresh method from the class to
-        re-occupy it."""
+        Called By: 
+            Classroom.py    -   moveToPost()
 
+        Calls:
+            random  -   randint()
+            Classroom.py    -   refresh()
+
+        Modifies:
+           self.deck
+           self.preDeck
+
+        Return: None
+
+        Description:
+            Add a random Student from the self.preDeck list to the
+            self.deck; if self.preDeck is empty then it refills it
+            via the refresh() call.
+        """
+        # check if self.preDeck is empty, if it is call refresh() to
+        # refill it
         if (len(self.preDeck) == 0):
             self.refresh()
-        nextIndex = randint(0,len(self.preDeck)-1)
 
-        self.deck.append(self.preDeck[nextIndex])
-        self.preDeck.remove(self.preDeck[nextIndex])
-        #item = self.preDeck.pop(nextIndex)
-        #self.deck.append(item)
+        # get index of random Student in preDeck
+        index = randint(0,len(self.preDeck)-1)
+
+        # add the random Student to the deck
+        self.deck.append(self.preDeck[index])
+
+        # remove the random Student from the preDeck
+        self.preDeck.remove(self.preDeck[index])
+
         return None
 
 
-    def moveToPost(self,index,flag=False):
-        """Takes in:
-        index: integer, to know which student is chosen and will be moved to
-        postDeck
-        flag: boolean, will be true if the instructor set the flag.
+    def moveToPost(self, index:int, flag:bool=False):
+        """ 
+        Parameter: 
+            index   -   index of student to be moved from self.deck
+                        self.postDeck.
+            flag    -   a bool for whether the Student was flagged or
+                        not.
+        Called By:
+            InstructorInterface.py  -   UpArrowKey()            
+            InstructorInterface.py  -   DownArrowKey()            
 
-        Called by: InstructorInterface, to communicate user choice and request
-        new deck data.
+        Calls: 
+            Student.py  -   setSpoken()
+            Student.py  -   incrementContributions()
+            Student.py  -   setFlag()
+            Classroom.py    -   moveToDeck()
 
-        Moves the student from deck to postDeck, and calls the moveToDeck() from
-        the class to fill the spot
+        Modifies:
+            Classroom.py    -   self.deck
+            Classroom.py    -   self.postDeck
 
-        Returns: list[Student], which will be used by InstructorInterface"""
+        Return: self.deck (post modification)
 
+        Description:
+            Remove Student at index from self.deck and to self.postDeck, 
+            set that Student's spoken, current_contributions and flag
+            fields, then add a new Student to the self.deck via
+            self.moveToDeck().
+        """
 
-        self.deck[index].setSpoken(True)    # student has spoken, set that field
+        # Student speaks in order to be removed from the deck so set
+        # spoken field to True
+        self.deck[index].setSpoken(True)
+
+        # Student has spoken so increment contributions field
         self.deck[index].incrementContributions()
+
+        # set flag field to appropriate status
         self.deck[index].setFlag(flag)
+
+        # add Student to the self.postDeck
         self.postDeck.append(self.deck[index])
-        #self.deck.pop(index)
+
+        # remove the Student from the self.deck
         self.deck.remove(self.deck[index])
+
+        # move a new Student to the deck
         self.moveToDeck()
 
-        #print("Modified")
-        #print(self.deck,self.preDeck,self.postDeck)
+        # return the updated self.deck
         return self.deck
 
 
     def getDeck(self):
-        """Returns the current deck: list[Student]."""
+        """ 
+        Parameter: N/A
+        Called By:
+            Main.py     -   called in instantiation of
+                            InstructorInterface object to give
+                            initial state of deck.
+        Calls: N/A
+        Modifes: N/A
+        Return: self.deck (list of Student)
+        Description: 
+            Allos quick access to current state of the deck
+        """
         return self.deck
 
 
     def refresh(self):
+        """ 
+        Parameter: N/A
+
+        Called By:
+            Classroom.py    -   moveToDeck()
+        
+        Calls:
+            Student.py  -   setSpoken()
+
+        Modifies:
+            self.preDeck
+            self.postDeck
+            Student object
+
+        Return: None
+        Description:
+        """
         """Called by: moveToDeck from the same class
 
         When a student is needed from preDeck but it is empty, this function is
