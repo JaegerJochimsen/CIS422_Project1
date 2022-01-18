@@ -95,17 +95,21 @@ Methods:
 """
 import tkinter as tk
 from tkinter import *
+from tkinter import filedialog
 
 class InstructorInterface():
     def __init__(self, deck, moveToPost):
+
+        # The main GUI window object 
         self.win = tk.Tk()
+
         # All text starts as white by default
         self.text_colors = ["white", "white", "white", "white"]
         self.deck = deck
         self.moveToPost = moveToPost
+
         # Leftmost value is True (highlighted) by default
         self.highlight_list = [True, False, False, False]
-
         self.highlight_counter = 0
 
         # Key listeners as part of the Tkinter library, waits for key press
@@ -128,21 +132,15 @@ class InstructorInterface():
         # Sets the self.window size to these dimensions
         self.win.geometry(dimensions)
 
-        # Instantiate name variables to read in from the "deck" data structure
-        self.name1 = "Thomas Python"
-        self.name2 = "Johnny Hammersticks"
-        self.name3 = "Susan Walkway"
-        self.name4 = "Theodore Crumpet"
-
         # Canvas object
         self.canvas = Canvas(self.win, width = self.win_w, height = self.win_h, bg = "black")
 
         """
-            Create 4 widgets, one for each displayed name.
+        Create 4 widgets, one for each displayed name.
 
-            This process, creating 4 widgets must be done once initially, here,
-            and then once for every keypress to display the updated text
-            (done in the arrow key functions)
+        This process, creating 4 widgets must be done once initially, here,
+        and then once for every keypress to display the updated text
+        (done in the arrow key functions)
         """
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
@@ -156,8 +154,8 @@ class InstructorInterface():
 
 
     """
-        Deletes all old text objects and replaces them with updated ones based on the
-        text_colors list.
+    Deletes all old text objects and replaces them with updated ones based on the
+    text_colors list. This is called after every key press event to reflect which name should be highlighted.
     """
     def displayText(self):
         self.canvas.delete("all")
@@ -168,10 +166,9 @@ class InstructorInterface():
 
     """
     Increases highlight_counter with a bound that prevents it from
-    increasing past 3.
+    increasing past 3, the rightmost name on our Deck.
     """
     def increaseCounter(self):
-        #global highlight_counter
         if ((self.highlight_counter +1) > 3):
             self.highlight_counter = 3
         else:
@@ -179,10 +176,9 @@ class InstructorInterface():
 
     """
     Decreases highlight_counter with a bound that prevents it from
-    decreasing past zero.
+    decreasing past zero, the leftmost name on our Deck.
     """
     def decreaseCounter(self):
-        #global highlight_counter
         if((self.highlight_counter -1) < 0):
             self.highlight_counter = 0
         else:
@@ -190,73 +186,97 @@ class InstructorInterface():
 
 
     """
-    Increases highlight_counter with a bound that prevents it from
-    going past the decksize.
+    Upon a <Left> Arrow Key press, updates highlight_counter and the corresponding data 
+    structures to represent highligting the name to the left of the current highlighted name.
     """
     def leftArrowKey(self, event):
-        #global highlight_counter
         # Set the boolean list to reflect which index
         # in the list we want to be highlighted
         self.decreaseCounter()
         self.highlight_list[self.highlight_counter+1] = False
         self.highlight_list[self.highlight_counter] = True
 
+        # Update the text_colors list to reflect which name on Deck
+        # should be red/highlighted
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
             else:
                 self.text_colors[i] = "white"
 
+        # After updating the data structures, call the function
+        # that will display the text accordingly
         self.displayText()
 
     """
-        Current index starts at 0, the furthest left displayed name.
-        Right arrow key press should highlight a name to the right of the current index.
-        Appropriately, modify the highlight_list to be false at the current index, and
-        True one index to the right.
-
-        Also set the text_colors list in the same manner.
-
-        Finally, create text objects to display the desired behavior:
-        the initial index going from red to white, and the index to the right
-        going from white to red
-
+    Upon a <Right> Arrow Key press, updates highlight_counter and the corresponding data 
+    structures to represent highligting the name to the left of the current highlighted name.
     """
     def rightArrowKey(self, event):
-        #global highlight_counter
+        # Set the boolean list to reflect which index
+        # in the list we want to be highlighted
         self.increaseCounter()
-
         self.highlight_list[self.highlight_counter-1] = False
         self.highlight_list[self.highlight_counter] = True
 
+        # Update the text_colors list to reflect which name on Deck
+        # should be red/highlighted
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
             else:
                 self.text_colors[i] = "white"
 
+        # After updating the data structures, call the function
+        # that will display the text accordingly
         self.displayText()
 
 
+    """
+    Removes the currently highlighted student from the Deck 
+    """
     def UpArrowKey(self, event):
-
+        # Moves the highlighted student to the post-deck,
+        # which moves them off the Deck.
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
                 self.moveToPost(i,True)
                 break
+        # Displays the text after modifying relevant data structures
+        # (the removed student will no longer be shown on the Deck.
         self.displayText()
 
+    """
+    Removes the currently highlighted student from the Deck,
+    and "flags" them (reflected in the output log file)
+    for user purposes.
+    """
     def DownArrowKey(self, event):
-        #global highlight_counter
-
+        # Moves the highlighted student to the post-Deck,
+        # which moves them off the Deck.
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
                 self.moveToPost(i)
                 break
+        # Displays the text after modifying relevant data structures
+        # (the removed student will no longer be shown on the Deck.
         self.displayText()
 
-    # Let it rip
+    """
+    Start the GUI itself (nothing is displayed without mainloop()), 
+    and set window properties.
+    The win.lift() function ensures our window is always displayed
+    above other application GUIs on the user screen.
+    """
     def startGUI(self):
         self.win.wm_attributes("-topmost", "true")
         self.win.lift()
         self.win.mainloop()
+
+    """
+    Opens a file explorer to input a roster of students if one
+    has not been supplied yet by the user.
+    """
+    def getRosterFileInput(self):
+        rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")
+        return rosterFile
