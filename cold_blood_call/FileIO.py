@@ -3,8 +3,10 @@ File: FileIO.py
 Description: Contains functions that allows the system to interace with files
     in order to save/maintain/read data. (Also contains test for this module)
 Dependencies: None
-Author(s): Nick Johnstone 1/12/22, 1/13/2022
-Credit:
+Author(s): Nick Johnstone
+Dates: 1/12/2022, 1/13/2022, 1/14/2022, 1/15/2022, 1/16/2022, 1/17/2022
+       1/18/2022
+Credit: N/A
 """
 import sys
 from os import listdir, getcwd, mkdir
@@ -13,7 +15,7 @@ from operator import itemgetter
 from re import search
 
 
-# Delimiter represents how each field of the files are separated
+# Delimiter represents how each field in the files are separated
 DELIMITER = '\t'
 
 
@@ -29,7 +31,7 @@ def _checkValidRoster(rosterFile:str)->str:
         re  -   search()
 
     Modifies:
-        Opens rosterFile
+        N/A
 
     Return:
         string that is either VALID or an error message
@@ -75,7 +77,7 @@ def _checkValidRoster(rosterFile:str)->str:
     return "VALID"
 
 
-def readRoster(rosterFile:str="initial_roster.txt")->list or str:
+def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
     """This function will return a list of lists
     or if a roster is unable to be found it returns False
     """
@@ -116,7 +118,8 @@ def readRoster(rosterFile:str="initial_roster.txt")->list or str:
             student.append("0") # previous flags initially 0 (first class)
 
     roster.close()
-    return student_list
+    sorted_student_list = sorted(student_list, key=itemgetter(1))
+    return (sorted_student_list, initial)
 
 
 
