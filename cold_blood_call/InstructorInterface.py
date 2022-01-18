@@ -339,7 +339,7 @@ class InstructorInterface():
     out of the deck. Refreshes the GUI window with the provided deck names with
     self._displayText(). And starts the GUI functionality with self._startGUI()
     """
-    def insertDeck(self, deck, moveToPost, roster):
+    def insertDeck(self, deck, moveToPost, roster, isInitialBoot=False):
         self.deck = deck
         self.moveToPost = moveToPost
         self.roster = roster
