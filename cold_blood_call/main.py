@@ -29,8 +29,8 @@ def main():
 
     exitProgram = 0
     trial = 0
-    while not isinstance(rosterStringList,list):                # if rosterStringList is a string and not a list, it is an error
-        newRosterFile = ourGUI.getRosterFileInput()             # asking the user for a roster file path
+    while not isinstance(rosterStringList,list):                      # if rosterStringList is a string and not a list, it is an error
+        newRosterFile = ourGUI.getRosterFileInput(rosterStringList)   # asking the user for a roster file path
 
         if newRosterFile == "" or trial > 2:                    # if the path given is empty or the user tried 3 times, exit program
             ourGUI.kill()

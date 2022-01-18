@@ -165,7 +165,6 @@ class InstructorInterface():
                 self.text_colors[i] = "red"
 
         if not isinstance(self.deck,list):
-            print(self.deck)
             self.canvas.create_text(5,15, text=self.deck, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
         else:
@@ -301,7 +300,10 @@ class InstructorInterface():
     Opens a file explorer to input a roster of students if one
     has not been supplied yet by the user.
     """
-    def getRosterFileInput(self):
+    def getRosterFileInput(self, errorMessage):
+        self.canvas.delete("all")
+        self.canvas.create_text(5,15, text=errorMessage, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
+        self.canvas.pack(fill=BOTH, expand=True)
         rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")
         return rosterFile
 
