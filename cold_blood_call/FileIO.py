@@ -77,7 +77,7 @@ def _checkValidRoster(rosterFile:str)->str:
     return "VALID"
 
 
-def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
+def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool):
     """
     Parameter:
         rosterFile  -   a string that represents a file name of a roster
@@ -97,7 +97,9 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
             2. boolean that is True if it is the initial bootup, False on
             subsequent bootups
         OR
-        string that is an error message if an invalid roster was provided
+        tuple with 2 elements:
+            1. string that is an error message if an invalid roster was provided
+            2. True value because it has to be initial if the roster is invalid
 
     Description:
         This functions reads a roster file in and splits up each student into a
@@ -144,7 +146,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
             roster = open("initial_roster.txt", "r")
         # if the initial roster is not in a valid format return error message
         else:
-            return roster_status
+            return (roster_status, True)
 
     # if a roster with an alternate name is being used
     elif rosterFile != "initial_roster.txt":
@@ -157,10 +159,10 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
             roster = open(rosterFile, "r")
         # if the initial roster is not in a valid format return error message
         else:
-            return roster_status
+            return (roster_status, True)
     # no roster is provided return a message that prompts the user to input a file
     else:
-        return "Please provide an initial roster"
+        return ("Please provide an initial roster", True)
 
     # initialize a list that will hold each student
     student_list = list()
@@ -194,32 +196,79 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
 
 def writeToSavedBootRoster(students:list)->None:
     """
-    This function will take an argument in the form of a list of lists where
-    the internal list will be a student and the elements will be each attribute
-    from the student object
+    Parameter:
+        students  -   a list of lists where each of the internal lists contain
+                      data entries for the student (this argument is the return
+                      value of toStrList() from Student.py)
 
-    This function will always produce a file in the following format:
-    <first_name><tab><last_name><tab><UO_ID><tab><email><tab><phonetic><tab>
-    <reveal_code><tab><spoken_this_session(True/False)><tab>
-    <previous_contributions(including current session)><tab>
-    <flagged_count(including current session)><\n>
+    Called by:
+        Main.py - main()
+
+    Calls:
+        N/A
+
+    Modifies:
+        N/A
+
+    Return:
+        None
+        (Produces a file, see desciption for details)
+
+    Description:
+        This function takes the list of lists produced by toStrList in Student.py
+        and creates a file called ".saved_boot_roster.txt" that stores that data
+        in the following format:
+
+        <first_name><tab><last_name><tab><UO_ID><tab><email><tab><phonetic><tab>
+        <reveal_code><tab><spoken_recently(True/False)><tab>
+        <previous_contributions(including current session)><tab>
+        <flagged_count(including current session)><\n>
+
+        This file will then be used in subsequent bootups to insure continuity
+        between class sessions. The file will also be hidden from the user as
+        it should not be modified, except by the system.
+
     """
+
+    # create the .saved_boot_roster.txt file
     new_roster = open(".saved_boot.txt", "w")
+
+    # parse through the student list and write to each attribute to the file
     for student in students:
-        new_roster.write(f"{student[0]}{DELIMITER}") # first name
-        new_roster.write(f"{student[1]}{DELIMITER}") # last name
-        new_roster.write(f"{student[2]}{DELIMITER}") # UO ID
-        new_roster.write(f"{student[3]}{DELIMITER}") # email
-        new_roster.write(f"{student[4]}{DELIMITER}") # phonetic
-        new_roster.write(f"{student[5]}{DELIMITER}") # reveal code
-        new_roster.write(f"{student[6]}{DELIMITER}") # spoken (True/False)
+        # write first name
+        new_roster.write(f"{student[0]}{DELIMITER}")
+
+        # write last name
+        new_roster.write(f"{student[1]}{DELIMITER}")
+
+        # write UO ID
+        new_roster.write(f"{student[2]}{DELIMITER}")
+
+        # write email
+        new_roster.write(f"{student[3]}{DELIMITER}")
+
+        # write phonetic
+        new_roster.write(f"{student[4]}{DELIMITER}")
+
+        # write reveal code
+        new_roster.write(f"{student[5]}{DELIMITER}")
+
+        # write spoken recently (True/False)
+        new_roster.write(f"{student[6]}{DELIMITER}")
+
+        # calculate new previous contributions current + previous
         previous_contributions = str((int(student[9]) + int(student[8])))
-        new_roster.write(f"{previous_contributions}{DELIMITER}") # previous contributions = previous_contributions + contributions
-        if student[7] == "True": # check if the student was flagged this session
-            new_roster.write(f"{str(int(student[10]) + 1)}\n") # increment the flagged count
+        # write new previous_contributions
+        new_roster.write(f"{previous_contributions}{DELIMITER}")
+
+        # check if the student was flagged this session
+        if student[7] == "True":
+            # if they were flagged, increment the flag count tally
+            new_roster.write(f"{str(int(student[10]) + 1)}\n")
         else:
-            new_roster.write(f"{student[10]}\n") # not flagged, no increment
-        #new_roster.write("\n")
+            # if the student was not flagged, no increment
+            new_roster.write(f"{student[10]}\n")
+
     new_roster.close()
 
 
