@@ -23,18 +23,33 @@ def main():
     # readRoster() failed then return False
     rosterStringList = readRoster()
 
-    # rosterStringList = "tits"
+    # rosterStringList = "This is an error please choose a roster file"
 
-    while not isinstance(rosterStringList,list):                            # if rosterStringList is false, trying get roster from File Input
-        rosterFileInputGUI = InstructorInterface(rosterStringList, None)    # setting the input roster into GUI module
-        newRosterFile = rosterFileInputGUI.getRosterFileInput()             # getting the updated roster from GUI module
-        rosterStringList = readRoster(newRosterFile)                        # renewing the roster in system
-        # turn off the file input part
-        rosterFileInputGUI.kill()
+    ourGUI = InstructorInterface(rosterStringList, None)    # setting the input roster into GUI module
 
-    ourClassroom = Classroom(rosterStringList, 4)                                   # call Classroom module to create students on-deck/predeck/postdeck with roster
-    ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)   # setting GUI with current roster and method for move student to post deck
-    ourGUI.startGUI()                                                               # start the GUI module
+    exitProgram = 0
+    trial = 0
+    while not isinstance(rosterStringList,list):                # if rosterStringList is a string and not a list, it is an error
+        newRosterFile = ourGUI.getRosterFileInput()             # asking the user for a roster file path
+
+        if newRosterFile == "" or trial > 2:                    # if the path given is empty or the user tried 3 times, exit program
+            ourGUI.kill()
+            exitProgram = 1
+            break
+
+        rosterStringList = readRoster(newRosterFile)            # Check and try to read the new given roster file path
+
+        trial += 1
+
+
+    if exitProgram or trial > 2:                                #quit the program if no roster is given
+        return
+
+    ourClassroom = Classroom(rosterStringList, 4)
+    print(ourClassroom.getDeck())
+    ourGUI.insertDeck(ourClassroom.getDeck(), ourClassroom.moveToPost)                                         # call Classroom module to create students on-deck/predeck/postdeck with roster
+    # ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)   # setting GUI with current roster and method for move student to post deck
+    # ourGUI.startGUI()                                                                 # start the GUI module
 
     save = ourClassroom.mergeDecksToList()  # save the current student info on the post-deck/pre-deck/on-deck
     writeToSavedBootRoster(save)            # Write the Saved/Boot roster file

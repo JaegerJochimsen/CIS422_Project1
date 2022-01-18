@@ -159,15 +159,21 @@ class InstructorInterface():
         and then once for every keypress to display the updated text
         (done in the arrow key functions)
         """
+
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
 
-        self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.pack(fill=BOTH, expand=True)
+        if not isinstance(self.deck,list):
+            print(self.deck)
+            self.canvas.create_text(5,15, text=self.deck, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
+            self.canvas.pack(fill=BOTH, expand=True)
+        else:
+            self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.pack(fill=BOTH, expand=True)
 
 
     """
@@ -261,6 +267,7 @@ class InstructorInterface():
                 break
         # Displays the text after modifying relevant data structures
         # (the removed student will no longer be shown on the Deck.
+        # print("yeah")
         self.displayText()
 
     """
@@ -297,3 +304,13 @@ class InstructorInterface():
     def getRosterFileInput(self):
         rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")
         return rosterFile
+
+    def insertDeck(self,deck, moveToPost):
+        self.deck = deck
+        self.moveToPost = moveToPost
+        self.displayText()
+        print("got the deck iNPU")
+        self.startGUI()
+
+    def kill(self):
+        self.win.destroy()
