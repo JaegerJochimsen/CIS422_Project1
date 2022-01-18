@@ -17,26 +17,13 @@ from re import search
 DELIMITER = '\t'
 
 
-def _checkInitialBootStatus()->bool:
-    if ".saved_boot.txt" in listdir():
-        return False
-    return True
-
-def _checkIfAnyRoster()->bool:
-    if ".saved_boot.txt" in listdir():
-        return True
-    elif "initial_roster.txt" in listdir():
-        return True
-    else:
-        return False
-
 def _checkIfFileDir()->bool:
     if "MetaData" in listdir():
         return True
     return False
 
-def _checkValidRoster(roster:str)->bool:
-    open_roster = open(roster, "r")
+def _checkValidRoster(rosterFile:str)->str:
+    open_roster = open(rosterFile, "r")
     roster_list = list()
     for line in open_roster:
         roster_list.append(line.strip().split(f"{DELIMITER}"))
@@ -46,35 +33,46 @@ def _checkValidRoster(roster:str)->bool:
     for i, student in enumerate(roster_list):
         # length of fields check
         if (len(student) != 4) and (len(student) != 6):
-            print(f"Invalid number of fields for student on line: {i+1}")
+            return (f"Invalid number of fields for student on line: {i+1}")
             return False
         # regex check for UO ID
         if search("[0-9]{9}", student[2]) == None:
-            print(f"Invalid student ID number on line: {i+1}")
-            return False
+            return (f"Invalid student ID number on line: {i+1}")
+            #return False
 
         # regex check for email
         if search("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", student[3]) == None:
-            print(f"Invalid email on line: {i+1}")
-            return False
+            return (f"Invalid email on line: {i+1}")
+            #return False
 
     # return True if all fields for all students are valid
-    return True
+    open_roster.close()
+    return "VALID"
 
-def readRoster(rosterFile="initial_roster.txt")->list or bool:
+def readRoster(rosterFile="initial_roster.txt")->list or str:
     """This function will return a list of lists
     or if a roster is unable to be found it returns False
     """
 
-    if not _checkIfAnyRoster(): # check if any default roster exists
-        return False
-
-    initial = _checkInitialBootStatus()
-    if initial:
-        roster = open(rosterFile, "r")
-    else:
+    initial = True
+    if ".saved_boot.txt" in listdir():
         roster = open(".saved_boot.txt", "r")
-        #print("READING SAVED BOOT")
+        initial = False
+        print("READING SAVED BOOT")
+    elif "initial_roster.txt" in listdir():
+        roster_status = _checkValidRoster("initial_roster.txt")
+        if roster_status == "VALID":
+            print("READING DEFAULT")
+            roster = open("initial_roster.txt", "r")
+        else:
+            return roster_status
+    else:
+        roster_status = _checkValidRoster(rosterFile)
+        if roster_status == "VALID":
+            print("READING CUSTOM")
+            roster = open(rosterFile, "r")
+        else:
+            return roster_status
 
     student_list = list()
     for line in roster:
@@ -320,5 +318,9 @@ def _testCheckValidRoster():
 if __name__ == "__main__":
     """Testing"""
     if not __debug__:
-        _testCheckValidRoster()
+        _testReadRoster()
+        #_testWriteToSavedBootRoster()
+        #_testWriteToLogFiles()
+        #_testUpdatePerformanceFile
+        #_testCheckValidRoster()
 
