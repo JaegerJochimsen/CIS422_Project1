@@ -1,3 +1,9 @@
+Author: Jaeger J. 1/18/22 
+Credit:
+    https://www.youtube.com/watch?v=bV8nB5jEid4     -   Adding icons + testing on other OS
+    https://stackoverflow.com/questions/29291113/pyinstaller-setting-icons-dont-change  -   icon fixing
+    https://pyinstaller.readthedocs.io/en/stable/usage.html     -   flag specifications
+
 #1) Install pyinstaller
     pip install pyinstaller
         or
