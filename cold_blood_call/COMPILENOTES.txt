@@ -6,3 +6,23 @@
 #2) cd to cold_blood_call directory
 #3) run:
         pyinstaller --onefile -w --icon=path/to/icon --distpath /path/to/exe/we/want main.py
+
+
+Note:
+    - Kai must do this on his mac (it is not an M1)
+    - We should reorder our dirs
+
+    CCS/
+
+        Code/
+            all .py files
+
+        Metadata/
+            all log files
+            all boot files
+        
+        Performance.txt
+        init_roster.txt
+        CCS.app 
+        
+        
