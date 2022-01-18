@@ -78,46 +78,115 @@ def _checkValidRoster(rosterFile:str)->str:
 
 
 def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or str:
-    """This function will return a list of lists
-    or if a roster is unable to be found it returns False
+    """
+    Parameter:
+        rosterFile  -   a string that represents a file name of a roster
+
+    Called by:
+        Main.py - main()
+
+    Calls:
+        FileIO.py  -   _testCheckValidRoster()
+
+    Modifies:
+        N/A
+
+    Return:
+        tuple with 2 elements:
+            1. list of lists where each internal list holds data for a student
+            2. boolean that is True if it is the initial bootup, False on
+            subsequent bootups
+        OR
+        string that is an error message if an invalid roster was provided
+
+    Description:
+        This functions reads a roster file in and splits up each student into a
+        list where each element of the list is a data field associated with that
+        student.
+        The data fields are as follows:
+            1. First Name
+            2. Last Name
+            3. ID Number
+            4. Email
+            5. Phonetic (optional)
+            5. Reveal Code (optional)
+            for internal system use:
+            6. Spoken Boolean (str(True) if spoken before all others have spoken)
+            7. Previous Contributions (a tally of how many times the student spoke)
+            8. Previous Flags (a tally of the previous flags the student has)
+        Each of these lists is returned in a main list that is passed to main.py
+        to be converted to Student Objects.
+
+        Alternatively, an error message in the form of a string can be returned
+        when the roster is invalid. This message will be eventually displayed on
+        the users screen.
     """
 
+    # variable to represent if it is the first bootup of the system
     initial = True
+
+    # check if the system datafile exists
     if ".saved_boot.txt" in listdir():
+        # assign the roster to the system's store data file
         roster = open(".saved_boot.txt", "r")
+        # not the first bootup
         initial = False
         print("READING SAVED BOOT")
+
+    # check if the defualt name for the initial roster exists
     elif "initial_roster.txt" in listdir():
+        # roster_status stores the validity of the initial roster
         roster_status = _checkValidRoster("initial_roster.txt")
+        # if the initial roster is valid
         if roster_status == "VALID":
             print("READING DEFAULT")
+            # roster now contains the initial roster
             roster = open("initial_roster.txt", "r")
+        # if the initial roster is not in a valid format return error message
         else:
             return roster_status
+
+    # if a roster with an alternate name is being used
     elif rosterFile != "initial_roster.txt":
+        # roster_status stores the validity of the initial roster
         roster_status = _checkValidRoster(rosterFile)
+        # if the initial roster is valid
         if roster_status == "VALID":
             print("READING CUSTOM")
+            # roster now contains the initial roster with a custom name
             roster = open(rosterFile, "r")
+        # if the initial roster is not in a valid format return error message
         else:
             return roster_status
+    # no roster is provided return a message that prompts the user to input a file
     else:
         return "Please provide an initial roster"
 
+    # initialize a list that will hold each student
     student_list = list()
+    # parse through each line in the roster file
     for line in roster:
+        # add a list split on the delimiter that holds data for the given student
         student_list.append(line.strip().split(f'{DELIMITER}'))
 
+    # if this is the initial bootup the system will add additional fields
     if initial:
+        # parse through each student
         for student in student_list:
+            # is roster with no phonetic or reveal_code, add none values to fields
             if len(student) == 4: # if no phonetic and no reveal code
                 student.append("None") # no phonetic
                 student.append("None") # no reveal code
-            student.append("False") # spoken initially False (first class)
-            student.append("0") # previous contributions initially 0 (first class)
-            student.append("0") # previous flags initially 0 (first class)
+            # add initial values for each student in the following fields:
+            # spoken initially False (first session)
+            student.append("False")
+            # previous contributions initially 0 (first session)
+            student.append("0")
+            # previous flags initially 0 (first session)
+            student.append("0")
 
     roster.close()
+    # return the list sorted by last name
     sorted_student_list = sorted(student_list, key=itemgetter(1))
     return (sorted_student_list, initial)
 

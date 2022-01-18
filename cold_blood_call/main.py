@@ -21,7 +21,7 @@ from FileIO import *
 def main():
     # loading Saved/Boot Roster, return a list of lists
     # readRoster() failed then return False
-    rosterStringList = readRoster()
+    (rosterStringList, isInitialBoot) = readRoster()
 
     # rosterStringList = "This is an error please choose a roster file"
 
