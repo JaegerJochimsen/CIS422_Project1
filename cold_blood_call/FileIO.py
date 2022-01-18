@@ -8,11 +8,13 @@ Credit:
 """
 import sys
 from os import listdir, getcwd, mkdir
-from datetime import date
+from datetime import date, datetime
 from operator import itemgetter
 from re import search
 
-DELIMETER = '\t'
+
+# Delimiter represents how each field of the files are separated
+DELIMITER = '\t'
 
 
 def _checkInitialBootStatus()->bool:
@@ -37,7 +39,7 @@ def _checkValidRoster(roster:str)->bool:
     open_roster = open(roster, "r")
     roster_list = list()
     for line in open_roster:
-        roster_list.append(line.strip().split(f"{DELIMETER}"))
+        roster_list.append(line.strip().split(f"{DELIMITER}"))
 
     # this is where I will check that the length of each line is corrent
     # if not I will return false right away
@@ -76,7 +78,7 @@ def readRoster(rosterFile="initial_roster.txt")->list or bool:
 
     student_list = list()
     for line in roster:
-        student_list.append(line.strip().split(f'{DELIMETER}'))
+        student_list.append(line.strip().split(f'{DELIMITER}'))
 
     if initial:
         for student in student_list:
@@ -106,15 +108,15 @@ def writeToSavedBootRoster(students:list)->None:
     """
     new_roster = open(".saved_boot.txt", "w")
     for student in students:
-        new_roster.write(f"{student[0]}{DELIMETER}") # first name
-        new_roster.write(f"{student[1]}{DELIMETER}") # last name
-        new_roster.write(f"{student[2]}{DELIMETER}") # UO ID
-        new_roster.write(f"{student[3]}{DELIMETER}") # email
-        new_roster.write(f"{student[4]}{DELIMETER}") # phonetic
-        new_roster.write(f"{student[5]}{DELIMETER}") # reveal code
-        new_roster.write(f"{student[6]}{DELIMETER}") # spoken (True/False)
+        new_roster.write(f"{student[0]}{DELIMITER}") # first name
+        new_roster.write(f"{student[1]}{DELIMITER}") # last name
+        new_roster.write(f"{student[2]}{DELIMITER}") # UO ID
+        new_roster.write(f"{student[3]}{DELIMITER}") # email
+        new_roster.write(f"{student[4]}{DELIMITER}") # phonetic
+        new_roster.write(f"{student[5]}{DELIMITER}") # reveal code
+        new_roster.write(f"{student[6]}{DELIMITER}") # spoken (True/False)
         previous_contributions = str((int(student[9]) + int(student[8])))
-        new_roster.write(f"{previous_contributions}{DELIMETER}") # previous contributions = previous_contributions + contributions
+        new_roster.write(f"{previous_contributions}{DELIMITER}") # previous contributions = previous_contributions + contributions
         if student[7] == "True": # check if the student was flagged this session
             new_roster.write(f"{str(int(student[10]) + 1)}\n") # increment the flagged count
         else:
@@ -159,17 +161,17 @@ def writeToLogFile(students:list)->None:
         new_dir = cwd + "/MetaData"
         mkdir(new_dir)
 
-    log_name = "LogFile-" + str(date.today())
+    log_name = "LogFile-" + str(datetime.now())
     log_file = open(f"MetaData/{log_name}", "w")
     log_file.write(f"Log File for Cold Call Assist Program\n\
-            {str(date.today())}:\n\n")
+            {str(date.today()).replace('-', '/')}:\n\n")
 
     log_file.write("----------------------------------------------------\n")
 
     for student in students:
         if int(student[8]) > 0:
-            log_file.write(f"{_formatResponseCode(student[7])}{DELIMETER}")
-            log_file.write(f"{student[0]} {student[1]}{DELIMETER}")
+            log_file.write(f"{_formatResponseCode(student[7])}{DELIMITER}")
+            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
             log_file.write(f"{student[3]}\n")
 
     log_file.close()
@@ -202,7 +204,7 @@ def updatePerforanceFile(students:list):
             performance_file.write(f"{student[4]}\t") # add the email
             if int(student[8]) > 0:
                 performance_file.write(f"{student[5]}\t") # add the reveal code
-                performance_file.write(f"{str(date.today())}\n") # add the date
+                performance_file.write(f"{str(date.today()).replace('-', '/')}\n") # add the date
             else:
                 performance_file.write(f"{student[5]}\n") # add the reveal code
 
@@ -241,7 +243,7 @@ def updatePerforanceFile(students:list):
             prev_file_sorted[i][0] = str((int(student[9]) + int(student[8])))
             if student[7] == "True":
                 prev_file_sorted[i][1] = str(int(prev_file_sorted[i][1]) + 1)
-            prev_file_sorted[i].append(str(date.today()))
+            prev_file_sorted[i].append(str(date.today()).replace('-', '/'))
 
 
     #ready to write to file
@@ -272,6 +274,7 @@ def _testReadRoster():
 def _testWriteToSavedBootRoster():
     # writeToSavedBootRoster
     test_function_input = [
+            # FN       LN           UO ID           EMAIL         PONETIC  REVEAL_CODE       SPOKEN  FLAGGED CC   PC   PF
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
             ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
             ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
@@ -286,6 +289,7 @@ def _testWriteToSavedBootRoster():
 def _testWriteToLogFiles():
     # writeToLogFile tests
     test_function_input = [
+            # FN       LN           UO ID           EMAIL         PONETIC  REVEAL_CODE       SPOKEN  FLAGGED CC   PC   PF
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
             ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
             ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
@@ -299,6 +303,7 @@ def _testWriteToLogFiles():
 def _testUpdatePerformanceFile():
     # update performance file test
     test_function_input = [
+            # FN       LN           UO ID           EMAIL         PONETIC  REVEAL_CODE       SPOKEN  FLAGGED CC   PC   PF
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
             ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
             ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
