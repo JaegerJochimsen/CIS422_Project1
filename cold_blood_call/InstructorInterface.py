@@ -20,6 +20,8 @@ Members:
 
     self.deck           : list[Student] : deck(parameter)       -> a list of Student objects that show who are currently on deck
 
+    self.roster         : list[Student] : None                  -> a list of Student that will be shown on initial file load for review
+
     self.moveToPost     : method        : moveToPost(parameter) -> a method given to the class on initialization, used to modify deck upon user input
 
     self.highlight_list : list[bool]    : [True, False,         -> A list of bools showing which label is indexed on the GUI.
@@ -145,6 +147,7 @@ class InstructorInterface():
         # All text starts as white by default
         self.text_colors = ["white", "white", "white", "white"]
         self.deck = deck
+        self.roster = None
         self.moveToPost = moveToPost
 
         # Leftmost value is True (highlighted) by default
@@ -336,9 +339,10 @@ class InstructorInterface():
     out of the deck. Refreshes the GUI window with the provided deck names with
     self._displayText(). And starts the GUI functionality with self._startGUI()
     """
-    def insertDeck(self,deck, moveToPost):
+    def insertDeck(self, deck, moveToPost, roster):
         self.deck = deck
         self.moveToPost = moveToPost
+        self.roster = roster
         self._displayText()
         self._startGUI()
 
