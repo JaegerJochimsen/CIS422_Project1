@@ -1,11 +1,10 @@
 """
-    Created by Stephen Leveckis, 1/12/2022
+    Created by Stephen Leveckis, Mert Yapucuoglu 1/12/2022
     Creates self.window GUI for cold calling program
 
     Installs Requried:
         Tkinter: sudo apt-get install python3.6-tk
-"""
-"""
+
 Create and allow interaction with a GUI window using tkinter.
 
 Used By:
@@ -31,50 +30,50 @@ Methods:
 
     Private:                                                                     Return:
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.displayText(self)                                      |   ->  None
+    Declaration:    self._displayText(self)                                     |   ->  None
                                                                                 |
     Usage:          self.<direction>ArrowKey(self,event)                        |
                                                                                 |
     Description:    Delete all the name labels on the current window and        |
                     recreate them with the updated colors and names             |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.increaseCounter(self)                                  |   ->  None
+    Declaration:    self._increaseCounter(self)                                 |   ->  None
                                                                                 |
-    Usage:          self.leftArrowKey(self, event)                              |
+    Usage:          self._leftArrowKey(self, event)                             |
                                                                                 |
     Description:    Increases the highlight counter that indicates which name   |
                     is being currently selected                                 |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.decreaseCounter(self)                                  |   ->  None
+    Declaration:    self._decreaseCounter(self)                                 |   ->  None
                                                                                 |
-    Usage:          self.rightArrowKey(self, event)                             |
+    Usage:          self._rightArrowKey(self, event)                            |
                                                                                 |
     Description:    Decreases the highlight counter that indicates which name   |
                     is being currently selected                                 |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.leftArrowKey(self, event)                              |   ->  None
+    Declaration:    self._leftArrowKey(self, event)                             |   ->  None
                                                                                 |
     Usage:          self.win.bind(<Left>)                                       |
                                                                                 |
-    Description:    Upon user left arrow input, calls self.decreaseCounter()    |
+    Description:    Upon user left arrow input, calls self._decreaseCounter()   |
                     to change the highlighted index, changes the highlight_list |
-                    with the new index and calls self.displayText() to refresh  |
+                    with the new index and calls self._displayText() to refresh |
                     the GUI window.                                             |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.rightArrowKey(self, event)                             |   ->  None
+    Declaration:    self._rightArrowKey(self, event)                            |   ->  None
                                                                                 |
     Usage:          self.win.bind(<Right>)                                      |
                                                                                 |
-    Description:    Upon user right arrow input, calls self.increaseCounter()   |
+    Description:    Upon user right arrow input, calls self._increaseCounter()  |
                     to change the highlighted index, changes the highlight_list |
-                    with the new index and calls self.displayText() to refresh  |
+                    with the new index and calls self._displayText() to refresh |
                     the GUI window.                                             |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.UpArrowKey(self, event)                                |   ->  None
+    Declaration:    self._UpArrowKey(self, event)                               |   ->  None
                                                                                 |
     Usage:          self.win.bind(<r>)                                          |
                                                                                 |
@@ -86,7 +85,7 @@ Methods:
                     for the selected student.                                   |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.DownArrowKey(self, event)                              |   ->  None
+    Declaration:    self._DownArrowKey(self, event)                             |   ->  None
                                                                                 |
     Usage:          self.win.bind(<e>)                                          |
                                                                                 |
@@ -100,15 +99,38 @@ Methods:
 
     Public:                                                                      Return:
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.startGUI(self)                                         |   ->  None
+    Declaration:    self._startGUI(self)                                        |   ->  None
                                                                                 |
     Usage:          main() in main.py                                           |
                                                                                 |
-    Description:    Called by the main when the program starts successfully.    |
+    Description:    Called by self.insertDeck() when a valid roster is found.   |
                     Sets the GUI window to the top and foreground, and starts   |
                     the tkinter mainloop for the GUI to function.               |
+                                                                                |
     ----------------------------------------------------------------------------|-------------------------------------------------
-
+    Declaration:    self.getRosterFileInput(self, errorMessage)                 |   ->  string  - An absolute file path given by
+                                                                                |                 the user
+    Usage:          main() in main.py                                           |
+                                                                                |
+    Description:    This is called by main when there is no valid roster file.  |
+                    Takes an errorMessage and shows it on the GUI. Pops up a    |
+                    file input screen and lets the user choose a roster file.   |
+                    Sets the GUI window to the top and foreground, and starts   |
+                    the tkinter mainloop for the GUI to function.               |
+                                                                                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.insertDeck(self,deck, moveToPost)                      |   ->  None
+                                                                                |
+    Usage:          main() in main.py                                           |
+                                                                                |
+    Description:    This is called by main to feed the GUI with the student     |
+                    deck. It also takes in the moveToPost function of the       |
+                    classroom class and saves it for future use for cold call.  |
+                    It then calls self._displayText() to update the window with |
+                    the student names, and then calls self._startGUI() to start |
+                    the GUI mainloop.                                           |
+                                                                                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
 """
 import tkinter as tk
 from tkinter import *
@@ -130,10 +152,10 @@ class InstructorInterface():
         self.highlight_counter = 0
 
         # Key listeners as part of the Tkinter library, waits for key press
-        self.win.bind('<Right>', self.rightArrowKey)
-        self.win.bind('<Left>', self.leftArrowKey)
-        self.win.bind('<r>', self.UpArrowKey)
-        self.win.bind('<e>', self.DownArrowKey)
+        self.win.bind('<Right>', self._rightArrowKey)
+        self.win.bind('<Left>', self._leftArrowKey)
+        self.win.bind('<r>', self._UpArrowKey)
+        self.win.bind('<e>', self._DownArrowKey)
 
         # Gets native screen resolution width and height
         screen_w = self.win.winfo_screenwidth()
@@ -179,7 +201,7 @@ class InstructorInterface():
     Deletes all old text objects and replaces them with updated ones based on the
     text_colors list. This is called after every key press event to reflect which name should be highlighted.
     """
-    def displayText(self):
+    def _displayText(self):
         self.canvas.delete("all")
         self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
         self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
@@ -190,7 +212,7 @@ class InstructorInterface():
     Increases highlight_counter with a bound that prevents it from
     increasing past 3, the rightmost name on our Deck.
     """
-    def increaseCounter(self):
+    def _increaseCounter(self):
         if ((self.highlight_counter +1) > 3):
             self.highlight_counter = 3
         else:
@@ -200,7 +222,7 @@ class InstructorInterface():
     Decreases highlight_counter with a bound that prevents it from
     decreasing past zero, the leftmost name on our Deck.
     """
-    def decreaseCounter(self):
+    def _decreaseCounter(self):
         if((self.highlight_counter -1) < 0):
             self.highlight_counter = 0
         else:
@@ -211,10 +233,10 @@ class InstructorInterface():
     Upon a <Left> Arrow Key press, updates highlight_counter and the corresponding data
     structures to represent highligting the name to the left of the current highlighted name.
     """
-    def leftArrowKey(self, event):
+    def _leftArrowKey(self, event):
         # Set the boolean list to reflect which index
         # in the list we want to be highlighted
-        self.decreaseCounter()
+        self._decreaseCounter()
         self.highlight_list[self.highlight_counter+1] = False
         self.highlight_list[self.highlight_counter] = True
 
@@ -228,16 +250,16 @@ class InstructorInterface():
 
         # After updating the data structures, call the function
         # that will display the text accordingly
-        self.displayText()
+        self._displayText()
 
     """
     Upon a <Right> Arrow Key press, updates highlight_counter and the corresponding data
     structures to represent highligting the name to the left of the current highlighted name.
     """
-    def rightArrowKey(self, event):
+    def _rightArrowKey(self, event):
         # Set the boolean list to reflect which index
         # in the list we want to be highlighted
-        self.increaseCounter()
+        self._increaseCounter()
         self.highlight_list[self.highlight_counter-1] = False
         self.highlight_list[self.highlight_counter] = True
 
@@ -251,13 +273,13 @@ class InstructorInterface():
 
         # After updating the data structures, call the function
         # that will display the text accordingly
-        self.displayText()
+        self._displayText()
 
 
     """
     Removes the currently highlighted student from the Deck
     """
-    def UpArrowKey(self, event):
+    def _UpArrowKey(self, event):
         # Moves the highlighted student to the post-deck,
         # which moves them off the Deck.
         for i in range(len(self.highlight_list)):
@@ -267,14 +289,14 @@ class InstructorInterface():
         # Displays the text after modifying relevant data structures
         # (the removed student will no longer be shown on the Deck.
         # print("yeah")
-        self.displayText()
+        self._displayText()
 
     """
     Removes the currently highlighted student from the Deck,
     and "flags" them (reflected in the output log file)
     for user purposes.
     """
-    def DownArrowKey(self, event):
+    def _DownArrowKey(self, event):
         # Moves the highlighted student to the post-Deck,
         # which moves them off the Deck.
         for i in range(len(self.highlight_list)):
@@ -283,7 +305,7 @@ class InstructorInterface():
                 break
         # Displays the text after modifying relevant data structures
         # (the removed student will no longer be shown on the Deck.
-        self.displayText()
+        self._displayText()
 
     """
     Start the GUI itself (nothing is displayed without mainloop()),
@@ -291,28 +313,37 @@ class InstructorInterface():
     The win.lift() function ensures our window is always displayed
     above other application GUIs on the user screen.
     """
-    def startGUI(self):
+    def _startGUI(self):
         self.win.wm_attributes("-topmost", "true")
         self.win.lift()
         self.win.mainloop()
 
     """
-    Opens a file explorer to input a roster of students if one
-    has not been supplied yet by the user.
+    Opens a file explorer to input a roster file if one
+    has not been supplied yet by the user. Shows the error message
+    provided by errorMessage parameter on the screen.
     """
     def getRosterFileInput(self, errorMessage):
-        self.canvas.delete("all")
-        self.canvas.create_text(5,15, text=errorMessage, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
-        self.canvas.pack(fill=BOTH, expand=True)
-        rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")
-        return rosterFile
+        self.canvas.delete("all")                                                                                  #Clear the canvas GUI
+        self.canvas.create_text(5,15, text=errorMessage, fill = "white", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
+        self.canvas.pack(fill=BOTH, expand=True)                                                                   #add the errormessage to the window
+        rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")           #Take file path input from a pop-up window
+        return rosterFile                                                                                          #return the path
 
+    """
+    Takes a deck parameter and saves  it to the self.deck to be used as a roster.
+    Tkaes a moveToPost parameters method that will be called to move students
+    out of the deck. Refreshes the GUI window with the provided deck names with
+    self._displayText(). And starts the GUI functionality with self._startGUI()
+    """
     def insertDeck(self,deck, moveToPost):
         self.deck = deck
         self.moveToPost = moveToPost
-        self.displayText()
-        print("got the deck iNPU")
-        self.startGUI()
+        self._displayText()
+        self._startGUI()
 
+    """
+    Closes the GUI.
+    """
     def kill(self):
         self.win.destroy()

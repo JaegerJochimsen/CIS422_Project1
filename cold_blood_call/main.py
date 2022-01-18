@@ -47,10 +47,8 @@ def main():
 
     ourClassroom = Classroom(rosterStringList, 4)
     print(ourClassroom.getDeck())
-    ourGUI.insertDeck(ourClassroom.getDeck(), ourClassroom.moveToPost)                                         # call Classroom module to create students on-deck/predeck/postdeck with roster
-    # ourGUI = InstructorInterface(ourClassroom.getDeck(), ourClassroom.moveToPost)   # setting GUI with current roster and method for move student to post deck
-    # ourGUI.startGUI()                                                                 # start the GUI module
-
+    ourGUI.insertDeck(ourClassroom.getDeck(), ourClassroom.moveToPost)                # call Classroom module to create students on-deck/predeck/postdeck with roster
+    
     save = ourClassroom.mergeDecksToList()  # save the current student info on the post-deck/pre-deck/on-deck
     writeToSavedBootRoster(save)            # Write the Saved/Boot roster file
     writeToLogFile(save)                    # Write the log file
