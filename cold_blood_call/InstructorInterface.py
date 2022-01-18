@@ -26,72 +26,89 @@ Members:
     self.highlight_list : list[bool]    : [True, False,         -> A list of bools showing which label is indexed on the GUI.
                                            False, False]
 
+
 Methods:
 
     Private:                                                                     Return:
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self._buildRoster(self, roster : list[list[str]] )          |   ->  list[Student]
+    Declaration:    self.displayText(self)                                      |   ->  None
                                                                                 |
-    Usage:          self._buildRoster(roster)                                   |   ->  [Student(), Student(), ...]
+    Usage:          self.<direction>ArrowKey(self,event)                        |
                                                                                 |
-    Description:    Create a list of Student objects from the lists of lists of |
-                    string representing student data                            |
+    Description:    Delete all the name labels on the current window and        |
+                    recreate them with the updated colors and names             |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self._buildPrePostDeck(self, roster : list[list[Student]])  |   ->  list[Student] , list[Student]
+    Declaration:    self.increaseCounter(self)                                  |   ->  None
                                                                                 |
-    Usage:          self._buildPrePostDeck(roster)                              |   ->  preDeck:[Student()] , postDeck:[Student()]
+    Usage:          self.leftArrowKey(self, event)                              |
                                                                                 |
-    Description:    Create a tuple of Student lists, sorting the input roster   |
-                    of Students based on their spoken fields. The first         |
-                    list is the preDeck (all Student objects with spoken=False),|
-                    the second is the postDeck (all Student objects with        |
-                    spoken=True)                                                |
+    Description:    Increases the highlight counter that indicates which name   |
+                    is being currently selected                                 |
+                                                                                |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.createDeck(self)                                       |   ->  list[Student]
+    Declaration:    self.decreaseCounter(self)                                  |   ->  None
                                                                                 |
-    Usage:          self._createDeck(self)                                      |   ->  deck:list[Student]
+    Usage:          self.rightArrowKey(self, event)                             |
                                                                                 |
+    Description:    Decreases the highlight counter that indicates which name   |
+                    is being currently selected                                 |
                                                                                 |
-    Description:    Create the deck of size self.deckSize by adding random      |
-                    Student objects from self.preDeck to self.deck              |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.leftArrowKey(self, event)                              |   ->  None
+                                                                                |
+    Usage:          self.win.bind(<Left>)                                       |
+                                                                                |
+    Description:    Upon user left arrow input, calls self.decreaseCounter()    |
+                    to change the highlighted index, changes the highlight_list |
+                    with the new index and calls self.displayText() to refresh  |
+                    the GUI window.                                             |
+                                                                                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.rightArrowKey(self, event)                             |   ->  None
+                                                                                |
+    Usage:          self.win.bind(<Right>)                                      |
+                                                                                |
+    Description:    Upon user right arrow input, calls self.increaseCounter()   |
+                    to change the highlighted index, changes the highlight_list |
+                    with the new index and calls self.displayText() to refresh  |
+                    the GUI window.                                             |
+                                                                                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.UpArrowKey(self, event)                                |   ->  None
+                                                                                |
+    Usage:          self.win.bind(<r>)                                          |
+                                                                                |
+    Description:    Upon user r key input, finds the highlighed index and calls |
+                    self.moveToPost(index) which is a method passed on by init  |
+                    from the main, which also imported it from the Classroom.py |
+                    in order to move the selected student from deck to postdeck |
+                    because he/she has been cold called. Also sets up the flag. |
+                    for the selected student.                                   |
+                                                                                |
+    ----------------------------------------------------------------------------|-------------------------------------------------
+    Declaration:    self.DownArrowKey(self, event)                              |   ->  None
+                                                                                |
+    Usage:          self.win.bind(<e>)                                          |
+                                                                                |
+    Description:    Upon user e key input, finds the highlighed index and calls |
+                    self.moveToPost(index) which is a method passed on by init  |
+                    from the main, which also imported it from the Classroom.py |
+                    in order to move the selected student from deck to postdeck |
+                    because  he/she has been cold called.                       |
+                                                                                |
     ----------------------------------------------------------------------------|-------------------------------------------------
 
     Public:                                                                      Return:
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.moveToDeck(self)                                       |   ->  None
+    Declaration:    self.startGUI(self)                                         |   ->  None
                                                                                 |
-    Usage:          instance.moveToDeck()                                       |
+    Usage:          main() in main.py                                           |
                                                                                 |
-    Description:    Move a random Student object from self.preDeck to           |
-                    self.deck                                                   |
+    Description:    Called by the main when the program starts successfully.    |
+                    Sets the GUI window to the top and foreground, and starts   |
+                    the tkinter mainloop for the GUI to function.               |
     ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.moveToPost(self, index:int, flag:bool = False)         |   ->  list[Student]
-                                                                                |
-    Usage:          instance.moveToPost(1, False)                               |   ->  updated deck:list[Student]
-                                                                                |
-    Description:    Move the Student object at index to the self.postDeck,      |
-                    setting that Student's flagged field to flag                |
-    ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.getDeck(self)                                          |   ->  list[Student]
-                                                                                |
-    Usage:          instance.getDeck()                                          |   ->  deck:list[Student]
-                                                                                |
-    Description:    Return the current deck (self.deck)                         |
-    ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.refresh(self)                                          |   ->  None
-                                                                                |
-    Usage:          self.refresh()                                              |   ->  None
-                                                                                |
-    Description:    Move all Students in the postDeck to the preDeck, resetting |
-                    their spoken fields to be False.                            |
-    ----------------------------------------------------------------------------|-------------------------------------------------
-    Declaration:    self.mergeDecksToList(self)                                 |   -> list[list[str]]
-                                                                                |
-    Usage:          instance.mergeDecksToList()                                 |   -> list[list[str]]
-                                                                                |
-    Description:    Add string representation of each Student object to a list, |
-                    this is the current state of the class                      |
-    ----------------------------------------------------------------------------|-------------------------------------------------
+
 """
 import tkinter as tk
 from tkinter import *
@@ -100,7 +117,7 @@ from tkinter import filedialog
 class InstructorInterface():
     def __init__(self, deck, moveToPost):
 
-        # The main GUI window object 
+        # The main GUI window object
         self.win = tk.Tk()
 
         # All text starts as white by default
@@ -186,7 +203,7 @@ class InstructorInterface():
 
 
     """
-    Upon a <Left> Arrow Key press, updates highlight_counter and the corresponding data 
+    Upon a <Left> Arrow Key press, updates highlight_counter and the corresponding data
     structures to represent highligting the name to the left of the current highlighted name.
     """
     def leftArrowKey(self, event):
@@ -209,7 +226,7 @@ class InstructorInterface():
         self.displayText()
 
     """
-    Upon a <Right> Arrow Key press, updates highlight_counter and the corresponding data 
+    Upon a <Right> Arrow Key press, updates highlight_counter and the corresponding data
     structures to represent highligting the name to the left of the current highlighted name.
     """
     def rightArrowKey(self, event):
@@ -233,7 +250,7 @@ class InstructorInterface():
 
 
     """
-    Removes the currently highlighted student from the Deck 
+    Removes the currently highlighted student from the Deck
     """
     def UpArrowKey(self, event):
         # Moves the highlighted student to the post-deck,
@@ -263,7 +280,7 @@ class InstructorInterface():
         self.displayText()
 
     """
-    Start the GUI itself (nothing is displayed without mainloop()), 
+    Start the GUI itself (nothing is displayed without mainloop()),
     and set window properties.
     The win.lift() function ensures our window is always displayed
     above other application GUIs on the user screen.
