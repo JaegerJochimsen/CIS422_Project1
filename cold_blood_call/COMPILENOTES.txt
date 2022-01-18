@@ -1,0 +1,8 @@
+#1) Install pyinstaller
+    pip install pyinstaller
+        or
+    brew install pyinstaller
+
+#2) cd to cold_blood_call directory
+#3) run:
+        pyinstaller --onefile -w --icon=path/to/icon --distpath /path/to/exe/we/want main.py
