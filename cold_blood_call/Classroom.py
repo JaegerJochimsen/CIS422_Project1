@@ -208,12 +208,12 @@ class Classroom():
 
             # if the student's info has spoken explicitly set to 
             # "True" then set it to the boolean True
-            if student[6] == "True": spoken = True
+            if student[5] == "True": spoken = True
 
             # add a new Student object containing this student's info 
             # to the output roster
             roster.append(Student(student[0], student[1], student[2],
-                student[3], student[4], present, spoken, int(student[7]), int(student[8])))
+                student[3], student[4], present, spoken, int(student[6]), int(student[7])))
 
         # reutrn the roster of Student objects
         return roster

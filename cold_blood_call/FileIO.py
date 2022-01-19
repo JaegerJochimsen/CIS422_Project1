@@ -58,7 +58,7 @@ def _checkValidRoster(rosterFile:str)->str:
     # then check for valid ID and email
     for i, student in enumerate(roster_list):
         # check length of each line
-        if (len(student) != 4) and (len(student) != 6):
+        if (len(student) != 4) and (len(student) != 5):
             open_roster.close()
             return (f"Invalid number of fields for student on line: {i+1}")
 
@@ -111,7 +111,6 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
             3. ID Number
             4. Email
             5. Phonetic (optional)
-            5. Reveal Code (optional)
             for internal system use:
             6. Spoken Boolean (str(True) if spoken before all others have spoken)
             7. Previous Contributions (a tally of how many times the student spoke)
@@ -175,10 +174,9 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     if initial:
         # parse through each student
         for student in student_list:
-            # is roster with no phonetic or reveal_code, add none values to fields
-            if len(student) == 4: # if no phonetic and no reveal code
+            # is roster with no phonetic, add none value to that field
+            if len(student) == 4: # if no phonetic
                 student.append("None") # no phonetic
-                student.append("None") # no reveal code
             # add initial values for each student in the following fields:
             # spoken initially False (first session)
             student.append("False")
@@ -249,9 +247,6 @@ def writeToSavedBootRoster(students:list)->None:
 
         # write phonetic
         new_roster.write(f"{student[4]}{DELIMITER}")
-
-        # write reveal code
-        new_roster.write(f"{student[5]}{DELIMITER}")
 
         # write spoken recently (True/False)
         new_roster.write(f"{student[6]}{DELIMITER}")
@@ -326,6 +321,12 @@ def writeToLogFile(students:list)->None:
             log_file.write(f"{_formatResponseCode(student[7])}{DELIMITER}")
             log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
             log_file.write(f"{student[3]}\n")
+        elif student[5] == "False":
+            print('made it HERE')
+            log_file.write(f"A{DELIMITER}")
+            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
+            log_file.write(f"{student[3]}\n")
+
 
     log_file.close()
 
@@ -427,12 +428,12 @@ def _testReadRoster():
 def _testWriteToSavedBootRoster():
     # writeToSavedBootRoster
     test_function_input = [
-            # FN       LN           UO ID           EMAIL         PONETIC  REVEAL_CODE       SPOKEN  FLAGGED CC   PC   PF
-            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']
+            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '0', '5', '4'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '1', '5', '4'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'True', 'False', '1', '5', '4'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'True', 'False', '1', '5', '4']
             ]
 
     writeToSavedBootRoster(test_function_input)
@@ -442,27 +443,27 @@ def _testWriteToSavedBootRoster():
 def _testWriteToLogFiles():
     # writeToLogFile tests
     test_function_input = [
-            # FN       LN           UO ID           EMAIL         PONETIC  REVEAL_CODE       SPOKEN  FLAGGED CC   PC   PF
-            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']
+            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '0', '5', '4'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'True', 'False', '1', '5', '4'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'True', 'False', '0', '5', '4']
             ]
     writeToLogFile(test_function_input)
     # this should produce:
     # X	Nick Johnstone	nsj@uoregon.edu
 
 def _testUpdatePerformanceFile():
-    # update performance file test
     test_function_input = [
-            # FN       LN           UO ID           EMAIL         PONETIC  REVEAL_CODE       SPOKEN  FLAGGED CC   PC   PF
-            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', '848fsdfhkjhe8f9', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', '848fsdfhkjhe8f9', 'True', 'False', '0', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', '848fsdfhkjhe8f9', 'True', 'False', '1', '5', '4']
+            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '0', '5', '4'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '1', '5', '4'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'True', 'False', '1', '5', '4'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'True', 'False', '1', '5', '4']
             ]
+    # update performance file test
     updatePerforanceFile(test_function_input)
 
 def _testCheckValidRoster():
