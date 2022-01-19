@@ -23,7 +23,7 @@ class Student(object):
         self.__id_num                 : str   : None         -> student id_number 
         self.__email                  : str   : None         -> student email address
         self.__phonetic               : str   : None         -> student preferred first name pronunciation
-        self.__reveal                 : str   : None         -> reveal code associated with student (whether to display student photo or not)
+        self.__present                : bool  : True         -> present is if student is in class or not 
         self.__spoken                 : bool  : False        -> represents whether or not student has spoken recently (this class or end of last class)
         self.__flagged                : bool  : False        -> represents whether or not the student has been flagged by instructor
         self.__current_contributions  : int   : 0            -> number of times student has contributed to class discussion for current session
@@ -31,12 +31,12 @@ class Student(object):
         self.__previous_flags         : int   : 0            -> number of total times student has been flagged by instructor
 
     Methods:
-        Example Student : student = Student("Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", "REVEAL1", False, True, 1, 3, 4)
+        Example Student : student = Student("Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", True, False, True, 1, 3, 4)
         Private:
             N/A
         Public:
             Description:    toStrList(self)->list[str]      :   return a list of strings representing the attributes of the Student object
-            Usage:          student.toStrList()             ->  ["Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", "REVEAL1", "False",
+            Usage:          student.toStrList()             ->  ["Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", "True", "False",
                                                                 "True", "1", "3", "4"] 
             
             Desciption:     getFirst(self)->str             :   return the first_name field of the Student object
@@ -54,8 +54,8 @@ class Student(object):
             Description:    getPhonetic(self)->str          :   return the phonetic field of the Student object
             Usage:          student.getPhonetic()           ->  "Jo-ee"
 
-            Description:    getReveal(self)->str            :   return the reveal_code field of the Student object
-            Usage:          student.getReveal()             ->  "REVEAL1"
+            Description:    getPresent(self)->bool          :   return the present field of the Student object
+            Usage:          student.getPresent()            ->  True
 
             Description:    getSpoken(self)->bool           :   return the spoken field of the Student object
             Usage:          student.getSpoken()             ->  False
@@ -89,7 +89,7 @@ class Student(object):
     """
     def __init__(self, first_name:str = None, last_name:str = None,
             id_num:str = None, email:str = None, phonetic:str = None,
-            reveal:str = None, spoken:bool = False, previous_contributions:int = 0,
+            present:bool = True, spoken:bool = False, previous_contributions:int = 0,
             previous_flags:int = 0):
 
         self.__first_name = first_name
@@ -97,7 +97,7 @@ class Student(object):
         self.__id_num = id_num    # this could be int maybe?
         self.__email = email
         self.__phonetic = phonetic
-        self.__reveal_code = reveal
+        self.__present = present
         self.__spoken = spoken
         self.__flagged = False    # default to unflagged on class start
         self.__current_contributions = 0
@@ -107,7 +107,7 @@ class Student(object):
     def toStrList(self)->list:
         """Produce list of strings representing the attributes of the Student object"""
         return [self.__first_name, self.__last_name, self.__id_num, self.__email,
-                self.__phonetic, self.__reveal_code, str(self.__spoken),
+                self.__phonetic, str(self.__present), str(self.__spoken),
                 str(self.__flagged), str(self.__current_contributions),
                 str(self.__previous_contributions), str(self.__previous_flags)]
 
@@ -127,8 +127,8 @@ class Student(object):
     def getPhonetic(self)->str:
         return self.__phonetic
 
-    def getReveal(self)->str:
-        return self.__reveal_code
+    def getPresent(self)->bool:
+        return self.__present_code
 
     def getSpoken(self)->bool:
         return self.__spoken
@@ -144,6 +144,10 @@ class Student(object):
 
     def getPrevFlags(self)->int:
         return self.__previous_flags
+
+    def setPresent(self, status:bool)->None:
+        self.__present = status
+        return None
 
     def setFlag(self, status:bool)->None:
         self.__flagged = status

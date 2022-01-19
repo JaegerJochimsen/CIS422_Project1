@@ -16,6 +16,7 @@ Modifications:
        1/13/22      JJ      Integration with Student.py functionality
        1/15/22      JJ      Privatization of members and methods, documentation
        1/17/22      JJ      Documentation
+       1/19/22      JJ      Added absent list and functionality
 """
 
 # used for random integer generation in createDeck() and _moveToDeck()
@@ -44,6 +45,9 @@ class Classroom():
         self.deck       : list[Student] : -            -> a list of Student objects that represent students "On Deck"; these
                                                           are randomly chosen from the self.preDeck
 
+        self.absent     : list[Student] : -            -> a list of Student objects that represent students who are absent; these will not be
+                                                          selected for self.deck
+ 
         self.deckSize   : int           : 4            -> the number of students "On Deck" over the course of the run
 
     Methods:
@@ -75,15 +79,21 @@ class Classroom():
         Description:    Create the deck of size self.deckSize by adding random      |
                         Student objects from self.preDeck to self.deck              |
         ----------------------------------------------------------------------------|-------------------------------------------------
-
-        Public:                                                                      Return:
-        ----------------------------------------------------------------------------|-------------------------------------------------
         Declaration:    self._moveToDeck(self)                                      |   ->  None
                                                                                     |
         Usage:          instance._moveToDeck()                                      |
                                                                                     |
         Description:    Move a random Student object from self.preDeck to           |
                         self.deck                                                   |
+        ----------------------------------------------------------------------------|-------------------------------------------------
+        
+        Public:                                                                      Return:
+        ----------------------------------------------------------------------------|-------------------------------------------------
+        Declaration:    self.markAbsent(self, index:int)                            |   -> list[Student]
+                                                                                    |
+        Usage:          instance.markAbsent(2)                                      |
+                                                                                    |
+        Description:    Move specified Student to absent list and repopulate Deck   |
         ----------------------------------------------------------------------------|-------------------------------------------------
         Declaration:    self.moveToPost(self, index:int, flag:bool = False)         |   ->  list[Student]
                                                                                     |
@@ -148,6 +158,9 @@ class Classroom():
             - Loads deck with the appropriate number of Student
               objects (defined by deckSize member)
         """
+        # wait on GUI input for adding to absent
+        self.absent = list()
+
         # build the roster of Student objects from list of
         self.roster = self._buildRoster(roster)
 
@@ -187,6 +200,9 @@ class Classroom():
         # for each list containing student info
         for student in studentList:
 
+            # init present field to True
+            present = True
+
             # init the spoken field to False
             spoken = False
 
@@ -197,7 +213,7 @@ class Classroom():
             # add a new Student object containing this student's info 
             # to the output roster
             roster.append(Student(student[0], student[1], student[2],
-                student[3], student[4], student[5], spoken, int(student[7]), int(student[8])))
+                student[3], student[4], present, spoken, int(student[7]), int(student[8])))
 
         # reutrn the roster of Student objects
         return roster
@@ -319,6 +335,47 @@ class Classroom():
 
         return None
 
+
+    def markAbsent(self, index:int):
+        """ 
+        Parameter: 
+            index   -   index of student in self.deck to be marked absent 
+
+        Called By:
+            InstructorInterface.py  -   Absent() 
+
+        Calls:
+            Classroom.py    -   _moveToDeck()
+
+        Modifies: 
+            self.deck
+            self.absent
+        
+        Return: 
+            updated self.deck list[Student]
+
+        Description:
+            When called removes Student at index from the deck, marks 
+            them as absent, adds them to the absent list, and then
+            repopulates self.deck with a new student.
+        """
+        # grab absent Student reference
+        student = self.deck[index]
+
+        # set their present status to False
+        student.setPresent(False)
+
+        # add them to the absent list
+        self.absent.append(student)
+
+        # remove them from the deck so they don't come up again
+        self.deck.remove(student)
+
+        # repopulate deck
+        self._moveToDeck()
+        
+        # return updated deck
+        return self.deck
 
     def moveToPost(self, index:int, flag:bool=False):
         """ 
@@ -449,7 +506,7 @@ class Classroom():
             write to files.
         """
         # compile list of ALL Student objects
-        master_list = self.postDeck + self.preDeck + self.deck
+        master_list = self.postDeck + self.preDeck + self.deck + self.absent
 
         # init list for holding Student info lists
         student_list = list()
