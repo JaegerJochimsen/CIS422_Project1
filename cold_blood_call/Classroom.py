@@ -4,7 +4,8 @@ Description: contains Classroom class definition for populating and maintaining 
 Local Dependencies:
         Student.py  -   Used for the Student class definition, used to hold student information passed to the constructor
 Imports/Modules:
-        random.randint  -   Used for random integer generation in createDeck() and moveToDeck()
+        random.randint  -   Used for random integer generation in
+                            createDeck() and _moveToDeck()
         Student.Student -   Used for Student class definition (see Student.py)
 Author(s):
         Mert Yapucuoglu (MY)
@@ -17,7 +18,7 @@ Modifications:
        1/17/22      JJ      Documentation
 """
 
-# used for random integer generation in createDeck() and moveToDeck()
+# used for random integer generation in createDeck() and _moveToDeck()
 from random import randint
 
 # used for Student class definition
@@ -77,9 +78,9 @@ class Classroom():
 
         Public:                                                                      Return:
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.moveToDeck(self)                                       |   ->  None
+        Declaration:    self._moveToDeck(self)                                      |   ->  None
                                                                                     |
-        Usage:          instance.moveToDeck()                                       |
+        Usage:          instance._moveToDeck()                                      |
                                                                                     |
         Description:    Move a random Student object from self.preDeck to           |
                         self.deck                                                   |
@@ -280,7 +281,7 @@ class Classroom():
         return tempDeck
 
 
-    def moveToDeck(self):
+    def _moveToDeck(self):
         """ 
         Parameter: N/A
 
@@ -334,7 +335,7 @@ class Classroom():
             Student.py  -   setSpoken()
             Student.py  -   incrementContributions()
             Student.py  -   setFlag()
-            Classroom.py    -   moveToDeck()
+            Classroom.py    -   _moveToDeck()
 
         Modifies:
             Classroom.py    -   self.deck
@@ -346,7 +347,7 @@ class Classroom():
             Remove Student at index from self.deck and to self.postDeck, 
             set that Student's spoken, current_contributions and flag
             fields, then add a new Student to the self.deck via
-            self.moveToDeck().
+            self._moveToDeck().
         """
 
         # Student speaks in order to be removed from the deck so set
@@ -366,7 +367,7 @@ class Classroom():
         self.deck.remove(self.deck[index])
 
         # move a new Student to the deck
-        self.moveToDeck()
+        self._moveToDeck()
 
         # return the updated self.deck
         return self.deck
@@ -393,7 +394,7 @@ class Classroom():
         Parameter: N/A
 
         Called By:
-            Classroom.py    -   moveToDeck()
+            Classroom.py    -   _moveToDeck()
         
         Calls:
             Student.py  -   setSpoken()
