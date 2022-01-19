@@ -198,6 +198,45 @@ class InstructorInterface():
             self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
+            
+        """
+        Create the list of student with another window.
+        credit: https://blog.csdn.net/m0_38039437/article/details/80549931
+        
+        """
+        # The side GUI window object
+        self.win_2nd = tk.Tk()
+        
+        # Setup side window name
+        self.win_2nd.title("Student Roster")
+        
+        # setting the side window size and display location (under main window)
+        self.win_2nd.geometry("%dx%d+0+%d" % (screen_w/8, screen_h/2.5, screen_h/8))
+        
+        # setup vertical scroll bar
+        self.scrollbar = Scrollbar(self.win_2nd)
+        
+        # setting scroll bar display location in window
+        self.scrollbar.pack(side = RIGHT, fill = Y)
+        
+        # add scrollbar module into Listbox
+        self.student_list = Listbox(self.win_2nd, width = int(screen_w/8), height = int(screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'))
+        
+        # Testing list:
+        for i in range(300):
+            self.student_list.insert(END, i)
+            
+        # Input student names into Listbox
+#       for i in range(len(self.deck)):
+#           # insert each student name at END of the list
+#           self.student_list.insert(END, "%s %s" % (self.deck[i][0], self.deck[i][1]))
+            
+        # setup Listbox on window
+        self.student_list.pack()
+        
+        # setting scrollbar command using Listbox.yview() method
+        self.scrollbar.config(command = self.student_list.yview)
+        
 
 
     """
