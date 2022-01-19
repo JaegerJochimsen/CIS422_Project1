@@ -384,7 +384,7 @@ class Classroom():
         Modifes: N/A
         Return: self.deck (list of Student)
         Description: 
-            Allos quick access to current state of the deck
+            Allows quick access to current state of the deck
         """
         return self.deck
 
