@@ -98,9 +98,9 @@ class Classroom():
                                                                                     |
         Description:    Return the current deck (self.deck)                         |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.refresh(self)                                          |   ->  None
+        Declaration:    self._refresh(self)                                          |   ->  None
                                                                                     |
-        Usage:          self.refresh()                                              |   ->  None
+        Usage:          self._refresh()                                              |   ->  None
                                                                                     |
         Description:    Move all Students in the postDeck to the preDeck, resetting |
                         their spoken fields to be False.                            |
@@ -290,7 +290,7 @@ class Classroom():
 
         Calls:
             random  -   randint()
-            Classroom.py    -   refresh()
+            Classroom.py    -   _refresh()
 
         Modifies:
            self.deck
@@ -301,12 +301,12 @@ class Classroom():
         Description:
             Add a random Student from the self.preDeck list to the
             self.deck; if self.preDeck is empty then it refills it
-            via the refresh() call.
+            via the _refresh() call.
         """
-        # check if self.preDeck is empty, if it is call refresh() to
+        # check if self.preDeck is empty, if it is call _refresh() to
         # refill it
         if (len(self.preDeck) == 0):
-            self.refresh()
+            self._refresh()
 
         # get index of random Student in preDeck
         index = randint(0,len(self.preDeck)-1)
@@ -389,7 +389,7 @@ class Classroom():
         return self.deck
 
 
-    def refresh(self):
+    def _refresh(self):
         """ 
         Parameter: N/A
 
