@@ -217,8 +217,8 @@ def writeToSavedBootRoster(students:list)->None:
         and creates a file called ".saved_boot_roster.txt" that stores that data
         in the following format:
 
-        <first_name><tab><last_name><tab><UO_ID><tab><email><tab><phonetic><tab>
-        <reveal_code><tab><spoken_recently(True/False)><tab>
+        <first_name><tab><last_name><tab><UO_ID><tab><email><tab>
+        <phonetic><tab><spoken_recently(True/False)><tab>
         <previous_contributions(including current session)><tab>
         <flagged_count(including current session)><\n>
 
@@ -271,7 +271,7 @@ def _formatResponseCode(bl:str)->str:
     if bl == "True":
         return "X"
     elif bl == "False":
-        return ""
+        return "S"
     else:
         return "ERROR"
 
@@ -284,49 +284,85 @@ def _checkIfFileDir()->bool:
 
 def writeToLogFile(students:list)->None:
     """
-    This function will take an argument in the form of a list of lists where
-    the internal list will be a student and the elements will be each attribute
-    from the student object
+    Parameter:
+        students  -   a list of lists where each of the internal lists contain
+                      data entries for the student (this argument is the return
+                      value of toStrList() from Student.py)
 
-    This function will always produce a file that looks like this:
-    Log File for <date>
+    Called by:
+        Main.py - main()
 
-    -----------------------------------------------------
-    First Name: <first_name>
-    Last Name: <last_name>
-    UO ID: <UO_ID>
-    Email: <email>
-    Phonetic: <phonetic>
-    Reveal Code: <reveal_code>
-    Contributions This Session: <contributions>
-    Flagged: <Yes/No>
-    -----------------------------------------------------
+    Calls:
+        datetime    -   now()
+
+    Modifies:
+        N/A
+
+    Return:
+        None
+        (Produces a file, see desciption for details)
+
+    Description:
+        This function takes the list of lists produced by toStrList in Student.py
+        and creates a file called "LogFile-<date time>" that stores data
+        pertaining to the session of the system that was just completed.
+        This data includes, a list of students who spoke, a list of students,
+        who were absent, and a list of students who were flagged.
+        The file will look like the following:
+
+        Log File for Cold Call Assist Program
+                    2022/01/19:
+
+        ----------------------------------------------------
+        <Spoken/Flagged/Absent>	First Name Last Name	Email
+        <Spoken/Flagged/Absent>	First Name Last Name	Email
+        <Spoken/Flagged/Absent>	First Name Last Name	Email
+        <Spoken/Flagged/Absent>	First Name Last Name	Email
+        ----------------------------------------------------
+
+        The purpose of this log file is to allow the user to keep a log of
+        student performance for every given class session.
     """
 
-    dir_exists = _checkIfFileDir()
-    if not dir_exists:
+    # check if the data directory already exists
+    if not _checkIfFileDir():
+        # if not get the current working directory information
         cwd = getcwd()
+        # create the path of the new data directory
         new_dir = cwd + "/MetaData"
+        # create the data directory
         mkdir(new_dir)
 
+    # create the logfile for the current session
     log_name = "LogFile-" + str(datetime.now())
     log_file = open(f"MetaData/{log_name}", "w")
+    # after opening the file, write the header
     log_file.write(f"Log File for Cold Call Assist Program\n\
             {str(date.today()).replace('-', '/')}:\n\n")
 
+    # create a bar to separate the header from the data
     log_file.write("----------------------------------------------------\n")
 
+    # parse through each student in the student list argument
     for student in students:
+        # check if the student spoke at all
         if int(student[8]) > 0:
+            # record if the student was flagged or just spoke
             log_file.write(f"{_formatResponseCode(student[7])}{DELIMITER}")
+            # record the student's name
             log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
+            # record the student's email
+            # record the student's name
+            # record the student's name
             log_file.write(f"{student[3]}\n")
+        # check if the student was absent
         elif student[5] == "False":
-            print('made it HERE')
+            # record that they were absent
             log_file.write(f"A{DELIMITER}")
+            # record the student's name
             log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
+            # record the student's name
             log_file.write(f"{student[3]}\n")
-
 
     log_file.close()
 
@@ -430,12 +466,11 @@ def _testWriteToSavedBootRoster():
     test_function_input = [
             # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '0', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '1', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'True', 'False', '1', '5', '4'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'True', 'False', '1', '5', '4']
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '1', '5', '4'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', 'False', '0', '2', '1'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', 'False', '0', '5', '4']
             ]
-
     writeToSavedBootRoster(test_function_input)
     # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
     #    'nook', '848fsdfhkjhe8f9', 'True', '6', '5']
@@ -445,25 +480,25 @@ def _testWriteToLogFiles():
     test_function_input = [
             # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '0', '5', '4'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '1', '5', '4'],
             ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'True', 'False', '1', '5', '4'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'True', 'False', '0', '5', '4']
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', 'False', '0', '2', '1'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', 'False', '0', '5', '4']
             ]
     writeToLogFile(test_function_input)
     # this should produce:
     # X	Nick Johnstone	nsj@uoregon.edu
 
 def _testUpdatePerformanceFile():
+    # update performance file test
     test_function_input = [
             # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '0', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '1', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'True', 'False', '1', '5', '4'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'True', 'False', '1', '5', '4']
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '1', '5', '4'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', 'False', '0', '2', '1'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', 'False', '0', '5', '4']
             ]
-    # update performance file test
     updatePerforanceFile(test_function_input)
 
 def _testCheckValidRoster():
@@ -477,6 +512,6 @@ if __name__ == "__main__":
         _testReadRoster()
         #_testWriteToSavedBootRoster()
         #_testWriteToLogFiles()
-        #_testUpdatePerformanceFile
+        #_testUpdatePerformanceFile()
         #_testCheckValidRoster()
 

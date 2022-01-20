@@ -28,7 +28,7 @@ at a time, referred to as the "deck", which appears as a thin
 black bar window at both the top and topmost application layer
 (will never be obscured by other windows) of the user's screen.
 
-Students displayed "on deck" are encouraged to particpate in classroom 
+Students displayed "on deck" are encouraged to participate in classroom 
 discussion, and will be removed, via manual key entry (Up) by 
 the instructor, from the deck upon doing so. Upon removal:
 
