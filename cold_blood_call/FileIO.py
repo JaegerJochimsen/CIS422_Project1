@@ -123,13 +123,22 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         the users screen.
     """
 
+    # first check if the system data directory exists
+    if ".sysData" not in listdir():
+        # if not get the current working directory information
+        cwd = getcwd()
+        # create the path of the new data directory
+        new_dir = cwd + "/.sysData"
+        # create the data directory
+        mkdir(new_dir)
+
     # variable to represent if it is the first bootup of the system
     initial = True
 
     # check if the system datafile exists
-    if ".saved_boot.txt" in listdir():
+    if "saved_boot.txt" in listdir(".sysData/"):
         # assign the roster to the system's store data file
-        roster = open(".saved_boot.txt", "r")
+        roster = open(".sysData/saved_boot.txt", "r")
         # not the first bootup
         initial = False
         print("READING SAVED BOOT")
@@ -192,6 +201,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
 
 
 
+
 def writeToSavedBootRoster(students:list)->None:
     """
     Parameter:
@@ -214,8 +224,8 @@ def writeToSavedBootRoster(students:list)->None:
 
     Description:
         This function takes the list of lists produced by toStrList in Student.py
-        and creates a file called ".saved_boot_roster.txt" that stores that data
-        in the following format:
+        and creates a file called "saved_boot_roster.txt" in the .sysData/
+        directory that stores that data in the following format:
 
         <first_name><tab><last_name><tab><UO_ID><tab><email><tab>
         <phonetic><tab><spoken_recently(True/False)><tab>
@@ -229,7 +239,7 @@ def writeToSavedBootRoster(students:list)->None:
     """
 
     # create the .saved_boot_roster.txt file
-    new_roster = open(".saved_boot.txt", "w")
+    new_roster = open(".sysData/saved_boot.txt", "w")
 
     # parse through the student list and write to each attribute to the file
     for student in students:
