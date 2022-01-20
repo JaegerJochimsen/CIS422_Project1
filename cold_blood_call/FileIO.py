@@ -276,7 +276,6 @@ def writeToSavedBootRoster(students:list)->None:
         # check if the student was absent
         if student[5] == "False":
             # if present is false, increment absences
-            print(student[11])
             new_roster.write(f"{str(int(student[11]) + 1)}\n")
         else:
             # if the student was present, do not increment absences
@@ -395,34 +394,54 @@ def writeToLogFile(students:list)->None:
 
 def updatePerforanceFile(students:list):
 
+    # sort the list that is passed in so it lines up with the old performance_file order
+    current_list = sorted(students, key=itemgetter(1))
+
     # This is the case when there is no current performance file
     if "Performance-File.txt" not in listdir("MetaData"):
         performance_file = open("MetaData/Performance-File.txt", "w")
 
         performance_file.write("Performance File for Cold Call Assist Program\n")
         performance_file.write("Total Times  Called\tNumber of Flags\t")
+        performance_file.write("Absences\t")
         performance_file.write("First Name\tLast Name\tUO ID\tEmail\t")
-        performance_file.write("Phonetic Spelling\tReveal Code\tList of Dates\n")
+        performance_file.write("Phonetic Spelling\tList of Dates\n")
 
-        for student in students:
-            performance_file.write(f"{student[8]}\t") # add the contributions line
+        for student in current_list:
+            # add the contributions line (initial contributions)
+            performance_file.write(f"{student[8]}\t")
             #print(f"ADDED CONTRIBUTIONS for {student[0]}: {student[8]}")
-            if student[7] == "True":
-                performance_file.write(f"1\t") # add the flag count line
-                #print(f"ADDED FLAGS for {student[0]}: 1")
+
+            # add the number of times flagged for the first session
+            performance_file.write(f"{student[7]}\t")
+
+            # add 1 to absences if absent for first session
+            if student[5] == "False":
+                # 1 because they were absent
+                performance_file.write("1\t")
             else:
-                performance_file.write(f"0\t") # add the flag count line
-                #print(f"ADDED FLAGS for {student[0]}: 0")
-            performance_file.write(f"{student[0]}\t") # add the first name
-            performance_file.write(f"{student[1]}\t") # add the last name
-            performance_file.write(f"{student[2]}\t") # add the id num
+                # 0 because they were present
+                performance_file.write("0\t")
+
+            # add first name
+            performance_file.write(f"{student[0]}\t")
+
+            # add last name
+            performance_file.write(f"{student[1]}\t")
+
+            # add id number
+            performance_file.write(f"{student[2]}\t")
+
+            # add email
             performance_file.write(f"{student[3]}\t") # add the email
-            performance_file.write(f"{student[4]}\t") # add the email
+
+            # add phonetic
+            performance_file.write(f"{student[4]}\t")
+
             if int(student[8]) > 0:
-                performance_file.write(f"{student[5]}\t") # add the reveal code
-                performance_file.write(f"{str(date.today()).replace('-', '/')}\n") # add the date
-            else:
-                performance_file.write(f"{student[5]}\n") # add the reveal code
+                performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
+
+            performance_file.write("\n")
 
         performance_file.close()
         return None
@@ -445,21 +464,25 @@ def updatePerforanceFile(students:list):
     performance_file.close()
 
     # sort the list by last name so it lines up with the data that is passed in
-    prev_file_sorted = sorted(prev_file, key=itemgetter(3))
-
-    # sort the list that is passed in so it lines up with the old performance_file order
-    current_list = sorted(students, key=itemgetter(1))
+    prev_file_sorted = sorted(prev_file, key=itemgetter(4))
 
     # go through each student from the current session and check if they spoke
     # if they did add the date to the list that will be written to the performance_file
     # this includes incrementing the contributions field, as well as the flag field (when applicable)
     for i, student in enumerate(current_list):
+
+        # if the student spoke
         if int(student[8]) > 0:
             # add the number of times the student contributed in the current session to the total
             prev_file_sorted[i][0] = str((int(student[9]) + int(student[8])))
-            if student[7] == "True":
-                prev_file_sorted[i][1] = str(int(prev_file_sorted[i][1]) + 1)
             prev_file_sorted[i].append(str(date.today()).replace('-', '/'))
+
+        # if the student was flagged
+        if int(student[7]) > 0:
+            prev_file_sorted[i][1] = str(int(prev_file_sorted[i][1]) + int(student[7]))
+
+        if student[5] == "False":
+            prev_file_sorted[i][2] = str(int(prev_file_sorted[i][2]) + 1)
 
 
     #ready to write to file
@@ -468,8 +491,9 @@ def updatePerforanceFile(students:list):
 
     performance_file.write("Performance File for Cold Call Assist Program\n")
     performance_file.write("Total Times  Called\tNumber of Flags\t")
+    performance_file.write("Absences\t")
     performance_file.write("First Name\tLast Name\tUO ID\tEmail\t")
-    performance_file.write("Phonetic Spelling\tReveal Code\tList of Dates\n")
+    performance_file.write("Phonetic Spelling\tList of Dates\n")
 
     # add each of the students to the new file
     for student in prev_file_sorted:
