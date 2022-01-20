@@ -23,11 +23,11 @@ def main():
     # readRoster() failed then return False
     (rosterStringList, isInitialBoot) = readRoster()
 
+    exitProgram = 0
     # rosterStringList = "This is an error please choose a roster file"
     if not isinstance(rosterStringList,list):
         rosterGUI = InstructorInterface(rosterStringList)                   # Creating a GUI for roster file input
 
-        exitProgram = 0
         while not isinstance(rosterStringList,list):                        # if rosterStringList is a string and not a list, it is an error
             newRosterFile = rosterGUI.getRosterFileInput(rosterStringList)  # asking the user for a roster file path
 
