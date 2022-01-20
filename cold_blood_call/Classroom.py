@@ -368,8 +368,6 @@ class Classroom():
         # set their present status to False
         student.setPresent(False)
 
-        student.incrementAbsences()
-
         # add them to the absent list
         self.absent.append(student)
 
