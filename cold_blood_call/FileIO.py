@@ -168,7 +168,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         # if the initial roster is not in a valid format return error message
         else:
             return (roster_status, True)
-    # no roster is provided return a message that prompts the user to input a file
+    # no roster is provided, return a message that prompts the user to input a file
     else:
         return ("Please provide an initial roster", True)
 
@@ -187,11 +187,13 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
             if len(student) == 4: # if no phonetic
                 student.append("None") # no phonetic
             # add initial values for each student in the following fields:
-            # spoken initially False (first session)
+            # spoken recently initially False (first session)
             student.append("False")
             # previous contributions initially 0 (first session)
             student.append("0")
             # previous flags initially 0 (first session)
+            student.append("0")
+            # previous absences initially 0 (first session)
             student.append("0")
 
     roster.close()
@@ -266,13 +268,19 @@ def writeToSavedBootRoster(students:list)->None:
         # write new previous_contributions
         new_roster.write(f"{previous_contributions}{DELIMITER}")
 
-        # check if the student was flagged this session
-        if student[7] == "True":
-            # if they were flagged, increment the flag count tally
-            new_roster.write(f"{str(int(student[10]) + 1)}\n")
+        # calculate the new previous_flags
+        previous_flags = str(int(student[7]) + int(student[10]))
+        # write the new previous_flags
+        new_roster.write(f"{previous_flags}{DELIMITER}")
+
+        # check if the student was absent
+        if student[5] == "False":
+            # if present is false, increment absences
+            print(student[11])
+            new_roster.write(f"{str(int(student[11]) + 1)}\n")
         else:
-            # if the student was not flagged, no increment
-            new_roster.write(f"{student[10]}\n")
+            # if the student was present, do not increment absences
+            new_roster.write(f"{student[11]}\n")
 
     new_roster.close()
 
@@ -355,23 +363,31 @@ def writeToLogFile(students:list)->None:
 
     # parse through each student in the student list argument
     for student in students:
-        # check if the student spoke at all
-        if int(student[8]) > 0:
-            # record if the student was flagged or just spoke
-            log_file.write(f"{_formatResponseCode(student[7])}{DELIMITER}")
-            # record the student's name
-            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
-            # record the student's email
-            # record the student's name
-            # record the student's name
-            log_file.write(f"{student[3]}\n")
         # check if the student was absent
-        elif student[5] == "False":
+        if student[5] == "False":
             # record that they were absent
             log_file.write(f"A{DELIMITER}")
             # record the student's name
             log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
             # record the student's name
+            log_file.write(f"{student[3]}\n")
+
+        # check if the student was flagged at all
+        elif int(student[7]) > 0:
+            # record that they were flagged
+            log_file.write(f"X{DELIMITER}")
+            # record the student's name
+            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
+            # record the student's name
+            log_file.write(f"{student[3]}\n")
+
+        # check if the student was spoken but not flagged
+        elif int(student[8]) > 0:
+            # record if the student spoke but was not flagged
+            log_file.write(f"S{DELIMITER}")
+            # record the student's name
+            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
+            # record the student's email
             log_file.write(f"{student[3]}\n")
 
     log_file.close()
