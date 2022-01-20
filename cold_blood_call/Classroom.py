@@ -17,6 +17,7 @@ Modifications:
        1/15/22      JJ      Privatization of members and methods, documentation
        1/17/22      JJ      Documentation
        1/19/22      JJ      Added absent list and functionality
+       1/20/22      JJ      Added prev absence handling and flag as int handling
 """
 
 # used for random integer generation in createDeck() and _moveToDeck()
@@ -213,7 +214,7 @@ class Classroom():
             # add a new Student object containing this student's info 
             # to the output roster
             roster.append(Student(student[0], student[1], student[2],
-                student[3], student[4], present, spoken, int(student[6]), int(student[7])))
+                student[3], student[4], present, spoken, int(student[6]), int(student[7]), int(student[8]))) # FIXME: documenation for previous flags
 
         # reutrn the roster of Student objects
         return roster
@@ -346,6 +347,8 @@ class Classroom():
 
         Calls:
             Classroom.py    -   _moveToDeck()
+            Student.py      -   setPresent()
+            Student.py      -   incrementAbsences()
 
         Modifies: 
             self.deck
@@ -364,6 +367,8 @@ class Classroom():
 
         # set their present status to False
         student.setPresent(False)
+
+        student.incrementAbsences()
 
         # add them to the absent list
         self.absent.append(student)
@@ -391,7 +396,7 @@ class Classroom():
         Calls: 
             Student.py  -   setSpoken()
             Student.py  -   incrementContributions()
-            Student.py  -   setFlag()
+            Student.py  -   incrementFlag()
             Classroom.py    -   _moveToDeck()
 
         Modifies:
@@ -414,8 +419,9 @@ class Classroom():
         # Student has spoken so increment contributions field
         self.deck[index].incrementContributions()
 
-        # set flag field to appropriate status
-        self.deck[index].setFlag(flag)
+        # increment flag field
+        if flag: 
+            self.deck[index].incrementFlag()
 
         # add Student to the self.postDeck
         self.postDeck.append(self.deck[index])
