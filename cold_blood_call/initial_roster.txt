@@ -1,5 +1,0 @@
-Jaeger	Jochimsen	951111111	jaegerj@uoregon.edu
-Mert	Yapucuoglu	951222222	merty@uoregon.edu
-Kai	Xiong	951333333	kxiong@uoregon.edu
-Nick	Johnstone	951444444	nsj@uoregon.edu
-Stephen	Levekis	951555555	slevecki@uoregon.edu

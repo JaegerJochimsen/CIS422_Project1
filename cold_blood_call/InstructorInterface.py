@@ -139,7 +139,7 @@ from tkinter import *
 from tkinter import filedialog
 
 class InstructorInterface():
-    def __init__(self, deck, moveToPost):
+    def __init__(self, deck=""):
 
         # The main GUI window object
         self.win = tk.Tk()
@@ -148,7 +148,9 @@ class InstructorInterface():
         self.text_colors = ["white", "white", "white", "white"]
         self.deck = deck
         self.roster = None
-        self.moveToPost = moveToPost
+        self.moveToPost = None
+        self.markAbsent = None
+        self.rosterConfirmed = 0
 
         # Leftmost value is True (highlighted) by default
         self.highlight_list = [True, False, False, False]
@@ -157,20 +159,21 @@ class InstructorInterface():
         # Key listeners as part of the Tkinter library, waits for key press
         self.win.bind('<Right>', self._rightArrowKey)
         self.win.bind('<Left>', self._leftArrowKey)
-        self.win.bind('<r>', self._UpArrowKey)
-        self.win.bind('<e>', self._DownArrowKey)
+        self.win.bind('<,>', self._chooseWithoutFlag)
+        self.win.bind('<.>', self._chooseWithFlag)
+        self.win.bind('</>', self._chooseAbsent)
 
         # Gets native screen resolution width and height
-        screen_w = self.win.winfo_screenwidth()
-        screen_h = self.win.winfo_screenheight()
+        self.screen_w = self.win.winfo_screenwidth()
+        self.screen_h = self.win.winfo_screenheight()
 
         # 19 is a scalar modifier that happens to create a decent
         # screen height for our self.win based on original native screen height
-        self.win_h = screen_h/22
-        self.win_w = screen_w
+        self.win_h = self.screen_h/22
+        self.win_w = self.screen_w
 
         # Make a string "widthxheight" to pass to geometry function
-        dimensions = "%dx%d" % (self.win_w, self.win_h)
+        dimensions = "%dx%d+%d+%d" % (self.win_w, self.win_h,0,0)
         # Sets the self.window size to these dimensions
         self.win.geometry(dimensions)
 
@@ -198,46 +201,6 @@ class InstructorInterface():
             self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
-            
-        """
-        Create the list of student with another window.
-        credit: https://blog.csdn.net/m0_38039437/article/details/80549931
-        
-        """
-        # The side GUI window object
-        self.win_2nd = tk.Tk()
-        
-        # Setup side window name
-        self.win_2nd.title("Student Roster")
-        
-        # setting the side window size and display location (under main window)
-        self.win_2nd.geometry("%dx%d+0+%d" % (screen_w/8, screen_h/2.5, screen_h/8))
-        
-        # setup vertical scroll bar
-        self.scrollbar = Scrollbar(self.win_2nd)
-        
-        # setting scroll bar display location in window
-        self.scrollbar.pack(side = RIGHT, fill = Y)
-        
-        # add scrollbar module into Listbox
-        self.student_list = Listbox(self.win_2nd, width = int(screen_w/8), height = int(screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'))
-        
-        # Testing list:
-        for i in range(300):
-            self.student_list.insert(END, i)
-            
-        # Input student names into Listbox
-#       for i in range(len(self.deck)):
-#           # insert each student name at END of the list
-#           self.student_list.insert(END, "%s %s" % (self.deck[i][0], self.deck[i][1]))
-            
-        # setup Listbox on window
-        self.student_list.pack()
-        
-        # setting scrollbar command using Listbox.yview() method
-        self.scrollbar.config(command = self.student_list.yview)
-        
-
 
     """
     Deletes all old text objects and replaces them with updated ones based on the
@@ -321,7 +284,7 @@ class InstructorInterface():
     """
     Removes the currently highlighted student from the Deck
     """
-    def _UpArrowKey(self, event):
+    def _chooseWithFlag(self, event):
         # Moves the highlighted student to the post-deck,
         # which moves them off the Deck.
         for i in range(len(self.highlight_list)):
@@ -338,7 +301,7 @@ class InstructorInterface():
     and "flags" them (reflected in the output log file)
     for user purposes.
     """
-    def _DownArrowKey(self, event):
+    def _chooseWithoutFlag(self, event):
         # Moves the highlighted student to the post-Deck,
         # which moves them off the Deck.
         for i in range(len(self.highlight_list)):
@@ -348,6 +311,21 @@ class InstructorInterface():
         # Displays the text after modifying relevant data structures
         # (the removed student will no longer be shown on the Deck.
         self._displayText()
+
+
+    """
+    Upon the key input, will remove the student with the highlight from the list
+    while marking them as absent and removing them from the active students.
+    """
+    def _chooseAbsent(self,event):
+        for i in range(len(self.highlight_list)):
+            if (self.highlight_list[i] is True):
+                self.markAbsent(i)
+                break
+        # Displays the text after modifying relevant data structures
+        # (the removed student will no longer be shown on the Deck.
+        self._displayText()
+
 
     """
     Start the GUI itself (nothing is displayed without mainloop()),
@@ -366,9 +344,7 @@ class InstructorInterface():
     provided by errorMessage parameter on the screen.
     """
     def getRosterFileInput(self, errorMessage):
-        self.canvas.delete("all")                                                                                  #Clear the canvas GUI
-        self.canvas.create_text(5,15, text=errorMessage, fill = "white", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
-        self.canvas.pack(fill=BOTH, expand=True)                                                                   #add the errormessage to the window
+        self.changeMessage(errorMessage)                                                        #add the errormessage to the window
         rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")           #Take file path input from a pop-up window
         return rosterFile                                                                                          #return the path
 
@@ -378,15 +354,114 @@ class InstructorInterface():
     out of the deck. Refreshes the GUI window with the provided deck names with
     self._displayText(). And starts the GUI functionality with self._startGUI()
     """
-    def insertDeck(self, deck, moveToPost, roster, isInitialBoot=False):
+    def insertDeck(self, deck, moveToPost, markAbsent):
         self.deck = deck
         self.moveToPost = moveToPost
-        self.roster = roster
+        self.markAbsent = markAbsent
         self._displayText()
         self._startGUI()
+
+
+
+    """
+    Creates a window to show the user the input of the roster file they provided,
+    along with 2 buttons, confirm and cancel, to choose if they want to use this
+    roster for the rest of the program.
+    """
+    def createRosterConfirmWindow(self,deck):
+
+        """
+        Create the list of student with another window.
+        credit: https://blog.csdn.net/m0_38039437/article/details/80549931
+
+        """
+        # The side GUI window object
+        self.win_2nd = Tk()
+        self.deck = deck
+        # Setup side window name
+        self.win_2nd.title("Student Roster")
+
+        # setting the side window size and display location (under main window)
+        self.win_2nd.geometry("%dx%d+0+%d" % (self.screen_w/8, self.screen_h/2.5, self.screen_h/8))
+
+        # setup vertical scroll bar
+        self.scrollbar = Scrollbar(self.win_2nd)
+
+        # setting scroll bar display location in window
+        self.scrollbar.pack(side = RIGHT, fill = Y)
+
+        # add scrollbar module into Listbox
+        self.confirmButton = Button(self.win_2nd, text="Confirm", command= self._confirmRoster)
+        self.confirmButton.pack(side=tk.TOP)
+        self.rejectButton = Button(self.win_2nd, text="Cancel", command=self._rejectRoster)
+        self.rejectButton.pack(side=tk.TOP)
+        self.student_list = Listbox(self.win_2nd, width = int(self.screen_w/8), height = int(self.screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'))
+
+        # Testing list:
+        # for i in range(300):
+        #     self.student_list.insert(END, i)
+
+        # Input student names into Listbox
+        for i in range(len(self.deck)):
+          # insert each student name at END of the list
+          self.student_list.insert(END, "%s %s" % (self.deck[i][0], self.deck[i][1]))
+
+        # setup Listbox on window
+        self.student_list.pack(side=tk.BOTTOM)
+        # self.confirmButton.pack()
+
+        # setting scrollbar command using Listbox.yview() method
+        self.scrollbar.config(command = self.student_list.yview)
+        self.win_2nd.mainloop()
+
+
+    """
+    Called by roster confirm window confirm button. If the user confirms the
+    roster input, we set rosterConfirmed to 1. And then destroy both GUI windows.
+    """
+    def _confirmRoster(self):
+        self.rosterConfirmed = 1
+        self.win_2nd.destroy()
+        self.win.destroy()
+
+
+    """
+    Called by roster confirm window cancel button. If the user rejects the
+    roster input we destroy both GUI windows and prepare to re-ask.
+    """
+    def _rejectRoster(self):
+        self.win_2nd.destroy()
+        self.win.destroy()
+
+    """
+    Called by: main.py
+
+    Returns: self.rosterConfirmed: int. 1 for confirm, 0 for reject
+
+    Will be called by main after the roster confirm/reject process is done in
+    order to receive user choice.
+    """
+    def getRosterConfirmationResult(self):
+        return self.rosterConfirmed
+
+
+    """
+    Called by: main.py
+
+    Returns: None
+
+    Will be called by main.py in order to change the error message on the
+    top window.
+    """
+    def changeMessage(self,message):
+        self.canvas.delete("all")                                                                                  #Clear the canvas GUI
+        self.canvas.create_text(5,15, text=message, fill = "white", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
+        self.canvas.pack(fill=BOTH, expand=True)
+
 
     """
     Closes the GUI.
     """
-    def kill(self):
+
+    def killMain(self):
         self.win.destroy()
