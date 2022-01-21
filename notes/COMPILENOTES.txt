@@ -1,4 +1,11 @@
 Author: Jaeger J. 1/18/22 
+Revised: 
+    Kai X., Jaeger J. 1/21/22   --  swapped from Pyinstaller to py2app for compiling
+
+
++++++++++++++++++++++++++++++++++
+// Pyinstaller (for non MacOS) //
++++++++++++++++++++++++++++++++++
 Credit:
     https://www.youtube.com/watch?v=bV8nB5jEid4     -   Adding icons + testing on other OS
     https://stackoverflow.com/questions/29291113/pyinstaller-setting-icons-dont-change  -   icon fixing
@@ -13,22 +20,10 @@ Credit:
 #3) run:
         pyinstaller --onefile -w --icon=path/to/icon --distpath /path/to/exe/we/want main.py
 
-
-Note:
-    - Kai must do this on his mac (it is not an M1)
-    - We should reorder our dirs
-
-    CCS/
-
-        Code/
-            all .py files
-
-        Metadata/
-            all log files
-            all boot files
-        
-        Performance.txt
-        init_roster.txt
-        CCS.app 
-        
-        
++++++++++++
+// p2app //
+++++++++++
+#1) pip3 install -U py2app
+#2) py2applet --make-setup <driver filename>
+#3) python3 setup.py py2app
+#4) PROFIT!
