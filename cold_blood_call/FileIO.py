@@ -9,7 +9,7 @@ Dates: 1/12/2022, 1/13/2022, 1/14/2022, 1/15/2022, 1/16/2022, 1/17/2022
 Credit: N/A
 """
 import sys
-from os import listdir, getcwd, mkdir, path.getmtime
+from os import listdir, getcwd, mkdir, path
 from datetime import date, datetime
 from operator import itemgetter
 from re import search
@@ -29,14 +29,26 @@ def saveRosterInfo(fileName:str)->None:
             mkdir(new_dir)
 
     roster_info = open(".sysData/roster_info.txt", "w")
-    roster_info.write(fileName + '\n')
-    
-    # save the time this was uploaded
-    upload_time = datetime.now()
-    roster_info.write(upload_time + '\n')
-    roster_info.close() 
+    roster_info.write(f"{fileName}\n")
 
-            
+    # save the time this was uploaded
+    upload_time = path.getmtime(fileName)
+    roster_info.write(f"{upload_time}\n")
+    roster_info.close()
+
+
+def _checkRosterChange()->bool:
+    roster_info = open(".sysData/roster_info.txt", "r")
+    roster_info_list = list()
+    for line in roster_info:
+        roster_info_list.append(line.strip())
+    check_time = path.getmtime(roster_info_list[0])
+
+    if float(check_time) == float(roster_info_list[1]):
+        return (roster_info_list[0], False)
+    return (roster_info_list[0], True)
+
+    roster_info.close()
 
 
 def _checkValidRoster(rosterFile:str)->str:
@@ -161,6 +173,14 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         roster = open(".sysData/saved_boot.txt", "r")
         # not the first bootup
         initial = False
+
+        # NEW CODE HERE TODO add comments
+        (roster_name, roster_changed) = _checkRosterChange()
+        print(roster_name)
+        print(roster_changed)
+        if roster_changed:
+            saveRosterInfo(roster_name)
+
         print("READING SAVED BOOT")
 
     # check if the defualt name for the initial roster exists
@@ -197,7 +217,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     # parse through each line in the roster file
     for line in roster:
         # add a list split on the delimiter that holds data for the given student
-        student_list.append(line.strip().split(f'{DELIMITER}'))
+        student_list.append(line.strip().split(f"{DELIMITER}"))
 
     # if this is the initial bootup the system will add additional fields
     if initial:
@@ -422,10 +442,10 @@ def updatePerforanceFile(students:list):
         performance_file = open("MetaData/Performance-File.txt", "w")
 
         performance_file.write("Performance File for Cold Call Assist Program\n")
-        performance_file.write("Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
-        performance_file.write("Absences{DELIMITER}")
-        performance_file.write("First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
-        performance_file.write("Phonetic Spelling{DELIMITER}List of Dates\n")
+        performance_file.write(f"Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
+        performance_file.write(f"Absences{DELIMITER}")
+        performance_file.write(f"First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
+        performance_file.write(f"Phonetic Spelling{DELIMITER}List of Dates\n")
 
         for student in current_list:
             # add the contributions line (initial contributions)
@@ -438,10 +458,10 @@ def updatePerforanceFile(students:list):
             # add 1 to absences if absent for first session
             if student[5] == "False":
                 # 1 because they were absent
-                performance_file.write("1{DELIMITER}")
+                performance_file.write(f"1{DELIMITER}")
             else:
                 # 0 because they were present
-                performance_file.write("0{DELIMITER}")
+                performance_file.write(f"0{DELIMITER}")
 
             # add first name
             performance_file.write(f"{student[0]}{DELIMITER}")
@@ -479,7 +499,7 @@ def updatePerforanceFile(students:list):
     # of their fields into a a seperate element of the internal list
     prev_file = list()
     for student in performance_file:
-        prev_file.append(student.strip().split("{DELIMITER}"))
+        prev_file.append(student.strip().split(f"{DELIMITER}"))
 
     performance_file.close()
 
@@ -509,11 +529,11 @@ def updatePerforanceFile(students:list):
     # create a new file, overwriting the old one
     performance_file = open("MetaData/Performance-File.txt", "w")
 
-    performance_file.write("Performance File for Cold Call Assist Program\n")
-    performance_file.write("Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
-    performance_file.write("Absences{DELIMITER}")
-    performance_file.write("First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
-    performance_file.write("Phonetic Spelling{DELIMITER}List of Dates\n")
+    performance_file.write(f"Performance File for Cold Call Assist Program\n")
+    performance_file.write(f"Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
+    performance_file.write(f"Absences{DELIMITER}")
+    performance_file.write(f"First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
+    performance_file.write(f"Phonetic Spelling{DELIMITER}List of Dates\n")
 
     # add each of the students to the new file
     for student in prev_file_sorted:
