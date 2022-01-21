@@ -35,6 +35,9 @@ def main():
                 rosterGUI.killMain()
                 exitProgram = 1
                 break
+            else:
+                # save the file name and most recent time for it
+                saveRosterInfo(newRosterFile)
 
             (rosterStringList, isInitialBoot) = readRoster(newRosterFile)   # Check and try to read the new given roster file path
 

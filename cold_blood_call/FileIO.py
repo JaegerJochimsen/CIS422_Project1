@@ -9,7 +9,7 @@ Dates: 1/12/2022, 1/13/2022, 1/14/2022, 1/15/2022, 1/16/2022, 1/17/2022
 Credit: N/A
 """
 import sys
-from os import listdir, getcwd, mkdir
+from os import listdir, getcwd, mkdir, path.getmtime
 from datetime import date, datetime
 from operator import itemgetter
 from re import search
@@ -17,6 +17,26 @@ from re import search
 
 # Delimiter represents how each field in the files are separated
 DELIMITER = '\t'
+
+def saveRosterInfo(fileName:str)->None:
+    # first check if the system data directory exists
+    if ".sysData" not in listdir():
+            # if not get the current working directory information
+            cwd = getcwd()
+            # create the path of the new data directory
+            new_dir = cwd + "/.sysData"
+            # create the data directory
+            mkdir(new_dir)
+
+    roster_info = open(".sysData/roster_info.txt", "w")
+    roster_info.write(fileName + '\n')
+    
+    # save the time this was uploaded
+    upload_time = datetime.now()
+    roster_info.write(upload_time + '\n')
+    roster_info.close() 
+
+            
 
 
 def _checkValidRoster(rosterFile:str)->str:
