@@ -402,41 +402,41 @@ def updatePerforanceFile(students:list):
         performance_file = open("MetaData/Performance-File.txt", "w")
 
         performance_file.write("Performance File for Cold Call Assist Program\n")
-        performance_file.write("Total Times  Called\tNumber of Flags\t")
-        performance_file.write("Absences\t")
-        performance_file.write("First Name\tLast Name\tUO ID\tEmail\t")
-        performance_file.write("Phonetic Spelling\tList of Dates\n")
+        performance_file.write("Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
+        performance_file.write("Absences{DELIMITER}")
+        performance_file.write("First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
+        performance_file.write("Phonetic Spelling{DELIMITER}List of Dates\n")
 
         for student in current_list:
             # add the contributions line (initial contributions)
-            performance_file.write(f"{student[8]}\t")
+            performance_file.write(f"{student[8]}{DELIMITER}")
             #print(f"ADDED CONTRIBUTIONS for {student[0]}: {student[8]}")
 
             # add the number of times flagged for the first session
-            performance_file.write(f"{student[7]}\t")
+            performance_file.write(f"{student[7]}{DELIMITER}")
 
             # add 1 to absences if absent for first session
             if student[5] == "False":
                 # 1 because they were absent
-                performance_file.write("1\t")
+                performance_file.write("1{DELIMITER}")
             else:
                 # 0 because they were present
-                performance_file.write("0\t")
+                performance_file.write("0{DELIMITER}")
 
             # add first name
-            performance_file.write(f"{student[0]}\t")
+            performance_file.write(f"{student[0]}{DELIMITER}")
 
             # add last name
-            performance_file.write(f"{student[1]}\t")
+            performance_file.write(f"{student[1]}{DELIMITER}")
 
             # add id number
-            performance_file.write(f"{student[2]}\t")
+            performance_file.write(f"{student[2]}{DELIMITER}")
 
             # add email
-            performance_file.write(f"{student[3]}\t") # add the email
+            performance_file.write(f"{student[3]}{DELIMITER}") # add the email
 
             # add phonetic
-            performance_file.write(f"{student[4]}\t")
+            performance_file.write(f"{student[4]}{DELIMITER}")
 
             if int(student[8]) > 0:
                 performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
@@ -459,7 +459,7 @@ def updatePerforanceFile(students:list):
     # of their fields into a a seperate element of the internal list
     prev_file = list()
     for student in performance_file:
-        prev_file.append(student.strip().split("\t"))
+        prev_file.append(student.strip().split("{DELIMITER}"))
 
     performance_file.close()
 
@@ -490,15 +490,15 @@ def updatePerforanceFile(students:list):
     performance_file = open("MetaData/Performance-File.txt", "w")
 
     performance_file.write("Performance File for Cold Call Assist Program\n")
-    performance_file.write("Total Times  Called\tNumber of Flags\t")
-    performance_file.write("Absences\t")
-    performance_file.write("First Name\tLast Name\tUO ID\tEmail\t")
-    performance_file.write("Phonetic Spelling\tList of Dates\n")
+    performance_file.write("Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
+    performance_file.write("Absences{DELIMITER}")
+    performance_file.write("First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
+    performance_file.write("Phonetic Spelling{DELIMITER}List of Dates\n")
 
     # add each of the students to the new file
     for student in prev_file_sorted:
         for item in student:
-            performance_file.write(f"{item}\t")
+            performance_file.write(f"{item}{DELIMITER}")
         performance_file.write("\n")
 
     performance_file.close()
