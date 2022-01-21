@@ -51,6 +51,21 @@ def _checkRosterChange()->bool:
     roster_info.close()
 
 
+def _fixRoster(rosterFile: str):
+    saved_roster = open(".sysData/saved_boot.txt", "r")
+    initial_roster = open(rosterFile, "r")
+
+    saved_roster_list = list()
+    initial_roster_list = list()
+    for line in saved_roster:
+        saved_roster_list.append(line.strip().split(f"{DELIMITER}"))
+    for line in initial_roster:
+        initial_roster_list.append(line.strip().split(f"{DELIMITER}"))
+
+    saved_roster_sorted = sorted(saved_roster_list, key=itemgetter(1))
+    initial_roster_sorted = sorted(initial_roster_list, key=itemgetter(1))
+
+
 def _checkValidRoster(rosterFile:str)->str:
     """
     Parameter:
@@ -180,6 +195,8 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         print(roster_changed)
         if roster_changed:
             saveRosterInfo(roster_name)
+            # here created a variable that holds the new list from fixRoster
+            # return the list and True
 
         print("READING SAVED BOOT")
 
