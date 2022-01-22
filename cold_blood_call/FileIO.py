@@ -51,7 +51,7 @@ def _checkRosterChange()->bool:
     roster_info.close()
 
 
-def _fixRoster(rosterFile: str):
+def _fixRoster(rosterFile: str)->list:
     saved_roster = open(".sysData/saved_boot.txt", "r")
     initial_roster = open(rosterFile, "r")
 
@@ -66,26 +66,45 @@ def _fixRoster(rosterFile: str):
     initial_roster_sorted = sorted(initial_roster_list, key=itemgetter(1))
 
     # if init roster len always less than saved_roster_list len, can revise this
-    # 
+    #
     # j = 0
     # for i in range(len(initial_roster_list)):
     #       if initial_roster_list[i][1] == saved_roster_list[j][1]:
-    #          j += 1 
+    #          j += 1
     #       else:
     #           saved_roster_list.append(initial_roster_list[i] + additional_fields[i])
-    # 
-    i = 0
+    #
+
+    # this assumes that we can only add students from initial to saved boot
     j = 0
-    additional_fields = []
-    for _ in range(max(len(initial_roster_list), len(saved_roster_list))):
+    init_saved_len = len(saved_roster_sorted)
+    additional_fields = ["False", "0", "0", "0"]
+    for i in range(len(initial_roster_sorted)):
+        if j == init_saved_len:
+            if len(initial_roster_sorted[i]) == 5:
+                saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
+            elif len(initial_roster_sorted[i]) == 4:
+                saved_roster_sorted.append(initial_roster_sorted[i] + "None" + additional_fields)
+            else:
+                print("ERROR")
         # if student already appears in both, keep moving
-        if initial_roster_list[i][1] == saved_roster_list[j][1]:
-            i += 1
+        elif initial_roster_sorted[i][1] == saved_roster_sorted[j][1]:
+            # if we have added or modified our phonetic code field AND
+            # it is not the same as what we had saved
+            if len(initial_roster_sorted[i]) == 5 and saved_roster_sorted[j][4] != initial_roster_sorted[i][4]:
+                # update to be homogenous with initial_roster_sorted's phonetic
+                saved_roster_sorted[j][4] = initial_roster_sorted[i][4]
             j += 1
         else:
-            saved_roster_list.append(initial_roster_list[i] + additional_fields)
-            i += 1
+            if len(initial_roster_sorted[i]) == 5:
+                saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
+            elif len(initial_roster_sorted[i]) == 4:
+                saved_roster_sorted.append(initial_roster_sorted[i] + "None" + additional_fields)
+            else:
+                print("ERROR")
 
+    new_roster = sorted(saved_roster_sorted, key=itemgetter(1))
+    return new_roster
 
 
 def _checkValidRoster(rosterFile:str)->str:
@@ -218,7 +237,9 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         if roster_changed:
             saveRosterInfo(roster_name)
             # here created a variable that holds the new list from fixRoster
+            student_list = _fixRoster(roster_name)
             # return the list and True
+            return (student_list, False)
 
         print("READING SAVED BOOT")
 
