@@ -65,6 +65,28 @@ def _fixRoster(rosterFile: str):
     saved_roster_sorted = sorted(saved_roster_list, key=itemgetter(1))
     initial_roster_sorted = sorted(initial_roster_list, key=itemgetter(1))
 
+    # if init roster len always less than saved_roster_list len, can revise this
+    # 
+    # j = 0
+    # for i in range(len(initial_roster_list)):
+    #       if initial_roster_list[i][1] == saved_roster_list[j][1]:
+    #          j += 1 
+    #       else:
+    #           saved_roster_list.append(initial_roster_list[i] + additional_fields[i])
+    # 
+    i = 0
+    j = 0
+    additional_fields = []
+    for _ in range(max(len(initial_roster_list), len(saved_roster_list))):
+        # if student already appears in both, keep moving
+        if initial_roster_list[i][1] == saved_roster_list[j][1]:
+            i += 1
+            j += 1
+        else:
+            saved_roster_list.append(initial_roster_list[i] + additional_fields)
+            i += 1
+
+
 
 def _checkValidRoster(rosterFile:str)->str:
     """
