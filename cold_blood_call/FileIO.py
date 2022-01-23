@@ -475,6 +475,7 @@ def writeToLogFile(students:list)->None:
     log_file.close()
 
 
+
 def updatePerforanceFile(students:list):
 
     # sort the list that is passed in so it lines up with the old performance_file order
@@ -485,35 +486,38 @@ def updatePerforanceFile(students:list):
         performance_file = open("Data/Performance-File.csv", "w")
 
         performance_file.write("Performance File for Cold Call Assist Program\n")
-        performance_file.write(f"Overall Record As Of:, {str(date.today()).replace('-', '/')}\n")
-        performance_file.write(f"Student Name, UO ID, Email, ")
-        performance_file.write(f"Times Spoken, Times Flagged, Absences, ")
+        performance_file.write(f"First Name,Last Name,UO ID,Email,")
+        performance_file.write(f"Times Called,Times Flagged,Absences,")
         performance_file.write(f"List of Dates Spoken\n")
 
         for student in current_list:
-            # add student name
-            performance_file.write(f"{student[0]} {student[1]}, ")
+            # add first name
+            performance_file.write(f"{student[0]},")
+
+            # add last name
+            performance_file.write(f"{student[1]},")
 
             # add id number
-            performance_file.write(f"{student[2]}, ")
+            performance_file.write(f"{student[2]},")
 
             # add email
-            performance_file.write(f"{student[3]}, ") # add the email
+            performance_file.write(f"{student[3]},") # add the email
 
             # add the contributions line (initial contributions)
-            performance_file.write(f"{student[8]}, ")
+            performance_file.write(f"{student[8]},")
             #print(f"ADDED CONTRIBUTIONS for {student[0]}: {student[8]}")
 
             # add the number of times flagged for the first session
-            performance_file.write(f"{student[7]}, ")
+            performance_file.write(f"{student[7]},")
 
             # add 1 to absences if absent for first session
             if student[5] == "False":
                 # 1 because they were absent
-                performance_file.write(f"1, ")
+                performance_file.write(f"1,")
             else:
                 # 0 because they were present
-                performance_file.write(f"0, ")
+                performance_file.write(f"0,")
+
 
             if int(student[8]) > 0:
                 performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
@@ -527,8 +531,7 @@ def updatePerforanceFile(students:list):
     # when the file exists but needs to be updated after the session
     performance_file = open("Data/Performance-File.csv", "r")
 
-    # skip the header and collumns lines
-    performance_file.readline()
+    # skip the head and collumns lines
     performance_file.readline()
     performance_file.readline()
 
@@ -537,15 +540,12 @@ def updatePerforanceFile(students:list):
     # of their fields into a a seperate element of the internal list
     prev_file = list()
     for student in performance_file:
-        prev_file.append(student.strip().split(f","))
+        prev_file.append(student.strip().split(","))
 
     performance_file.close()
 
     # sort the list by last name so it lines up with the data that is passed in
-    prev_file_sorted = sorted(prev_file, key=itemgetter(4))
-
-    print(len(current_list))
-    print(len(prev_file_sorted))
+    prev_file_sorted = sorted(prev_file, key=itemgetter(1))
 
     # go through each student from the current session and check if they spoke
     # if they did add the date to the list that will be written to the performance_file
@@ -555,16 +555,15 @@ def updatePerforanceFile(students:list):
         # if the student spoke
         if int(student[8]) > 0:
             # add the number of times the student contributed in the current session to the total
-            prev_file_sorted[i][3] = str((int(student[9]) + int(student[8])))
+            prev_file_sorted[i][4] = str((int(student[9]) + int(student[8])))
             prev_file_sorted[i].append(str(date.today()).replace('-', '/'))
 
         # if the student was flagged
         if int(student[7]) > 0:
-            prev_file_sorted[i][4] = str(int(prev_file_sorted[i][4]) + int(student[7]))
+            prev_file_sorted[i][5] = str(int(prev_file_sorted[i][5]) + int(student[7]))
 
-        # if the student was absent
         if student[5] == "False":
-            prev_file_sorted[i][5] = str(int(prev_file_sorted[i][5]) + 1)
+            prev_file_sorted[i][6] = str(int(prev_file_sorted[i][6]) + 1)
 
 
     #ready to write to file
@@ -572,9 +571,8 @@ def updatePerforanceFile(students:list):
     performance_file = open("Data/Performance-File.csv", "w")
 
     performance_file.write("Performance File for Cold Call Assist Program\n")
-    performance_file.write(f"Overall Record As Of:, {str(date.today()).replace('-', '/')}\n")
-    performance_file.write(f"Student Name, UO ID, Email, ")
-    performance_file.write(f"Times Spoken, Times Flagged, Absences, ")
+    performance_file.write(f"First Name,Last Name,UO ID,Email,")
+    performance_file.write(f"Times Called,Times Flagged,Absences,")
     performance_file.write(f"List of Dates Spoken\n")
 
     # add each of the students to the new file
