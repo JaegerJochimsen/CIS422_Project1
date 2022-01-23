@@ -65,28 +65,19 @@ def _fixRoster(rosterFile: str)->list:
     saved_roster_sorted = sorted(saved_roster_list, key=itemgetter(1))
     initial_roster_sorted = sorted(initial_roster_list, key=itemgetter(1))
 
-    # if init roster len always less than saved_roster_list len, can revise this
-    #
-    # j = 0
-    # for i in range(len(initial_roster_list)):
-    #       if initial_roster_list[i][1] == saved_roster_list[j][1]:
-    #          j += 1
-    #       else:
-    #           saved_roster_list.append(initial_roster_list[i] + additional_fields[i])
-    #
-
-    # this assumes that we can only add students from initial to saved boot
+    i = 0
     j = 0
     init_saved_len = len(saved_roster_sorted)
     additional_fields = ["False", "0", "0", "0"]
-    for i in range(len(initial_roster_sorted)):
+    for _ in range(len(initial_roster_sorted)):
         if j == init_saved_len:
             if len(initial_roster_sorted[i]) == 5:
                 saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
             elif len(initial_roster_sorted[i]) == 4:
-                saved_roster_sorted.append(initial_roster_sorted[i] + "None" + additional_fields)
+                saved_roster_sorted.append(initial_roster_sorted[i] + ["None"] + additional_fields)
             else:
                 print("ERROR")
+            i += 1
         # if student already appears in both, keep moving
         elif initial_roster_sorted[i][1] == saved_roster_sorted[j][1]:
             # if we have added or modified our phonetic code field AND
@@ -94,15 +85,23 @@ def _fixRoster(rosterFile: str)->list:
             if len(initial_roster_sorted[i]) == 5 and saved_roster_sorted[j][4] != initial_roster_sorted[i][4]:
                 # update to be homogenous with initial_roster_sorted's phonetic
                 saved_roster_sorted[j][4] = initial_roster_sorted[i][4]
+            i += 1
             j += 1
-        else:
+        # we need to add a whole student
+        elif initial_roster_sorted[i][1] < saved_roster_sorted[j][1]:
             if len(initial_roster_sorted[i]) == 5:
                 saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
             elif len(initial_roster_sorted[i]) == 4:
-                saved_roster_sorted.append(initial_roster_sorted[i] + "None" + additional_fields)
+                saved_roster_sorted.append(initial_roster_sorted[i] + ["None"] + additional_fields)
             else:
                 print("ERROR")
+            i += 1
+        else:
+            print("MADE IT HERE")
+            saved_roster_sorted[j] = None
+            j += 1
 
+    saved_roster_sorted = [element for element in saved_roster_sorted if element is not None]
     new_roster = sorted(saved_roster_sorted, key=itemgetter(1))
     return new_roster
 
@@ -384,21 +383,6 @@ def writeToSavedBootRoster(students:list)->None:
     new_roster.close()
 
 
-def _formatResponseCode(bl:str)->str:
-    if bl == "True":
-        return "X"
-    elif bl == "False":
-        return "S"
-    else:
-        return "ERROR"
-
-
-def _checkIfFileDir()->bool:
-    if "MetaData" in listdir():
-        return True
-    return False
-
-
 def writeToLogFile(students:list)->None:
     """
     Parameter:
@@ -442,52 +426,51 @@ def writeToLogFile(students:list)->None:
     """
 
     # check if the data directory already exists
-    if not _checkIfFileDir():
+    if "Data" not in listdir():
         # if not get the current working directory information
         cwd = getcwd()
         # create the path of the new data directory
-        new_dir = cwd + "/MetaData"
+        new_dir = cwd + "/Data"
         # create the data directory
         mkdir(new_dir)
 
     # create the logfile for the current session
-    log_name = "LogFile-" + str(datetime.now())
-    log_file = open(f"MetaData/{log_name}", "w")
+    log_name = "LogFile-" + str(date.today()) + ".csv"
+    log_file = open(f"Data/{log_name}", "w")
     # after opening the file, write the header
-    log_file.write(f"Log File for Cold Call Assist Program\n\
-            {str(date.today()).replace('-', '/')}:\n\n")
+    log_file.write(f"Log File for Cold Call Assist Program")
+    log_file.write(f"Date:, {str(date.today()).replace('-', '/')}\n")
+    log_file.write(f"Student Name, Email, Spoken/Flagged/Absent\n")
 
-    # create a bar to separate the header from the data
-    log_file.write("----------------------------------------------------\n")
 
     # parse through each student in the student list argument
     for student in students:
         # check if the student was absent
         if student[5] == "False":
+            # record the student's name
+            log_file.write(f"{student[0]} {student[1]}, ")
+            # record the student's name
+            log_file.write(f"{student[3]}, ")
             # record that they were absent
-            log_file.write(f"A{DELIMITER}")
-            # record the student's name
-            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
-            # record the student's name
-            log_file.write(f"{student[3]}\n")
+            log_file.write(f"A{DELIMITER}\n")
 
         # check if the student was flagged at all
         elif int(student[7]) > 0:
+            # record the student's name
+            log_file.write(f"{student[0]} {student[1]}, ")
+            # record the student's name
+            log_file.write(f"{student[3]}, ")
             # record that they were flagged
-            log_file.write(f"X{DELIMITER}")
-            # record the student's name
-            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
-            # record the student's name
-            log_file.write(f"{student[3]}\n")
+            log_file.write(f"X{DELIMITER}\n")
 
         # check if the student was spoken but not flagged
         elif int(student[8]) > 0:
-            # record if the student spoke but was not flagged
-            log_file.write(f"S{DELIMITER}")
             # record the student's name
-            log_file.write(f"{student[0]} {student[1]}{DELIMITER}")
+            log_file.write(f"{student[0]} {student[1]}, ")
             # record the student's email
-            log_file.write(f"{student[3]}\n")
+            log_file.write(f"{student[3]}, ")
+            # record if the student spoke but was not flagged
+            log_file.write(f"S{DELIMITER}\n")
 
     log_file.close()
 
@@ -498,45 +481,39 @@ def updatePerforanceFile(students:list):
     current_list = sorted(students, key=itemgetter(1))
 
     # This is the case when there is no current performance file
-    if "Performance-File.txt" not in listdir("MetaData"):
-        performance_file = open("MetaData/Performance-File.txt", "w")
+    if "Performance-File.csv" not in listdir("Data"):
+        performance_file = open("Data/Performance-File.csv", "w")
 
         performance_file.write("Performance File for Cold Call Assist Program\n")
-        performance_file.write(f"Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
-        performance_file.write(f"Absences{DELIMITER}")
-        performance_file.write(f"First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
-        performance_file.write(f"Phonetic Spelling{DELIMITER}List of Dates\n")
+        performance_file.write(f"Overall Record As Of:, {str(date.today()).replace('-', '/')}\n")
+        performance_file.write(f"Student Name, UO ID, Email, ")
+        performance_file.write(f"Times Spoken, Times Flagged, Absences, ")
+        performance_file.write(f"List of Dates Spoken\n")
 
         for student in current_list:
+            # add student name
+            performance_file.write(f"{student[0]} {student[1]}, ")
+
+            # add id number
+            performance_file.write(f"{student[2]}, ")
+
+            # add email
+            performance_file.write(f"{student[3]}, ") # add the email
+
             # add the contributions line (initial contributions)
-            performance_file.write(f"{student[8]}{DELIMITER}")
+            performance_file.write(f"{student[8]}, ")
             #print(f"ADDED CONTRIBUTIONS for {student[0]}: {student[8]}")
 
             # add the number of times flagged for the first session
-            performance_file.write(f"{student[7]}{DELIMITER}")
+            performance_file.write(f"{student[7]}, ")
 
             # add 1 to absences if absent for first session
             if student[5] == "False":
                 # 1 because they were absent
-                performance_file.write(f"1{DELIMITER}")
+                performance_file.write(f"1, ")
             else:
                 # 0 because they were present
-                performance_file.write(f"0{DELIMITER}")
-
-            # add first name
-            performance_file.write(f"{student[0]}{DELIMITER}")
-
-            # add last name
-            performance_file.write(f"{student[1]}{DELIMITER}")
-
-            # add id number
-            performance_file.write(f"{student[2]}{DELIMITER}")
-
-            # add email
-            performance_file.write(f"{student[3]}{DELIMITER}") # add the email
-
-            # add phonetic
-            performance_file.write(f"{student[4]}{DELIMITER}")
+                performance_file.write(f"0, ")
 
             if int(student[8]) > 0:
                 performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
@@ -548,9 +525,10 @@ def updatePerforanceFile(students:list):
 
 
     # when the file exists but needs to be updated after the session
-    performance_file = open("MetaData/Performance-File.txt", "r")
+    performance_file = open("Data/Performance-File.csv", "r")
 
-    # skip the head and collumns lines
+    # skip the header and collumns lines
+    performance_file.readline()
     performance_file.readline()
     performance_file.readline()
 
@@ -559,12 +537,15 @@ def updatePerforanceFile(students:list):
     # of their fields into a a seperate element of the internal list
     prev_file = list()
     for student in performance_file:
-        prev_file.append(student.strip().split(f"{DELIMITER}"))
+        prev_file.append(student.strip().split(f","))
 
     performance_file.close()
 
     # sort the list by last name so it lines up with the data that is passed in
     prev_file_sorted = sorted(prev_file, key=itemgetter(4))
+
+    print(len(current_list))
+    print(len(prev_file_sorted))
 
     # go through each student from the current session and check if they spoke
     # if they did add the date to the list that will be written to the performance_file
@@ -574,31 +555,32 @@ def updatePerforanceFile(students:list):
         # if the student spoke
         if int(student[8]) > 0:
             # add the number of times the student contributed in the current session to the total
-            prev_file_sorted[i][0] = str((int(student[9]) + int(student[8])))
+            prev_file_sorted[i][3] = str((int(student[9]) + int(student[8])))
             prev_file_sorted[i].append(str(date.today()).replace('-', '/'))
 
         # if the student was flagged
         if int(student[7]) > 0:
-            prev_file_sorted[i][1] = str(int(prev_file_sorted[i][1]) + int(student[7]))
+            prev_file_sorted[i][4] = str(int(prev_file_sorted[i][4]) + int(student[7]))
 
+        # if the student was absent
         if student[5] == "False":
-            prev_file_sorted[i][2] = str(int(prev_file_sorted[i][2]) + 1)
+            prev_file_sorted[i][5] = str(int(prev_file_sorted[i][5]) + 1)
 
 
     #ready to write to file
     # create a new file, overwriting the old one
-    performance_file = open("MetaData/Performance-File.txt", "w")
+    performance_file = open("Data/Performance-File.csv", "w")
 
-    performance_file.write(f"Performance File for Cold Call Assist Program\n")
-    performance_file.write(f"Total Times  Called{DELIMITER}Number of Flags{DELIMITER}")
-    performance_file.write(f"Absences{DELIMITER}")
-    performance_file.write(f"First Name{DELIMITER}Last Name{DELIMITER}UO ID{DELIMITER}Email{DELIMITER}")
-    performance_file.write(f"Phonetic Spelling{DELIMITER}List of Dates\n")
+    performance_file.write("Performance File for Cold Call Assist Program\n")
+    performance_file.write(f"Overall Record As Of:, {str(date.today()).replace('-', '/')}\n")
+    performance_file.write(f"Student Name, UO ID, Email, ")
+    performance_file.write(f"Times Spoken, Times Flagged, Absences, ")
+    performance_file.write(f"List of Dates Spoken\n")
 
     # add each of the students to the new file
     for student in prev_file_sorted:
         for item in student:
-            performance_file.write(f"{item}{DELIMITER}")
+            performance_file.write(f"{item},")
         performance_file.write("\n")
 
     performance_file.close()

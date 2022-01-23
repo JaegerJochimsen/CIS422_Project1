@@ -3,7 +3,7 @@ Mert	Yapucuoglu	951222222	merty@uoregon.edu
 Kai	Xiong	951333333	kxiong@uoregon.edu
 Nick	Johnstone	951444444	nsj@uoregon.edu
 Stephen	Levekis	951555555	slevecki@uoregon.edu
-Barrack	Obama	951456789	obama@president.gov
+Barack	Obama	951456789	obama@president.gov
 Aaron	Rodgers	951843256	rodgers@packers.com
 Daenerys	Targaryen	951838373	dt@uoregon.edu
 Bart	Simpson	951484234	bart@uoregon.edu
