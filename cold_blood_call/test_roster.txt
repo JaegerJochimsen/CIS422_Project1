@@ -15,3 +15,4 @@ Kamala	Harris	951472111	harris@vp.gov
 Myella	Primmer	951314567	myellap@uoregon.edu
 Emily	McDonald	951838174	emy@uoregon.edu
 Stephen	Curry	951784563	goat@warriors.edu	steph
+Cligo	Wilson	951784563	cw@uoregon.edu

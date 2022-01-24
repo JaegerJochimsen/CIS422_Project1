@@ -13,6 +13,7 @@ from os import listdir, getcwd, mkdir, path
 from datetime import date, datetime
 from operator import itemgetter
 from re import search
+from shutil import rmtree
 
 
 # Delimiter represents how each field in the files are separated
@@ -38,7 +39,7 @@ def saveRosterInfo(fileName:str)->None:
 
 
 def resetSystem():
-    pass
+    rmtree(".sysData/")
 
 
 def checkRosterChange()->bool:
@@ -485,7 +486,7 @@ def writeToLogFile(students:list)->None:
 def updatePerforanceFile(students:list):
 
     # sort the list that is passed in so it lines up with the old performance_file order
-    current_list = sorted(students, key=itemgetter(1))
+    students_sorted = sorted(students, key=itemgetter(1))
 
     # This is the case when there is no current performance file
     if "Performance-File.csv" not in listdir("Data"):
@@ -496,7 +497,7 @@ def updatePerforanceFile(students:list):
         performance_file.write(f"Times Called,Times Flagged,Absences,")
         performance_file.write(f"List of Dates Spoken\n")
 
-        for student in current_list:
+        for student in students_sorted:
             # add first name
             performance_file.write(f"{student[0]},")
 
@@ -524,7 +525,7 @@ def updatePerforanceFile(students:list):
                 # 0 because they were present
                 performance_file.write(f"0,")
 
-
+            # if the student spoke at all
             if int(student[8]) > 0:
                 performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
 
@@ -556,21 +557,40 @@ def updatePerforanceFile(students:list):
     # go through each student from the current session and check if they spoke
     # if they did add the date to the list that will be written to the performance_file
     # this includes incrementing the contributions field, as well as the flag field (when applicable)
-    for i, student in enumerate(current_list):
+    j = 0
+    for i in range(len(students_sorted)):
+        if students_sorted[i][1] == prev_file_sorted[j][1]:
+            # if the student spoke
+            if int(students_sorted[i][8]) > 0:
+                # add the number of times the student contributed in the current session to the total
+                prev_file_sorted[j][4] = str((int(students_sorted[i][9]) + int(students_sorted[i][8])))
+                prev_file_sorted[j].append(str(date.today()).replace('-', '/'))
 
-        # if the student spoke
-        if int(student[8]) > 0:
-            # add the number of times the student contributed in the current session to the total
-            prev_file_sorted[i][4] = str((int(student[9]) + int(student[8])))
-            prev_file_sorted[i].append(str(date.today()).replace('-', '/'))
+            # if the student was flagged
+            if int(students_sorted[i][7]) > 0:
+                prev_file_sorted[j][5] = str(int(prev_file_sorted[j][5]) + int(students_sorted[i][7]))
 
-        # if the student was flagged
-        if int(student[7]) > 0:
-            prev_file_sorted[i][5] = str(int(prev_file_sorted[i][5]) + int(student[7]))
+            # if the student was absent
+            if students_sorted[i][5] == "False":
+                prev_file_sorted[j][6] = str(int(prev_file_sorted[j][6]) + 1)
+            j += 1
+        else:
+            new_student = [students_sorted[i][0], students_sorted[i][1],
+                    students_sorted[i][2], students_sorted[i][3], students_sorted[i][8],
+                    students_sorted[i][7]]
 
-        if student[5] == "False":
-            prev_file_sorted[i][6] = str(int(prev_file_sorted[i][6]) + 1)
+            # add 1 to absences if absent for first session
+            if students_sorted[i][5] == "False":
+                # 1 because they were absent
+                new_student.append("1")
+            else:
+                # 0 because they were present
+                new_student.append("0")
 
+            # if the student spoke at all
+            if int(students_sorted[i][8]) > 0:
+                new_student.append(f"{str(date.today()).replace('-', '/')}") # add the date
+            prev_file_sorted.append(new_student)
 
     #ready to write to file
     # create a new file, overwriting the old one
@@ -581,6 +601,7 @@ def updatePerforanceFile(students:list):
     performance_file.write(f"Times Called,Times Flagged,Absences,")
     performance_file.write(f"List of Dates Spoken\n")
 
+    prev_file_sorted = sorted(prev_file_sorted, key=itemgetter(1))
     # add each of the students to the new file
     for student in prev_file_sorted:
         for item in student:
