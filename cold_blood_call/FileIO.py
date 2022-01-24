@@ -528,6 +528,8 @@ def updatePerforanceFile(students:list):
             # if the student spoke at all
             if int(student[8]) > 0:
                 performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
+            else:
+                performance_file.write("-") # add a dash
 
             performance_file.write("\n")
 
@@ -565,6 +567,8 @@ def updatePerforanceFile(students:list):
                 # add the number of times the student contributed in the current session to the total
                 prev_file_sorted[j][4] = str((int(students_sorted[i][9]) + int(students_sorted[i][8])))
                 prev_file_sorted[j].append(str(date.today()).replace('-', '/'))
+            else:
+                prev_file_sorted[j].append("-")
 
             # if the student was flagged
             if int(students_sorted[i][7]) > 0:
@@ -590,6 +594,9 @@ def updatePerforanceFile(students:list):
             # if the student spoke at all
             if int(students_sorted[i][8]) > 0:
                 new_student.append(f"{str(date.today()).replace('-', '/')}") # add the date
+            else:
+                new_student.append("-")
+
             prev_file_sorted.append(new_student)
 
     #ready to write to file
@@ -604,8 +611,11 @@ def updatePerforanceFile(students:list):
     prev_file_sorted = sorted(prev_file_sorted, key=itemgetter(1))
     # add each of the students to the new file
     for student in prev_file_sorted:
-        for item in student:
-            performance_file.write(f"{item},")
+        for i, item in enumerate(student):
+            if i == len(student) - 1:
+                performance_file.write(f"{item}")
+            else:
+                performance_file.write(f"{item},")
         performance_file.write("\n")
 
     performance_file.close()
