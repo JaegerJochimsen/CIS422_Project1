@@ -12,12 +12,13 @@ Author(s):
         Jaeger Jochimsen (JJ)
 Credit:
 Modifications:
-       1/11/22      MY      Initial class creation and method dev
-       1/13/22      JJ      Integration with Student.py functionality
-       1/15/22      JJ      Privatization of members and methods, documentation
-       1/17/22      JJ      Documentation
-       1/19/22      JJ      Added absent list and functionality
-       1/20/22      JJ      Added prev absence handling and flag as int handling
+    1/11/22     MY      Initial class creation and method dev
+    1/13/22     JJ      Integration with Student.py functionality
+    1/15/22     JJ      Privatization of members and methods, documentation
+    1/17/22     JJ      Documentation
+    1/19/22     JJ      Added absent list and functionality
+    1/20/22     JJ      Added prev absence handling and flag as int handling
+    1/24/22     JJ      Added documentation for absence functions and added absent member list
 """
 
 # used for random integer generation in createDeck() and _moveToDeck()
@@ -55,14 +56,14 @@ class Classroom():
 
         Private:                                                                     Return:
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self._buildRoster(self, roster : list[list[str]] )          |   ->  list[Student]
+        Declaration:    _buildRoster(self, roster : list[list[str]] )               |   ->  list[Student]
                                                                                     |
         Usage:          self._buildRoster(roster)                                   |   ->  [Student(), Student(), ...]
                                                                                     |
         Description:    Create a list of Student objects from the lists of lists of |
                         string representing student data                            |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self._buildPrePostDeck(self, roster : list[list[Student]])  |   ->  list[Student] , list[Student]
+        Declaration:    _buildPrePostDeck(self, roster : list[list[Student]])       |   ->  list[Student] , list[Student]
                                                                                     |
         Usage:          self._buildPrePostDeck(roster)                              |   ->  preDeck:[Student()] , postDeck:[Student()]
                                                                                     |
@@ -72,7 +73,7 @@ class Classroom():
                         the second is the postDeck (all Student objects with        |
                         spoken=True)                                                |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.createDeck(self)                                       |   ->  list[Student]
+        Declaration:    _createDeck(self)                                           |   ->  list[Student]
                                                                                     |
         Usage:          self._createDeck(self)                                      |   ->  deck:list[Student]
                                                                                     |
@@ -80,43 +81,43 @@ class Classroom():
         Description:    Create the deck of size self.deckSize by adding random      |
                         Student objects from self.preDeck to self.deck              |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self._moveToDeck(self)                                      |   ->  None
+        Declaration:    _moveToDeck(self)                                           |   ->  None
                                                                                     |
         Usage:          instance._moveToDeck()                                      |
                                                                                     |
         Description:    Move a random Student object from self.preDeck to           |
                         self.deck                                                   |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        
+        Declaration:    _refresh(self)                                              |   ->  None
+                                                                                    |
+        Usage:          self._refresh()                                             |   ->  None
+                                                                                    |
+        Description:    Move all Students in the postDeck to the preDeck, resetting |
+                        their spoken fields to be False.                            | 
+        ----------------------------------------------------------------------------|-------------------------------------------------
+
         Public:                                                                      Return:
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.markAbsent(self, index:int)                            |   -> list[Student]
+        Declaration:    markAbsent(self, index:int)                                 |   -> list[Student]
                                                                                     |
         Usage:          instance.markAbsent(2)                                      |
                                                                                     |
-        Description:    Move specified Student to absent list and repopulate Deck   |
+        Description:    Move specified Student to absent list and repopulates Deck  |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.moveToPost(self, index:int, flag:bool = False)         |   ->  list[Student]
+        Declaration:    moveToPost(self, index:int, flag:bool = False)              |   ->  list[Student]
                                                                                     |
         Usage:          instance.moveToPost(1, False)                               |   ->  updated deck:list[Student]
                                                                                     |
         Description:    Move the Student object at index to the self.postDeck,      |
                         setting that Student's flagged field to flag                |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.getDeck(self)                                          |   ->  list[Student]
+        Declaration:    getDeck(self)                                               |   ->  list[Student]
                                                                                     |
         Usage:          instance.getDeck()                                          |   ->  deck:list[Student]
                                                                                     |
         Description:    Return the current deck (self.deck)                         |
         ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self._refresh(self)                                          |   ->  None
-                                                                                    |
-        Usage:          self._refresh()                                              |   ->  None
-                                                                                    |
-        Description:    Move all Students in the postDeck to the preDeck, resetting |
-                        their spoken fields to be False.                            |
-        ----------------------------------------------------------------------------|-------------------------------------------------
-        Declaration:    self.mergeDecksToList(self)                                 |   -> list[list[str]]
+        Declaration:    mergeDecksToList(self)                                      |   -> list[list[str]]
                                                                                     |
         Usage:          instance.mergeDecksToList()                                 |   -> list[list[str]]
                                                                                     |
@@ -259,7 +260,6 @@ class Classroom():
         return preDeck, postDeck
 
 
-
     def _createDeck(self):
         """ 
         Parameter: N/A
@@ -335,6 +335,43 @@ class Classroom():
         self.preDeck.remove(self.preDeck[index])
 
         return None
+
+
+    def _refresh(self):
+        """ 
+        Parameter: N/A
+
+        Called By:
+            Classroom.py    -   _moveToDeck()
+        
+        Calls:
+            Student.py  -   setSpoken()
+
+        Modifies:
+            self.preDeck
+            self.postDeck
+            Student objects in self.postDeck
+
+        Return: None
+        Description:
+            Move all Student objects in self.postDeck to self.preDeck 
+            and reset their spoken fields to False. Called when the
+            self.preDeck is empty and a new Student is to be moved to
+            self.deck.
+        """
+        # for each Student object in postDeck
+        for student in self.postDeck:
+
+            # remove student from postDeck
+            self.postDeck.remove(student)
+
+            # reset spoken field of Student
+            student.setSpoken(False)
+
+            # re-add Student to preDeck
+            self.preDeck.append(student)
+
+            return None
 
 
     def markAbsent(self, index:int):
@@ -449,42 +486,6 @@ class Classroom():
         """
         return self.deck
 
-
-    def _refresh(self):
-        """ 
-        Parameter: N/A
-
-        Called By:
-            Classroom.py    -   _moveToDeck()
-        
-        Calls:
-            Student.py  -   setSpoken()
-
-        Modifies:
-            self.preDeck
-            self.postDeck
-            Student objects in self.postDeck
-
-        Return: None
-        Description:
-            Move all Student objects in self.postDeck to self.preDeck 
-            and reset their spoken fields to False. Called when the
-            self.preDeck is empty and a new Student is to be moved to
-            self.deck.
-        """
-        # for each Student object in postDeck
-        for student in self.postDeck:
-
-            # remove student from postDeck
-            self.postDeck.remove(student)
-
-            # reset spoken field of Student
-            student.setSpoken(False)
-
-            # re-add Student to preDeck
-            self.preDeck.append(student)
-
-            return None
 
     def mergeDecksToList(self):
         """ 

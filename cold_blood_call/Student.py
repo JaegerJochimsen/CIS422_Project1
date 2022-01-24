@@ -5,7 +5,9 @@ Dependencies: None
 Author(s): Jaeger Jochimsen 1/12/22
 Credit: n/a
 Modifications:
-    1/15/21 12:45 PM    Jaeger Jochimsen    Added documentation and changed member vars
+    1/15/22 12:45 PM    Jaeger Jochimsen    Added documentation and changed member vars
+    1/21/22 12:00 PM    Jaeger Jochimsen    Added absences field and made method changes accordingly
+    1/24/22 12:00 PM    Jaeger Jochimsen    Fixed documentation and removed unecessary (uncalled) functions)
 """
 
 class Student(object):
