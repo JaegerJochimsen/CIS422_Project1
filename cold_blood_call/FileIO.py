@@ -38,10 +38,12 @@ def saveRosterInfo(fileName:str)->None:
 
 
 def resetSystem():
-
+    pass
 
 
 def checkRosterChange()->bool:
+    if ".sysData" not in listdir():
+        return
     roster_info = open(".sysData/roster_info.txt", "r")
     roster_info_list = list()
     for line in roster_info:

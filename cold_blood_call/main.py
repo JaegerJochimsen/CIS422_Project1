@@ -56,6 +56,8 @@ def main():
     if exitProgram:                                #quit the program if no roster is given
         return
 
+    # HERE IS WHERE THE ROSTER CHANGE GUI MESSAGE SHOULD GO TO AVOID VARIABLE UNDEFINED ERRORS
+
     ourClassroom = Classroom(rosterStringList, 4)   # call Classroom module to create students on-deck/predeck/postdeck with roster
     ourGUI = InstructorInterface(rosterStringList)  #Create the cold-call GUI
     ourGUI.insertDeck(ourClassroom.getDeck(),       #feed the GUI with the deck and needed classroom methods and start the program
