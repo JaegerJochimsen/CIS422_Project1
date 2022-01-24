@@ -625,8 +625,8 @@ def updatePerforanceFile(students:list):
 
 def _testReadRoster():
     # readRoster tests
-    rosty = readRoster()
-    print(rosty)
+    roster = readRoster()
+    print(roster)
 
 def _testWriteToSavedBootRoster():
     # writeToSavedBootRoster
