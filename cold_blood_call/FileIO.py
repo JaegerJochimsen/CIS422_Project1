@@ -37,7 +37,11 @@ def saveRosterInfo(fileName:str)->None:
     roster_info.close()
 
 
-def _checkRosterChange()->bool:
+def resetSystem():
+
+
+
+def checkRosterChange()->bool:
     roster_info = open(".sysData/roster_info.txt", "r")
     roster_info_list = list()
     for line in roster_info:
@@ -230,7 +234,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         initial = False
 
         # NEW CODE HERE TODO add comments
-        (roster_name, roster_changed) = _checkRosterChange()
+        (roster_name, roster_changed) = checkRosterChange()
         print(roster_name)
         print(roster_changed)
         if roster_changed:

@@ -21,6 +21,7 @@ from FileIO import *
 def main():
     # loading Saved/Boot Roster, return a list of lists
     # readRoster() failed then return False
+    rosterModified = checkRosterChange()
     (rosterStringList, isInitialBoot) = readRoster()
 
     exitProgram = 0
