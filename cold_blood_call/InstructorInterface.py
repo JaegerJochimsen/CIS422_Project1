@@ -188,19 +188,23 @@ class InstructorInterface():
         (done in the arrow key functions)
         """
 
+        # Sets the color for the highligted student to red
         for i in range(len(self.highlight_list)):
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
 
+        # If the input is not a valid deck, it is an error message, show it
         if not isinstance(self.deck,list):
             self.canvas.create_text(5,15, text=self.deck, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
         else:
+            # If the input is a valid deck,create the name labels and show them on top bar
             self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
+
 
     """
     Deletes all old text objects and replaces them with updated ones based on the
@@ -212,6 +216,7 @@ class InstructorInterface():
         self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
         self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
         self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
+
 
     """
     Increases highlight_counter with a bound that prevents it from
@@ -257,6 +262,7 @@ class InstructorInterface():
         # that will display the text accordingly
         self._displayText()
 
+
     """
     Upon a <Right> Arrow Key press, updates highlight_counter and the corresponding data
     structures to represent highligting the name to the left of the current highlighted name.
@@ -295,6 +301,7 @@ class InstructorInterface():
         # (the removed student will no longer be shown on the Deck.
         # print("yeah")
         self._displayText()
+
 
     """
     Removes the currently highlighted student from the Deck,
@@ -338,6 +345,7 @@ class InstructorInterface():
         self.win.lift()
         self.win.mainloop()
 
+
     """
     Opens a file explorer to input a roster file if one
     has not been supplied yet by the user. Shows the error message
@@ -348,19 +356,37 @@ class InstructorInterface():
         rosterFile = filedialog.askopenfilename(initialdir = "", title="Please choose your roster file")           #Take file path input from a pop-up window
         return rosterFile                                                                                          #return the path
 
+
     """
     Takes a deck parameter and saves  it to the self.deck to be used as a roster.
     Tkaes a moveToPost parameters method that will be called to move students
     out of the deck. Refreshes the GUI window with the provided deck names with
     self._displayText(). And starts the GUI functionality with self._startGUI()
     """
-    def insertDeck(self, deck, moveToPost, markAbsent):
+    def insertDeck(self, deck, moveToPost, markAbsent, rosterModified):
         self.deck = deck
         self.moveToPost = moveToPost
         self.markAbsent = markAbsent
+        self.rosterModified = rosterModified
         self._displayText()
+        if self.rosterModified:
+            self._showRosterModified()
         self._startGUI()
 
+
+    """
+    Called by insertDeck function when the top bar deck is created. This method
+    creates a window to notify the user that the save file has been modified
+    from outside.
+    """
+    def _showRosterModified(self):
+        self.modificationNotification = Tk()
+        self.modificationNotification.title("Notification")
+        dimensions = "%dx%d+%d+%d" % (400, 60, self.screen_w*2/5, self.screen_h/3)
+        self.modificationNotification.geometry(dimensions)
+        canvas = Canvas(self.modificationNotification, width=50, height=50, bg="black")
+        canvas.create_text(5,15, text="The roster has been modified.", fill = "white", font = ('Helvetica 18 bold'), anchor='w')
+        canvas.pack(fill=BOTH, expand=True)
 
 
     """
@@ -369,12 +395,11 @@ class InstructorInterface():
     roster for the rest of the program.
     """
     def createRosterConfirmWindow(self,deck):
-
         """
         Create the list of student with another window.
         credit: https://blog.csdn.net/m0_38039437/article/details/80549931
-
         """
+
         # The side GUI window object
         self.win_2nd = Tk()
         self.deck = deck

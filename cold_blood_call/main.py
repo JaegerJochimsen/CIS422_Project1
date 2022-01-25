@@ -18,57 +18,69 @@ from FileIO import *
 """
     main(): the driver to control modules for the system
 """
-def main():
-    # loading Saved/Boot Roster, return a list of lists
-    # readRoster() failed then return False
-    rosterModified = checkRosterChange()
-    (rosterStringList, isInitialBoot) = readRoster()
+class ColdCallSystem:
+    def __init__(self):
+        # loading Saved/Boot Roster, return a list of lists
+        # readRoster() failed then return False
+        self.rosterModified = checkRosterChange()   # Check for any modifications in the roster save
+        (self.rosterStringList, self.isInitialBoot) = readRoster() # Try to read the roster file, isInitialBoot is false if can read
+        self.exitProgram = 0   # Will be checked after to determine quit condition
 
-    exitProgram = 0
-    # rosterStringList = "This is an error please choose a roster file"
-    if not isinstance(rosterStringList,list):
-        rosterGUI = InstructorInterface(rosterStringList)                   # Creating a GUI for roster file input
+    def run(self):
+        haveValidRoster = self._getCheckConfirmRosterFile() # Call function to check roster validity, if not prompt the user
+        if not haveValidRoster: # If the user cancels the file input prompt, quit
+            return
+        self._startDeckGUI()    # Create the top deck bar and manage the decks
+        self._exitAndSave()     # Merge the decks and save the data
 
-        while not isinstance(rosterStringList,list):                        # if rosterStringList is a string and not a list, it is an error
-            newRosterFile = rosterGUI.getRosterFileInput(rosterStringList)  # asking the user for a roster file path
+
+
+    def _getCheckConfirmRosterFile(self):
+        # If the roster read return is a valid list, not an error mesage, return
+        if isinstance(self.rosterStringList,list):
+            return 1
+        # If the roster read return is an error message, prompt the user
+        rosterGUI = InstructorInterface(self.rosterStringList)                   # Creating a GUI for roster file input
+
+        while not isinstance(self.rosterStringList,list):                        # if rosterStringList is a string and not a list, it is an error
+            newRosterFile = rosterGUI.getRosterFileInput(self.rosterStringList)  # asking the user for a roster file path
 
             if newRosterFile == "":                            # if the path given is empty or the user tried 3 times, exit program
                 rosterGUI.killMain()
-                exitProgram = 1
+                self.exitProgram = 1
                 break
             else:
                 # save the file name and most recent time for it
                 saveRosterInfo(newRosterFile)
 
-            (rosterStringList, isInitialBoot) = readRoster(newRosterFile)   # Check and try to read the new given roster file path
+            (self.rosterStringList, self.isInitialBoot) = readRoster(newRosterFile)   # Check and try to read the new given roster file path
 
-            if isinstance(rosterStringList,list):                           #if the read is successful
+            if isinstance(self.rosterStringList,list):                           #if the read is successful
                 rosterGUI.changeMessage("Please Confirm the Student Roster, cancel to re-enter roster file")
-                rosterGUI.createRosterConfirmWindow(rosterStringList)       #Show the roster window and ask the user to confirm or cancel
+                rosterGUI.createRosterConfirmWindow(self.rosterStringList)       #Show the roster window and ask the user to confirm or cancel
                 rosterConfirmed = rosterGUI.getRosterConfirmationResult()   #if confirmed, 1 will be returned. Regardless of choice the GUI will be destroyed
                 if rosterConfirmed:                                         #break roster input loop if confirmed
                     break
                 else:                                                       #else reset the roster file
-                    rosterStringList = "Please choose your roster file"
-                    rosterGUI = InstructorInterface(rosterStringList)       #since the GUI was destroyed, make a new one and repeat the loop
+                    self.rosterStringList = "Please choose your roster file"
+                    rosterGUI = InstructorInterface(self.rosterStringList)       #since the GUI was destroyed, make a new one and repeat the loop
 
+        return (not self.exitProgram)
 
-    if exitProgram:                                #quit the program if no roster is given
-        return
+    def _startDeckGUI(self):
+        self.ourClassroom = Classroom(self.rosterStringList, 4)   # call Classroom module to create students on-deck/predeck/postdeck with roster
+        ourGUI = InstructorInterface(self.rosterStringList)  #Create the cold-call GUI
+        ourGUI.insertDeck(self.ourClassroom.getDeck(),       #feed the GUI with the deck and needed classroom methods and start the program
+                          self.ourClassroom.moveToPost,
+                          self.ourClassroom.markAbsent,
+                          self.rosterModified)
 
-    # HERE IS WHERE THE ROSTER CHANGE GUI MESSAGE SHOULD GO TO AVOID VARIABLE UNDEFINED ERRORS
-
-    ourClassroom = Classroom(rosterStringList, 4)   # call Classroom module to create students on-deck/predeck/postdeck with roster
-    ourGUI = InstructorInterface(rosterStringList)  #Create the cold-call GUI
-    ourGUI.insertDeck(ourClassroom.getDeck(),       #feed the GUI with the deck and needed classroom methods and start the program
-                      ourClassroom.moveToPost,
-                      ourClassroom.markAbsent)
-
-
-    save = ourClassroom.mergeDecksToList()  # save the current student info on the post-deck/pre-deck/on-deck
-    writeToSavedBootRoster(save)            # Write the Saved/Boot roster file
-    writeToLogFile(save)                    # Write the log file
-    updatePerforanceFile(save)              # Upadte the Performance file
+    def _exitAndSave(self):
+        save = self.ourClassroom.mergeDecksToList()  # save the current student info on the post-deck/pre-deck/on-deck
+        writeToSavedBootRoster(save)            # Write the Saved/Boot roster file
+        writeToLogFile(save)                    # Write the log file
+        updatePerforanceFile(save)              # Upadte the Performance file
 
 if __name__ == "__main__":
-    main()
+    ColdCall = ColdCallSystem()
+    ColdCall.run()
