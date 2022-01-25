@@ -385,7 +385,8 @@ class InstructorInterface():
         dimensions = "%dx%d+%d+%d" % (400, 60, self.screen_w*2/5, self.screen_h/3)
         self.modificationNotification.geometry(dimensions)
         canvas = Canvas(self.modificationNotification, width=50, height=50, bg="black")
-        canvas.create_text(5,15, text="The roster has been modified.", fill = "white", font = ('Helvetica 18 bold'), anchor='w')
+        canvas.create_text(5,15, text="Roster changes detected.",
+                fill = "white", font = ('Helvetica 18 bold'), anchor='w')
         canvas.pack(fill=BOTH, expand=True)
 
 
