@@ -19,7 +19,7 @@ Enzo	Ferrari	951563134	ilikecars@ferrari.com
 Rory	Godekki	951563121	rodekki@google.net	Roe
 Hannah	Anderson	9516838123	ha@gmail.com
 Steve	Jobs	951533313	steve@apple.com
-Karen	Filapelli	951382313	karen@dundermiflin.com
+Karen	Filappelli	951382313	karen@dundermiflin.com
 Alfredo	Lunki	951736458	fred@youtube.com
 Rafael	Subasa	951637894	raf@uoregon.edu
 Jordan	Peele	951738083	jordan@yahoo.com

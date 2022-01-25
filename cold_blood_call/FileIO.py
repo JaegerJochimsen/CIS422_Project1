@@ -20,6 +20,29 @@ from shutil import rmtree
 DELIMITER = '\t'
 
 def saveRosterInfo(fileName:str)->None:
+    """
+    Parameter:
+        fileName  -   a string that represents a file name of a roster
+
+    Called by:
+        FileIO.py - readRoster()
+        main.py - main()
+
+    Calls:
+        os  -   getcwd()
+
+    Modifies:
+        N/A
+
+    Return:
+        None
+
+    Description:
+        This function saves the roster meta data to a file named
+        "roster_info.txt" in the .sysData directory such as file name, and last
+        modification date.
+    """
+
     # first check if the system data directory exists
     if ".sysData" not in listdir():
             # if not get the current working directory information
@@ -29,30 +52,86 @@ def saveRosterInfo(fileName:str)->None:
             # create the data directory
             mkdir(new_dir)
 
+    # open the file
     roster_info = open(".sysData/roster_info.txt", "w")
+    # write the roster file name
     roster_info.write(f"{fileName}\n")
-
-    # save the time this was uploaded
+    # save the time that it was last modified
     upload_time = path.getmtime(fileName)
+    # write the modification time to the file
     roster_info.write(f"{upload_time}\n")
+    # close the file
     roster_info.close()
 
 
-def resetSystem():
+def resetSystem()->None:
+    """
+    Parameter:
+        N/A
+
+    Called by:
+        main.py - main()
+
+    Calls:
+        shutil  -   rmtree()
+
+    Modifies:
+        N/A
+
+    Return:
+        None
+
+    Description:
+        Deletes the .sysData directory, in turn resetting the system.
+    """
+    # deletes the .sysData directory
     rmtree(".sysData/")
 
 
-def checkRosterChange()->bool:
-    if ".sysData" not in listdir():
-        return
-    roster_info = open(".sysData/roster_info.txt", "r")
-    roster_info_list = list()
-    for line in roster_info:
-        roster_info_list.append(line.strip())
-    check_time = path.getmtime(roster_info_list[0])
+def checkRosterChange()->(str, bool):
+    """
+    Parameter:
+        N/A
 
+    Called by:
+        FileIO.py - readRoster()
+        main.py - main()
+
+    Calls:
+        os  -   getmtime()
+
+    Modifies:
+        N/A
+
+    Return:
+        tuple:
+        string - The name of the roster file
+        bool - True if the roster has changed, False if it has not.
+
+    Description:
+        Checks if the initial roster file has be edited and returns True if it
+        has, returns False if it has not.
+    """
+
+    # check if the .sysData even exists
+    if ".sysData" not in listdir():
+        # if not return
+        return
+    # open the roster_info.txt file
+    roster_info = open(".sysData/roster_info.txt", "r")
+    # initial a list that will hold information about the file
+    roster_info_list = list()
+    # loop through the file and grab the info, putting it in the list
+    for line in roster_info:
+        # add data to the list
+        roster_info_list.append(line.strip())
+    # check the time the roster was last modified
+    check_time = path.getmtime(roster_info_list[0])
+    # check if the roster was edited
     if float(check_time) == float(roster_info_list[1]):
+        # if it was not modified return the file name and False
         return (roster_info_list[0], False)
+    # if it was modified return the file name and True
     return (roster_info_list[0], True)
 
     roster_info.close()
@@ -445,7 +524,7 @@ def writeToLogFile(students:list)->None:
     log_name = "LogFile-" + str(date.today()) + ".csv"
     log_file = open(f"Data/{log_name}", "w")
     # after opening the file, write the header
-    log_file.write(f"Log File for Cold Call Assist Program")
+    log_file.write("Log File for Cold Call Assist Program\n")
     log_file.write(f"Date:, {str(date.today()).replace('-', '/')}\n")
     log_file.write(f"Student Name, Email, Spoken/Flagged/Absent\n")
 
@@ -493,9 +572,10 @@ def updatePerforanceFile(students:list):
         performance_file = open("Data/Performance-File.csv", "w")
 
         performance_file.write("Performance File for Cold Call Assist Program\n")
-        performance_file.write(f"First Name,Last Name,UO ID,Email,")
-        performance_file.write(f"Times Called,Times Flagged,Absences,")
-        performance_file.write(f"List of Dates Spoken\n")
+        performance_file.write(f"Date:,{str(date.today()).replace('-', '/')}\n")
+        performance_file.write("First Name,Last Name,UO ID,Email,")
+        performance_file.write("Times Called,Times Flagged,Absences,")
+        performance_file.write("List of Dates Spoken\n")
 
         for student in students_sorted:
             # add first name
@@ -543,7 +623,7 @@ def updatePerforanceFile(students:list):
     # skip the head and collumns lines
     performance_file.readline()
     performance_file.readline()
-
+    performance_file.readline()
 
     # put each student in the old performance_file into a list and split each
     # of their fields into a a seperate element of the internal list
@@ -604,9 +684,10 @@ def updatePerforanceFile(students:list):
     performance_file = open("Data/Performance-File.csv", "w")
 
     performance_file.write("Performance File for Cold Call Assist Program\n")
-    performance_file.write(f"First Name,Last Name,UO ID,Email,")
-    performance_file.write(f"Times Called,Times Flagged,Absences,")
-    performance_file.write(f"List of Dates Spoken\n")
+    performance_file.write(f"Date:,{str(date.today()).replace('-', '/')}\n")
+    performance_file.write("First Name,Last Name,UO ID,Email,")
+    performance_file.write("Times Called,Times Flagged,Absences,")
+    performance_file.write("List of Dates Spoken\n")
 
     prev_file_sorted = sorted(prev_file_sorted, key=itemgetter(1))
     # add each of the students to the new file
