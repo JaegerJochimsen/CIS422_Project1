@@ -22,7 +22,7 @@ class ColdCallSystem:
     def __init__(self):
         # loading Saved/Boot Roster, return a list of lists
         # readRoster() failed then return False
-        self.rosterModified = checkRosterChange()   # Check for any modifications in the roster save
+        self.rosterModified = checkRosterChange()[1]   # Check for any modifications in the roster save
         (self.rosterStringList, self.isInitialBoot) = readRoster() # Try to read the roster file, isInitialBoot is false if can read
         self.exitProgram = 0   # Will be checked after to determine quit condition
 

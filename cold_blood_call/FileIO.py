@@ -88,7 +88,7 @@ def resetSystem()->None:
     rmtree(".sysData/")
 
 
-def checkRosterChange()->(str, bool):
+def checkRosterChange()->(str, bool) or (None, None):
     """
     Parameter:
         N/A
@@ -116,7 +116,7 @@ def checkRosterChange()->(str, bool):
     # check if the .sysData even exists
     if ".sysData" not in listdir():
         # if not return
-        return
+        return (None, None)
     # open the roster_info.txt file
     roster_info = open(".sysData/roster_info.txt", "r")
     # initial a list that will hold information about the file
@@ -133,36 +133,75 @@ def checkRosterChange()->(str, bool):
         return (roster_info_list[0], False)
     # if it was modified return the file name and True
     return (roster_info_list[0], True)
-
+    # close file
     roster_info.close()
 
 
 def _fixRoster(rosterFile: str)->list:
-    saved_roster = open(".sysData/saved_boot.txt", "r")
-    initial_roster = open(rosterFile, "r")
+    """
+    Parameter:
+        rosterFile - string that is the name of the roster
 
+    Called by:
+        FileIO.py - readRoster()
+
+    Calls:
+        N/A
+
+    Modifies:
+        N/A
+
+    Return:
+        list of lists where each internal list holds data for a student
+
+    Description:
+        Updates the system roster if the initial roster was modified by the user.
+    """
+
+    # open the file saved roster
+    saved_roster = open(".sysData/saved_boot.txt", "r")
+    # open the initial roster
+    initial_roster = open(rosterFile, "r")
+    # create two lists that will hold the contents of both files
     saved_roster_list = list()
     initial_roster_list = list()
+    # loop through the files
     for line in saved_roster:
+        # add each line to the list
         saved_roster_list.append(line.strip().split(f"{DELIMITER}"))
     for line in initial_roster:
+        # add each line to the list
         initial_roster_list.append(line.strip().split(f"{DELIMITER}"))
-
+    # close the files
+    saved_roster.close()
+    initial_roster.close()
+    # sort student data by last name
     saved_roster_sorted = sorted(saved_roster_list, key=itemgetter(1))
     initial_roster_sorted = sorted(initial_roster_list, key=itemgetter(1))
-
+    # initialize counters to represent positions in each list
     i = 0
     j = 0
+    # save the len of the initial roster
     init_saved_len = len(saved_roster_sorted)
+    # create a list of additional fields that will be added to new students
     additional_fields = ["False", "0", "0", "0"]
+    # loop through the initial roster
     for _ in range(len(initial_roster_sorted)):
+        # if on the last element
         if j == init_saved_len:
+            # if a phonetic was added
             if len(initial_roster_sorted[i]) == 5:
+                # add a phonetic and the other student information
                 saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
+            # if no phonetic
             elif len(initial_roster_sorted[i]) == 4:
+                #  add other information only
                 saved_roster_sorted.append(initial_roster_sorted[i] + ["None"] + additional_fields)
+            # should not make it here unless roster is incorrect
             else:
-                print("ERROR")
+                # error message invalid roster
+                print("ERROR: invalid roster")
+            # increment i
             i += 1
         # if student already appears in both, keep moving
         elif initial_roster_sorted[i][1] == saved_roster_sorted[j][1]:
@@ -171,24 +210,36 @@ def _fixRoster(rosterFile: str)->list:
             if len(initial_roster_sorted[i]) == 5 and saved_roster_sorted[j][4] != initial_roster_sorted[i][4]:
                 # update to be homogenous with initial_roster_sorted's phonetic
                 saved_roster_sorted[j][4] = initial_roster_sorted[i][4]
+            # increment both i and j
             i += 1
             j += 1
-        # we need to add a whole student
+        # add a whole new student
         elif initial_roster_sorted[i][1] < saved_roster_sorted[j][1]:
+            # if a phonetic was added
             if len(initial_roster_sorted[i]) == 5:
+                # add a phonetic and the other student information
                 saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
+            # if no phonetic
             elif len(initial_roster_sorted[i]) == 4:
+                #  add other information only
                 saved_roster_sorted.append(initial_roster_sorted[i] + ["None"] + additional_fields)
+            # should not make it here unless roster is incorrect
             else:
-                print("ERROR")
+                # error message invalid roster
+                print("ERROR: invalid roster")
+            # increment i
             i += 1
+        # for future features the abilty the remove a student
         else:
-            print("MADE IT HERE")
+            # remove the student
             saved_roster_sorted[j] = None
+            # only increment j
             j += 1
-
+    # resort the roster
     saved_roster_sorted = [element for element in saved_roster_sorted if element is not None]
+    # sort the final roster
     new_roster = sorted(saved_roster_sorted, key=itemgetter(1))
+    # return the result
     return new_roster
 
 
@@ -317,8 +368,8 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
 
         # NEW CODE HERE TODO add comments
         (roster_name, roster_changed) = checkRosterChange()
-        print(roster_name)
-        print(roster_changed)
+        #print(roster_name)
+        #print(roster_changed)
         if roster_changed:
             saveRosterInfo(roster_name)
             # here created a variable that holds the new list from fixRoster
