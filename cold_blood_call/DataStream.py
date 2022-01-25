@@ -1,5 +1,5 @@
 """
-File: FileIO.py
+File: DataStream.py
 Description: Contains functions that allows the system to interace with files
     in order to save/maintain/read data. (Also contains test for this module)
 Dependencies: None
@@ -25,7 +25,7 @@ def saveRosterInfo(fileName:str)->None:
         fileName  -   a string that represents a file name of a roster
 
     Called by:
-        FileIO.py - readRoster()
+        DataStream.py - readRoster()
         ColdCall.py - main()
 
     Calls:
@@ -93,7 +93,7 @@ def checkRosterChange()->(str, bool) or (None, None):
         N/A
 
     Called by:
-        FileIO.py - readRoster()
+        DataStream.py - readRoster()
         ColdCall.py - main()
 
     Calls:
@@ -142,7 +142,7 @@ def _fixRoster(rosterFile: str)->list:
         rosterFile - string that is the name of the roster
 
     Called by:
-        FileIO.py - readRoster()
+        DataStream.py - readRoster()
 
     Calls:
         N/A
@@ -248,7 +248,7 @@ def _checkValidRoster(rosterFile:str)->str:
         rosterFile  -   a string that represents a file name of a roster
 
     Called by:
-        FileIO.py - readRoster()
+        DataStream.py - readRoster()
 
     Calls:
         re  -   search()
@@ -312,10 +312,10 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         ColdCall.py - main()
 
     Calls:
-        FileIO.py  -   _testCheckValidRoster()
-        FileIO.py  -   checkRosterChange()
-        FileIO.py  -   _fixRoster()
-        FileIO.py  -   saveRosterInfo()
+        DataStream.py  -   _testCheckValidRoster()
+        DataStream.py  -   checkRosterChange()
+        DataStream.py  -   _fixRoster()
+        DataStream.py  -   saveRosterInfo()
 
     Modifies:
         N/A

@@ -8,7 +8,7 @@
 Create and allow interaction with a GUI window using tkinter.
 
 Used By:
-    main.py
+    ColdCall.py
 
 Members:
     Member Name:        : Type          : Default Val           -> Description
@@ -81,10 +81,10 @@ Methods:
                                                                                 |
     Description:    Upon user r key input, finds the highlighed index and calls |
                     self.moveToPost(index) which is a method passed on by init  |
-                    from the main, which also imported it from the Classroom.py |
-                    in order to move the selected student from deck to postdeck |
-                    because he/she has been cold called. Also sets up the flag. |
-                    for the selected student.                                   |
+                    from the ColdCall, which also imported it from the          |
+                    Classroom.py in order to move the selected student from deck|
+                    to postdeck because he/she has been cold called. Also sets  |
+                    up the flag for the selected student.                       |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self._DownArrowKey(self, event)                             |   ->  None
@@ -93,9 +93,9 @@ Methods:
                                                                                 |
     Description:    Upon user e key input, finds the highlighed index and calls |
                     self.moveToPost(index) which is a method passed on by init  |
-                    from the main, which also imported it from the Classroom.py |
-                    in order to move the selected student from deck to postdeck |
-                    because  he/she has been cold called.                       |
+                    from the ColdCall, which also imported it from the          |
+                    Classroom.py in order to move the selected student from deck|
+                    to postdeck because  he/she has been cold called.           |
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
 
@@ -103,7 +103,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self._startGUI(self)                                        |   ->  None
                                                                                 |
-    Usage:          main() in main.py                                           |
+    Usage:          main() in ColdCall.py                                       |
                                                                                 |
     Description:    Called by self.insertDeck() when a valid roster is found.   |
                     Sets the GUI window to the top and foreground, and starts   |
@@ -112,7 +112,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self.getRosterFileInput(self, errorMessage)                 |   ->  string  - An absolute file path given by
                                                                                 |                 the user
-    Usage:          main() in main.py                                           |
+    Usage:          main() in ColdCall.py                                       |
                                                                                 |
     Description:    This is called by main when there is no valid roster file.  |
                     Takes an errorMessage and shows it on the GUI. Pops up a    |
@@ -123,7 +123,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self.insertDeck(self,deck, moveToPost)                      |   ->  None
                                                                                 |
-    Usage:          main() in main.py                                           |
+    Usage:          main() in ColdCall.py                                       |
                                                                                 |
     Description:    This is called by main to feed the GUI with the student     |
                     deck. It also takes in the moveToPost function of the       |
@@ -456,11 +456,11 @@ class InstructorInterface():
         self.win.destroy()
 
     """
-    Called by: main.py
+    Called by: ColdCall.py
 
     Returns: self.rosterConfirmed: int. 1 for confirm, 0 for reject
 
-    Will be called by main after the roster confirm/reject process is done in
+    Will be called by ColdCall after the roster confirm/reject process is done in
     order to receive user choice.
     """
     def getRosterConfirmationResult(self):
@@ -468,11 +468,11 @@ class InstructorInterface():
 
 
     """
-    Called by: main.py
+    Called by: ColdCall.py
 
     Returns: None
 
-    Will be called by main.py in order to change the error message on the
+    Will be called by ColdCall.py in order to change the error message on the
     top window.
     """
     def changeMessage(self,message):

@@ -1,19 +1,19 @@
 """
-    File: main.py
+    File: ColdCall.py
     Description: The main function is a driver to start the software system
     with three modules. The sofeware system will read the roster from
     initial_roster.txt file or Saved/boot roster file to load student infomation.
     The system will output three files when program exit. (Log file, Saved/Boot file
     and perfermance file)
     Last update time: 1/24/2022
-    Dependencies: Classroom, InstructorInterface, FileIO
+    Dependencies: Classroom, InstructorInterface, DataStream
     Credit: n/a
 """
 
 # Import module
 from Classroom import Classroom
 from InstructorInterface import InstructorInterface
-from FileIO import *
+from DataStream import *
 
 """
     main(): the driver to control modules for the system

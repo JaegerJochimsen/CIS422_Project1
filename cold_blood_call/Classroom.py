@@ -32,7 +32,7 @@ class Classroom():
     Create and maintain the 3 CCS internal data structures used for tracking the state of the class room
 
     Used By:
-        main.py
+        ColdCall.py
 
     Members:
         Member Name:    : Type          : Default Val  -> Description
@@ -130,15 +130,15 @@ class Classroom():
         """
         Parameter:
             roster:     list of list of str where each list contains
-                        a single Student object's information (to be 
+                        a single Student object's information (to be
                         passed to constructor)
-            deckSize:   the number of Student objects On-Deck at any 
+            deckSize:   the number of Student objects On-Deck at any
                         given point, this defualts to 4 as per the SRS
 
-        Called By: 
-            main.py     -   called when Classroom is initialized
+        Called By:
+            ColdCall.py     -   called when Classroom is initialized
 
-        Calls: 
+        Calls:
             _buildRoster()
             _buildPrePostDeck()
             _createDeck()
@@ -148,7 +148,7 @@ class Classroom():
         Return:
             Instance of Classroom object
 
-        Description: 
+        Description:
             - Builds the initial roster of Student objects from the
               list of list of strings containing student information
             - Builds the initial preDeck and postDeck from the roster
@@ -472,27 +472,27 @@ class Classroom():
 
 
     def getDeck(self):
-        """ 
+        """
         Parameter: N/A
         Called By:
-            main.py     -   called in instantiation of
+            ColdCall.py     -   called in instantiation of
                             InstructorInterface object to give
                             initial state of deck.
         Calls: N/A
         Modifes: N/A
         Return: self.deck (list of Student)
-        Description: 
+        Description:
             Allows quick access to current state of the deck
         """
         return self.deck
 
 
     def mergeDecksToList(self):
-        """ 
+        """
         Parameter: N/A
 
         Called By:
-            main.py     -   called to save the current state of the
+            ColdCall.py     -   called to save the current state of the
                             program for writing to files
 
         Calls: 
