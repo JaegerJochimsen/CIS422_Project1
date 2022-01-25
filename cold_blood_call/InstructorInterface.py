@@ -15,8 +15,8 @@ Members:
     ------------------------------------------------------------------------------------------------------------------------------------------
     self.win            : tkinter       : Tk()                  -> the main tkinter window that will hold the names and accept input
 
-    self.text_colors    : list[string]  : ["black", "black",    -> The color array defining the color of text for each student name on the window
-                                           "black", "black"]
+    self.text_colors    : list[string]  : ["white", "white",    -> The color array defining the color of text for each student name on the window
+                                           "white", "white"]
 
     self.deck           : list[Student] : deck(parameter)       -> a list of Student objects that show who are currently on deck
 
@@ -144,8 +144,8 @@ class InstructorInterface():
         # The main GUI window object
         self.win = tk.Tk()
 
-        # All text starts as black by default
-        self.text_colors = ["black", "black", "black", "black"]
+        # All text starts as white by default
+        self.text_colors = ["white", "white", "white", "white"]
         self.deck = deck
         self.roster = None
         self.moveToPost = None
@@ -178,7 +178,7 @@ class InstructorInterface():
         self.win.geometry(dimensions)
 
         # Canvas object
-        self.canvas = Canvas(self.win, width = self.win_w, height = self.win_h, bg = "white")
+        self.canvas = Canvas(self.win, width = self.win_w, height = self.win_h, bg = "black")
 
         """
         Create 4 widgets, one for each displayed name.
@@ -195,7 +195,7 @@ class InstructorInterface():
 
         # If the input is not a valid deck, it is an error message, show it
         if not isinstance(self.deck,list):
-            self.canvas.create_text(5,15, text=self.deck, fill = "black", font = ('Helvetica 18 bold'), anchor='w')
+            self.canvas.create_text(5,15, text=self.deck, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
         else:
             # If the input is a valid deck,create the name labels and show them on top bar
@@ -256,7 +256,7 @@ class InstructorInterface():
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
             else:
-                self.text_colors[i] = "black"
+                self.text_colors[i] = "white"
 
         # After updating the data structures, call the function
         # that will display the text accordingly
@@ -280,7 +280,7 @@ class InstructorInterface():
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
             else:
-                self.text_colors[i] = "black"
+                self.text_colors[i] = "white"
 
         # After updating the data structures, call the function
         # that will display the text accordingly
@@ -385,7 +385,7 @@ class InstructorInterface():
         dimensions = "%dx%d+%d+%d" % (400, 60, self.screen_w*2/5, self.screen_h/3)
         self.modificationNotification.geometry(dimensions)
         canvas = Canvas(self.modificationNotification, width=50, height=50, bg="black")
-        canvas.create_text(5,15, text="The roster has been modified.", fill = "black", font = ('Helvetica 18 bold'), anchor='w')
+        canvas.create_text(5,15, text="The roster has been modified.", fill = "white", font = ('Helvetica 18 bold'), anchor='w')
         canvas.pack(fill=BOTH, expand=True)
 
 
@@ -408,6 +408,7 @@ class InstructorInterface():
 
         # setting the side window size and display location (under main window)
         self.win_2nd.geometry("%dx%d+0+%d" % (self.screen_w/8, self.screen_h/2.5, self.screen_h/8))
+        self.win_2nd.configure(bg = "black")
 
         # setup vertical scroll bar
         self.scrollbar = Scrollbar(self.win_2nd)
@@ -420,11 +421,7 @@ class InstructorInterface():
         self.confirmButton.pack(side=tk.TOP)
         self.rejectButton = Button(self.win_2nd, text="Cancel", command=self._rejectRoster)
         self.rejectButton.pack(side=tk.TOP)
-        self.student_list = Listbox(self.win_2nd, width = int(self.screen_w/8), height = int(self.screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'))
-
-        # Testing list:
-        # for i in range(300):
-        #     self.student_list.insert(END, i)
+        self.student_list = Listbox(self.win_2nd, width = int(self.screen_w/8), height = int(self.screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'), bg = "black", fg = "white")
 
         # Input student names into Listbox
         for i in range(len(self.deck)):
@@ -480,7 +477,7 @@ class InstructorInterface():
     """
     def changeMessage(self,message):
         self.canvas.delete("all")                                                                                  #Clear the canvas GUI
-        self.canvas.create_text(5,15, text=message, fill = "black", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
+        self.canvas.create_text(5,15, text=message, fill = "white", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
         self.canvas.pack(fill=BOTH, expand=True)
 
 
