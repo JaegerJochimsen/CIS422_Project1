@@ -5,7 +5,7 @@
     initial_roster.txt file or Saved/boot roster file to load student infomation.
     The system will output three files when program exit. (Log file, Saved/Boot file
     and perfermance file)
-    Last update time: 1/17/2022
+    Last update time: 1/24/2022
     Dependencies: Classroom, InstructorInterface, FileIO
     Credit: n/a
 """
@@ -22,16 +22,16 @@ class ColdCallSystem:
     def __init__(self):
         # loading Saved/Boot Roster, return a list of lists
         # readRoster() failed then return False
-        self.rosterModified = checkRosterChange()[1]   # Check for any modifications in the roster save
-        (self.rosterStringList, self.isInitialBoot) = readRoster() # Try to read the roster file, isInitialBoot is false if can read
-        self.exitProgram = 0   # Will be checked after to determine quit condition
+        self.rosterModified = checkRosterChange()[1]                  # Check for any modifications in the roster save
+        (self.rosterStringList, self.isInitialBoot) = readRoster()    # Try to read the roster file, isInitialBoot is false if can read
+        self.exitProgram = 0                                          # Will be checked after to determine quit condition
 
     def run(self):
-        haveValidRoster = self._getCheckConfirmRosterFile() # Call function to check roster validity, if not prompt the user
-        if not haveValidRoster: # If the user cancels the file input prompt, quit
+        haveValidRoster = self._getCheckConfirmRosterFile()   # Call function to check roster validity, if not prompt the user
+        if not haveValidRoster:                               # If the user cancels the file input prompt, quit
             return
-        self._startDeckGUI()    # Create the top deck bar and manage the decks
-        self._exitAndSave()     # Merge the decks and save the data
+        self._startDeckGUI()                                  # Create the top deck bar and manage the decks
+        self._exitAndSave()                                   # Merge the decks and save the data
 
 
 
@@ -69,17 +69,17 @@ class ColdCallSystem:
 
     def _startDeckGUI(self):
         self.ourClassroom = Classroom(self.rosterStringList, 4)   # call Classroom module to create students on-deck/predeck/postdeck with roster
-        ourGUI = InstructorInterface(self.rosterStringList)  #Create the cold-call GUI
-        ourGUI.insertDeck(self.ourClassroom.getDeck(),       #feed the GUI with the deck and needed classroom methods and start the program
+        ourGUI = InstructorInterface(self.rosterStringList)       # Create the cold-call GUI
+        ourGUI.insertDeck(self.ourClassroom.getDeck(),            # feed the GUI with the deck and needed classroom methods and start the program
                           self.ourClassroom.moveToPost,
                           self.ourClassroom.markAbsent,
                           self.rosterModified)
 
     def _exitAndSave(self):
-        save = self.ourClassroom.mergeDecksToList()  # save the current student info on the post-deck/pre-deck/on-deck
-        writeToSavedBootRoster(save)            # Write the Saved/Boot roster file
-        writeToLogFile(save)                    # Write the log file
-        updatePerforanceFile(save)              # Upadte the Performance file
+        save = self.ourClassroom.mergeDecksToList()   # save the current student info on the post-deck/pre-deck/on-deck
+        writeToSavedBootRoster(save)                  # Write the Saved/Boot roster file
+        writeToLogFile(save)                          # Write the log file
+        updatePerforanceFile(save)                    # Upadte the Performance file
 
 if __name__ == "__main__":
     ColdCall = ColdCallSystem()

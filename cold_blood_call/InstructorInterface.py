@@ -15,8 +15,8 @@ Members:
     ------------------------------------------------------------------------------------------------------------------------------------------
     self.win            : tkinter       : Tk()                  -> the main tkinter window that will hold the names and accept input
 
-    self.text_colors    : list[string]  : ["white", "white",    -> The color array defining the color of text for each student name on the window
-                                           "white", "white"]
+    self.text_colors    : list[string]  : ["black", "black",    -> The color array defining the color of text for each student name on the window
+                                           "black", "black"]
 
     self.deck           : list[Student] : deck(parameter)       -> a list of Student objects that show who are currently on deck
 
@@ -144,8 +144,8 @@ class InstructorInterface():
         # The main GUI window object
         self.win = tk.Tk()
 
-        # All text starts as white by default
-        self.text_colors = ["white", "white", "white", "white"]
+        # All text starts as black by default
+        self.text_colors = ["black", "black", "black", "black"]
         self.deck = deck
         self.roster = None
         self.moveToPost = None
@@ -178,7 +178,7 @@ class InstructorInterface():
         self.win.geometry(dimensions)
 
         # Canvas object
-        self.canvas = Canvas(self.win, width = self.win_w, height = self.win_h, bg = "black")
+        self.canvas = Canvas(self.win, width = self.win_w, height = self.win_h, bg = "white")
 
         """
         Create 4 widgets, one for each displayed name.
@@ -195,7 +195,7 @@ class InstructorInterface():
 
         # If the input is not a valid deck, it is an error message, show it
         if not isinstance(self.deck,list):
-            self.canvas.create_text(5,15, text=self.deck, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
+            self.canvas.create_text(5,15, text=self.deck, fill = "black", font = ('Helvetica 18 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
         else:
             # If the input is a valid deck,create the name labels and show them on top bar
@@ -256,7 +256,7 @@ class InstructorInterface():
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
             else:
-                self.text_colors[i] = "white"
+                self.text_colors[i] = "black"
 
         # After updating the data structures, call the function
         # that will display the text accordingly
@@ -280,7 +280,7 @@ class InstructorInterface():
             if (self.highlight_list[i] is True):
                 self.text_colors[i] = "red"
             else:
-                self.text_colors[i] = "white"
+                self.text_colors[i] = "black"
 
         # After updating the data structures, call the function
         # that will display the text accordingly
@@ -385,7 +385,7 @@ class InstructorInterface():
         dimensions = "%dx%d+%d+%d" % (400, 60, self.screen_w*2/5, self.screen_h/3)
         self.modificationNotification.geometry(dimensions)
         canvas = Canvas(self.modificationNotification, width=50, height=50, bg="black")
-        canvas.create_text(5,15, text="The roster has been modified.", fill = "white", font = ('Helvetica 18 bold'), anchor='w')
+        canvas.create_text(5,15, text="The roster has been modified.", fill = "black", font = ('Helvetica 18 bold'), anchor='w')
         canvas.pack(fill=BOTH, expand=True)
 
 
@@ -480,7 +480,7 @@ class InstructorInterface():
     """
     def changeMessage(self,message):
         self.canvas.delete("all")                                                                                  #Clear the canvas GUI
-        self.canvas.create_text(5,15, text=message, fill = "white", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
+        self.canvas.create_text(5,15, text=message, fill = "black", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
         self.canvas.pack(fill=BOTH, expand=True)
 
 
