@@ -13,7 +13,7 @@ Used By:
 Members:
     Member Name:        : Type          : Default Val           -> Description
     ------------------------------------------------------------------------------------------------------------------------------------------
-    self.win            : tkinter       : Tk()                  -> the main tkinter window that will hold the names and accept input
+    self._topBar            : tkinter       : Tk()                  -> the main tkinter window that will hold the names and accept input
 
     self.text_colors    : list[string]  : ["white", "white",    -> The color array defining the color of text for each student name on the window
                                            "white", "white"]
@@ -57,7 +57,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self._leftArrowKey(self, event)                             |   ->  None
                                                                                 |
-    Usage:          self.win.bind(<Left>)                                       |
+    Usage:          self._topBar.bind(<Left>)                                       |
                                                                                 |
     Description:    Upon user left arrow input, calls self._decreaseCounter()   |
                     to change the highlighted index, changes the highlight_list |
@@ -67,7 +67,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self._rightArrowKey(self, event)                            |   ->  None
                                                                                 |
-    Usage:          self.win.bind(<Right>)                                      |
+    Usage:          self._topBar.bind(<Right>)                                      |
                                                                                 |
     Description:    Upon user right arrow input, calls self._increaseCounter()  |
                     to change the highlighted index, changes the highlight_list |
@@ -77,7 +77,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self._UpArrowKey(self, event)                               |   ->  None
                                                                                 |
-    Usage:          self.win.bind(<r>)                                          |
+    Usage:          self._topBar.bind(<r>)                                          |
                                                                                 |
     Description:    Upon user r key input, finds the highlighed index and calls |
                     self.moveToPost(index) which is a method passed on by init  |
@@ -89,7 +89,7 @@ Methods:
     ----------------------------------------------------------------------------|-------------------------------------------------
     Declaration:    self._DownArrowKey(self, event)                             |   ->  None
                                                                                 |
-    Usage:          self.win.bind(<e>)                                          |
+    Usage:          self._topBar.bind(<e>)                                          |
                                                                                 |
     Description:    Upon user e key input, finds the highlighed index and calls |
                     self.moveToPost(index) which is a method passed on by init  |
@@ -142,7 +142,7 @@ class InstructorInterface():
     def __init__(self, deck=""):
 
         # The main GUI window object
-        self.win = tk.Tk()
+        self._topBar = tk.Tk()
 
         # All text starts as white by default
         self.text_colors = ["white", "white", "white", "white"]
@@ -157,28 +157,28 @@ class InstructorInterface():
         self.highlight_counter = 0
 
         # Key listeners as part of the Tkinter library, waits for key press
-        self.win.bind('<Right>', self._rightArrowKey)
-        self.win.bind('<Left>', self._leftArrowKey)
-        self.win.bind('<,>', self._chooseWithoutFlag)
-        self.win.bind('<.>', self._chooseWithFlag)
-        self.win.bind('</>', self._chooseAbsent)
+        self._topBar.bind('<Right>', self._rightArrowKey)
+        self._topBar.bind('<Left>', self._leftArrowKey)
+        self._topBar.bind('<,>', self._chooseWithoutFlag)
+        self._topBar.bind('<.>', self._chooseWithFlag)
+        self._topBar.bind('</>', self._chooseAbsent)
 
         # Gets native screen resolution width and height
-        self.screen_w = self.win.winfo_screenwidth()
-        self.screen_h = self.win.winfo_screenheight()
+        self.screen_w = self._topBar.winfo_screenwidth()
+        self.screen_h = self._topBar.winfo_screenheight()
 
         # 19 is a scalar modifier that happens to create a decent
-        # screen height for our self.win based on original native screen height
+        # screen height for our self._topBar based on original native screen height
         self.win_h = self.screen_h/22
         self.win_w = self.screen_w
 
         # Make a string "widthxheight" to pass to geometry function
         dimensions = "%dx%d+%d+%d" % (self.win_w, self.win_h,0,0)
         # Sets the self.window size to these dimensions
-        self.win.geometry(dimensions)
+        self._topBar.geometry(dimensions)
 
         # Canvas object
-        self.canvas = Canvas(self.win, width = self.win_w, height = self.win_h, bg = "black")
+        self.canvas = Canvas(self._topBar, width = self.win_w, height = self.win_h, bg = "black")
 
         """
         Create 4 widgets, one for each displayed name.
@@ -341,9 +341,9 @@ class InstructorInterface():
     above other application GUIs on the user screen.
     """
     def _startGUI(self):
-        self.win.wm_attributes("-topmost", "true")
-        self.win.lift()
-        self.win.mainloop()
+        self._topBar.wm_attributes("-topmost", "true")
+        self._topBar.lift()
+        self._topBar.mainloop()
 
 
     """
@@ -402,27 +402,27 @@ class InstructorInterface():
         """
 
         # The side GUI window object
-        self.win_2nd = Tk()
+        self._rosterConfirmWindow = Tk()
         self.deck = deck
         # Setup side window name
-        self.win_2nd.title("Student Roster")
+        self._rosterConfirmWindow.title("Student Roster")
 
         # setting the side window size and display location (under main window)
-        self.win_2nd.geometry("%dx%d+0+%d" % (self.screen_w/8, self.screen_h/2.5, self.screen_h/8))
-        self.win_2nd.configure(bg = "black")
+        self._rosterConfirmWindow.geometry("%dx%d+0+%d" % (self.screen_w/8, self.screen_h/2.5, self.screen_h/8))
+        self._rosterConfirmWindow.configure(bg = "black")
 
         # setup vertical scroll bar
-        self.scrollbar = Scrollbar(self.win_2nd)
+        self.scrollbar = Scrollbar(self._rosterConfirmWindow)
 
         # setting scroll bar display location in window
         self.scrollbar.pack(side = RIGHT, fill = Y)
 
         # add scrollbar module into Listbox
-        self.confirmButton = Button(self.win_2nd, text="Confirm", command= self._confirmRoster)
+        self.confirmButton = Button(self._rosterConfirmWindow, text="Confirm", command= self._confirmRoster)
         self.confirmButton.pack(side=tk.TOP)
-        self.rejectButton = Button(self.win_2nd, text="Cancel", command=self._rejectRoster)
+        self.rejectButton = Button(self._rosterConfirmWindow, text="Cancel", command=self._rejectRoster)
         self.rejectButton.pack(side=tk.TOP)
-        self.student_list = Listbox(self.win_2nd, width = int(self.screen_w/8), height = int(self.screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'), bg = "black", fg = "white")
+        self.student_list = Listbox(self._rosterConfirmWindow, width = int(self.screen_w/8), height = int(self.screen_h/2.5), yscrollcommand = self.scrollbar.set, font = ('Helvetica 13 bold'), bg = "black", fg = "white")
 
         # Input student names into Listbox
         for i in range(len(self.deck)):
@@ -435,7 +435,7 @@ class InstructorInterface():
 
         # setting scrollbar command using Listbox.yview() method
         self.scrollbar.config(command = self.student_list.yview)
-        self.win_2nd.mainloop()
+        self._rosterConfirmWindow.mainloop()
 
 
     """
@@ -444,8 +444,8 @@ class InstructorInterface():
     """
     def _confirmRoster(self):
         self.rosterConfirmed = 1
-        self.win_2nd.destroy()
-        self.win.destroy()
+        self._rosterConfirmWindow.destroy()
+        self._topBar.destroy()
 
 
     """
@@ -453,8 +453,8 @@ class InstructorInterface():
     roster input we destroy both GUI windows and prepare to re-ask.
     """
     def _rejectRoster(self):
-        self.win_2nd.destroy()
-        self.win.destroy()
+        self._rosterConfirmWindow.destroy()
+        self._topBar.destroy()
 
     """
     Called by: ColdCall.py
@@ -487,4 +487,4 @@ class InstructorInterface():
     """
 
     def killMain(self):
-        self.win.destroy()
+        self._topBar.destroy()
