@@ -19,10 +19,10 @@ from shutil import rmtree
 # Delimiter represents how each field in the files are separated
 DELIMITER = '\t'
 
-def saveRosterInfo(fileName:str)->None:
+def saveRosterInfo(rosterFile:str)->None:
     """
     Parameter:
-        fileName  -   a string that represents a file name of a roster
+        rosterFile  -   a string that represents a file name of a roster
 
     Called by:
         DataStream.py - readRoster()
@@ -54,9 +54,9 @@ def saveRosterInfo(fileName:str)->None:
     # open the file
     roster_info = open(".sysData/roster_info.txt", "w")
     # write the roster file name
-    roster_info.write(f"{fileName}\n")
+    roster_info.write(f"{rosterFile}\n")
     # save the time that it was last modified
-    upload_time = path.getmtime(fileName)
+    upload_time = path.getmtime(rosterFile)
     # write the modification time to the file
     roster_info.write(f"{upload_time}\n")
     # close the file
@@ -114,6 +114,10 @@ def checkRosterChange()->(str, bool) or (None, None):
 
     # check if the .sysData even exists
     if ".sysData" not in listdir():
+        # if not return
+        return (None, None)
+    # check if the roster_info.txt exists
+    elif "roster_info.txt" not in listdir(".sysData"):
         # if not return
         return (None, None)
     # open the roster_info.txt file
