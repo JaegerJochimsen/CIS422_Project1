@@ -68,19 +68,19 @@ def saveRosterInfo(rosterFile:str)->None:
             # if not get the current working directory information
             cwd = getcwd()
             # create the path of the new data directory
-            new_dir = cwd + "/.sysData"
+            newDir = cwd + "/.sysData"
             # create the data directory
-            mkdir(new_dir)
+            mkdir(newDir)
     # open the file
-    roster_info = open(".sysData/roster_info.txt", "w")
+    rosterInfo = open(".sysData/roster_info.txt", "w")
     # write the roster file name
-    roster_info.write(f"{rosterFile}\n")
+    rosterInfo.write(f"{rosterFile}\n")
     # save the time that it was last modified
-    upload_time = path.getmtime(rosterFile)
+    uploadTime = path.getmtime(rosterFile)
     # write the modification time to the file
-    roster_info.write(f"{upload_time}\n")
+    rosterInfo.write(f"{uploadTime}\n")
     # close the file
-    roster_info.close()
+    rosterInfo.close()
 ################################################################################
 
 ################################################################################
@@ -142,23 +142,23 @@ def checkRosterChange()->(str, bool) or (None, None):
         # if not return
         return (None, None)
     # open the roster_info.txt file
-    roster_info = open(".sysData/roster_info.txt", "r")
+    rosterInfo= open(".sysData/roster_info.txt", "r")
     # initial a list that will hold information about the file
-    roster_info_list = list()
+    rosterInfoList = list()
     # loop through the file and grab the info, putting it in the list
-    for line in roster_info:
+    for line in rosterInfo:
         # add data to the list
-        roster_info_list.append(line.strip())
+        rosterInfoList.append(line.strip())
     # check the time the roster was last modified
-    check_time = path.getmtime(roster_info_list[0])
+    checkTime = path.getmtime(rosterInfoList[0])
     # check if the roster was edited
-    if float(check_time) == float(roster_info_list[1]):
+    if float(checkTime) == float(rosterInfoList[1]):
         # if it was not modified return the file name and False
-        return (roster_info_list[0], False)
+        return (rosterInfoList[0], False)
     # if it was modified return the file name and True
-    return (roster_info_list[0], True)
+    return (rosterInfoList[0], True)
     # close file
-    roster_info.close()
+    rosterInfo.close()
 ################################################################################
 
 
@@ -185,44 +185,44 @@ def _fixRoster(rosterFile: str)->list:
     """
 
     # open the file saved roster
-    saved_roster = open(".sysData/saved_boot.txt", "r")
+    savedRoster = open(".sysData/saved_boot.txt", "r")
     # open the initial roster
-    initial_roster = open(rosterFile, "r")
+    initialRoster = open(rosterFile, "r")
     # create two lists that will hold the contents of both files
-    saved_roster_list = list()
-    initial_roster_list = list()
+    savedRosterList = list()
+    initialRosterList = list()
     # loop through the files
-    for line in saved_roster:
+    for line in savedRoster:
         # add each line to the list
-        saved_roster_list.append(line.strip().split(f"{DELIMITER}"))
-    for line in initial_roster:
+        savedRosterList.append(line.strip().split(f"{DELIMITER}"))
+    for line in initialRoster:
         # add each line to the list
-        initial_roster_list.append(line.strip().split(f"{DELIMITER}"))
+        initialRosterList.append(line.strip().split(f"{DELIMITER}"))
     # close the files
-    saved_roster.close()
-    initial_roster.close()
+    savedRoster.close()
+    initialRoster.close()
     # sort student data by last name
-    saved_roster_sorted = sorted(saved_roster_list, key=itemgetter(1))
-    initial_roster_sorted = sorted(initial_roster_list, key=itemgetter(1))
+    savedRosterSorted = sorted(savedRosterList, key=itemgetter(1))
+    initialRosterSorted = sorted(initialRosterList, key=itemgetter(1))
     # initialize counters to represent positions in each list
     i = 0
     j = 0
     # save the len of the initial roster
-    init_saved_len = len(saved_roster_sorted)
+    initSavedLen = len(savedRosterSorted)
     # create a list of additional fields that will be added to new students
-    additional_fields = ["False", "0", "0", "0"]
+    additionalFields = ["False", "0", "0", "0"]
     # loop through the initial roster
-    for _ in range(len(initial_roster_sorted)):
+    for _ in range(len(initialRosterSorted)):
         # if on the last element
-        if j == init_saved_len:
+        if j == initSavedLen:
             # if a phonetic was added
-            if len(initial_roster_sorted[i]) == 5:
+            if len(initialRosterSorted[i]) == 5:
                 # add a phonetic and the other student information
-                saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
+                savedRosterSorted.append(initialRosterSorted[i] + additionalFields)
             # if no phonetic
-            elif len(initial_roster_sorted[i]) == 4:
+            elif len(initialRosterSorted[i]) == 4:
                 #  add other information only
-                saved_roster_sorted.append(initial_roster_sorted[i] + ["None"] + additional_fields)
+                savedRosterSorted.append(initialRosterSorted[i] + ["None"] + additionalFields)
             # should not make it here unless roster is incorrect
             else:
                 # error message invalid roster
@@ -230,25 +230,25 @@ def _fixRoster(rosterFile: str)->list:
             # increment i
             i += 1
         # if student already appears in both, keep moving
-        elif initial_roster_sorted[i][1] == saved_roster_sorted[j][1]:
+        elif initialRosterSorted[i][1] == savedRosterSorted[j][1]:
             # if we have added or modified our phonetic code field AND
             # it is not the same as what we had saved
-            if len(initial_roster_sorted[i]) == 5 and saved_roster_sorted[j][4] != initial_roster_sorted[i][4]:
+            if len(initialRosterSorted[i]) == 5 and savedRosterSorted[j][4] != initialRosterSorted[i][4]:
                 # update to be homogenous with initial_roster_sorted's phonetic
-                saved_roster_sorted[j][4] = initial_roster_sorted[i][4]
+                savedRosterSorted[j][4] = initialRosterSorted[i][4]
             # increment both i and j
             i += 1
             j += 1
         # add a whole new student
-        elif initial_roster_sorted[i][1] < saved_roster_sorted[j][1]:
+        elif initialRosterSorted[i][1] < savedRosterSorted[j][1]:
             # if a phonetic was added
-            if len(initial_roster_sorted[i]) == 5:
+            if len(initialRosterSorted[i]) == 5:
                 # add a phonetic and the other student information
-                saved_roster_sorted.append(initial_roster_sorted[i] + additional_fields)
+                savedRosterSorted.append(initialRosterSorted[i] + additionalFields)
             # if no phonetic
-            elif len(initial_roster_sorted[i]) == 4:
+            elif len(initialRosterSorted[i]) == 4:
                 #  add other information only
-                saved_roster_sorted.append(initial_roster_sorted[i] + ["None"] + additional_fields)
+                savedRosterSorted.append(initialRosterSorted[i] + ["None"] + additionalFields)
             # should not make it here unless roster is incorrect
             else:
                 # error message invalid roster
@@ -258,15 +258,15 @@ def _fixRoster(rosterFile: str)->list:
         # for future features the abilty the remove a student
         else:
             # remove the student
-            saved_roster_sorted[j] = None
+            savedRosterSorted[j] = None
             # only increment j
             j += 1
     # resort the roster
-    saved_roster_sorted = [element for element in saved_roster_sorted if element is not None]
+    savedRosterSorted = [element for element in savedRosterSorted if element is not None]
     # sort the final roster
-    new_roster = sorted(saved_roster_sorted, key=itemgetter(1))
+    newRoster = sorted(savedRosterSorted, key=itemgetter(1))
     # return the resulting roster
-    return new_roster
+    return newRoster
 ################################################################################
 
 
@@ -299,35 +299,35 @@ def _checkValidRoster(rosterFile:str)->str:
     """
 
     # store the open file object in open_roster
-    open_roster = open(rosterFile, "r")
+    openRoster = open(rosterFile, "r")
     # initial a list to store each line in the file
-    roster_list = list()
-    for line in open_roster:
-        roster_list.append(line.strip().split(f"{DELIMITER}"))
+    rosterList = list()
+    for line in openRoster:
+        rosterList.append(line.strip().split(f"{DELIMITER}"))
 
     # check that the length of each line is corrent
     # if not return false right away
     # then check for valid ID and email
-    for i, student in enumerate(roster_list):
+    for i, student in enumerate(rosterList):
         # check length of each line
         if (len(student) != 4) and (len(student) != 5):
-            open_roster.close()
+            openRoster.close()
             return (f"Invalid number of fields for student on line: {i+1}")
         # regex check for ID (3rd element should always be ID according to SRS)
         if search("[0-9]{9}", student[2]) == None:
             # close file and return error message
-            open_roster.close()
+            openRoster.close()
             return (f"Invalid student ID number on line: {i+1}")
         # regex check for email (4th element should always be email according to SRS)
         # refrenced pattern from:
         # https://www.tutorialspoint.com/checking-for-valid-email-address-using-regular-expressions-in-java
         if search("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", student[3]) == None:
             # close file and return error message
-            open_roster.close()
+            openRoster.close()
             return (f"Invalid email on line: {i+1}")
 
     # close roster
-    open_roster.close()
+    openRoster.close()
     # will only reach here if roster is valid to return
     return "VALID"
 ################################################################################
@@ -389,9 +389,9 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         # if not get the current working directory information
         cwd = getcwd()
         # create the path of the new data directory
-        new_dir = cwd + "/.sysData"
+        newDir = cwd + "/.sysData"
         # create the data directory
-        mkdir(new_dir)
+        mkdir(newDir)
     # variable to represent if it is the first bootup of the system
     initial = True
     # check if the system datafile exists
@@ -403,36 +403,36 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         initial = False
         # store the name of the initial roster as well as a boolean
         # that represents if it has cha
-        (roster_name, roster_changed) = checkRosterChange()
+        (rosterName, rosterChanged) = checkRosterChange()
         # check if the roster has changed
-        if roster_changed:
+        if rosterChanged:
             # save the initial roster metadata in a file
-            saveRosterInfo(roster_name)
+            saveRosterInfo(rosterName)
             # created a variable that holds the new list from _fixRoster
-            student_list = _fixRoster(roster_name)
+            studentList = _fixRoster(rosterName)
             # return the student data and False because the roster was not
             # initial bootup
-            return (student_list, False)
+            return (studentList, False)
     # check if the defualt name for the initial roster exists
     elif "initial_roster.txt" in listdir():
         # roster_status stores the validity of the initial roster
-        roster_status = _checkValidRoster("initial_roster.txt")
+        rosterStatus = _checkValidRoster("initial_roster.txt")
         # if the initial roster is valid
-        if roster_status == "VALID":
+        if rosterStatus == "VALID":
             print("READING DEFAULT")
             # roster now contains the initial roster
             roster = open("initial_roster.txt", "r")
         # if the initial roster is not in a valid format return error message
         else:
             # return the initial data and True because first bootup
-            return (roster_status, True)
+            return (rosterStatus, True)
     # INITIAL CASE MOST OF THE TIME
     # if a roster with an alternate name is being used
     elif rosterFile != "initial_roster.txt":
         # roster_status stores the validity of the initial roster
-        roster_status = _checkValidRoster(rosterFile)
+        rosterStatus = _checkValidRoster(rosterFile)
         # if the initial roster is valid
-        if roster_status == "VALID":
+        if rosterStatus == "VALID":
             # debug statement to help error checking
             #print("READING CUSTOM")
             # roster now contains the initial roster with a custom name
@@ -440,7 +440,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         # if the initial roster is not in a valid format return error message
         else:
             # return the error message and True because first bootup
-            return (roster_status, True)
+            return (rosterStatus, True)
     # no roster is provided, return a message that prompts the user to input a file
     else:
         return ("Please provide an initial roster", True)
@@ -449,15 +449,15 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     # Here the program begins to fill the a list with student data #
     ################################################################
     # initialize a list that will hold each student
-    student_list = list()
+    studentList = list()
     # parse through each line in the roster file
     for line in roster:
         # add a list split on the delimiter that holds data for the given student
-        student_list.append(line.strip().split(f"{DELIMITER}"))
+        studentList.append(line.strip().split(f"{DELIMITER}"))
     # if this is the initial bootup the system will add additional fields
     if initial:
         # parse through each student
-        for student in student_list:
+        for student in studentList:
             # is roster with no phonetic, add none value to that field
             if len(student) == 4: # if no phonetic
                 student.append("None") # no phonetic
@@ -473,8 +473,8 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     # close roster file
     roster.close()
     # return the list sorted by last name
-    sorted_student_list = sorted(student_list, key=itemgetter(1))
-    return (sorted_student_list, initial)
+    sortedStudentList = sorted(studentList, key=itemgetter(1))
+    return (sortedStudentList, initial)
 ################################################################################
 
 
@@ -516,38 +516,38 @@ def writeToSavedBootRoster(students:list)->None:
     """
 
     # create the .saved_boot_roster.txt file
-    new_roster = open(".sysData/saved_boot.txt", "w")
+    newRoster = open(".sysData/saved_boot.txt", "w")
     # parse through the student list and write to each attribute to the file
     for student in students:
         # write first name
-        new_roster.write(f"{student[0]}{DELIMITER}")
+        newRoster.write(f"{student[0]}{DELIMITER}")
         # write last name
-        new_roster.write(f"{student[1]}{DELIMITER}")
+        newRoster.write(f"{student[1]}{DELIMITER}")
         # write UO ID
-        new_roster.write(f"{student[2]}{DELIMITER}")
+        newRoster.write(f"{student[2]}{DELIMITER}")
         # write email
-        new_roster.write(f"{student[3]}{DELIMITER}")
+        newRoster.write(f"{student[3]}{DELIMITER}")
         # write phonetic
-        new_roster.write(f"{student[4]}{DELIMITER}")
+        newRoster.write(f"{student[4]}{DELIMITER}")
         # write spoken recently (True/False)
-        new_roster.write(f"{student[6]}{DELIMITER}")
+        newRoster.write(f"{student[6]}{DELIMITER}")
         # calculate new previous contributions current + previous
-        previous_contributions = str((int(student[9]) + int(student[8])))
+        previousContributions = str((int(student[9]) + int(student[8])))
         # write new previous_contributions
-        new_roster.write(f"{previous_contributions}{DELIMITER}")
+        newRoster.write(f"{previousContributions}{DELIMITER}")
         # calculate the new previous_flags
-        previous_flags = str(int(student[7]) + int(student[10]))
+        previousFlags = str(int(student[7]) + int(student[10]))
         # write the new previous_flags
-        new_roster.write(f"{previous_flags}{DELIMITER}")
+        newRoster.write(f"{previousFlags}{DELIMITER}")
         # check if the student was absent
         if student[5] == "False":
             # if present is false, increment absences
-            new_roster.write(f"{str(int(student[11]) + 1)}\n")
+            newRoster.write(f"{str(int(student[11]) + 1)}\n")
         else:
             # if the student was present, do not increment absences
-            new_roster.write(f"{student[11]}\n")
+            newRoster.write(f"{student[11]}\n")
     # close file
-    new_roster.close()
+    newRoster.close()
 ################################################################################
 
 
@@ -601,40 +601,40 @@ def writeToLogFile(students:list)->None:
         # create the data directory
         mkdir(new_dir)
     # create the logfile for the current session
-    log_name = "LogFile-" + str(date.today()) + ".csv"
-    log_file = open(f"Data/{log_name}", "w")
+    logName = "LogFile-" + str(date.today()) + ".csv"
+    logFile = open(f"Data/{logName}", "w")
     # after opening the file, write the header
-    log_file.write("Log File for Cold Call Assist Program\n")
-    log_file.write(f"Date:, {str(date.today()).replace('-', '/')}\n")
-    log_file.write(f"Student Name, Email, Spoken/Flagged/Absent\n")
+    logFile.write("Log File for Cold Call Assist Program\n")
+    logFile.write(f"Date:, {str(date.today()).replace('-', '/')}\n")
+    logFile.write(f"Student Name, Email, Spoken/Flagged/Absent\n")
     # parse through each student in the student list argument
     for student in students:
         # check if the student was absent
         if student[5] == "False":
             # record the student's name
-            log_file.write(f"{student[0]} {student[1]}, ")
+            logFile.write(f"{student[0]} {student[1]}, ")
             # record the student's name
-            log_file.write(f"{student[3]}, ")
+            logFile.write(f"{student[3]}, ")
             # record that they were absent
-            log_file.write(f"A{DELIMITER}\n")
+            logFile.write(f"A{DELIMITER}\n")
         # check if the student was flagged at all
         elif int(student[7]) > 0:
             # record the student's name
-            log_file.write(f"{student[0]} {student[1]}, ")
+            logFile.write(f"{student[0]} {student[1]}, ")
             # record the student's name
-            log_file.write(f"{student[3]}, ")
+            logFile.write(f"{student[3]}, ")
             # record that they were flagged
-            log_file.write(f"X{DELIMITER}\n")
+            logFile.write(f"X{DELIMITER}\n")
         # check if the student was spoken but not flagged
         elif int(student[8]) > 0:
             # record the student's name
-            log_file.write(f"{student[0]} {student[1]}, ")
+            logFile.write(f"{student[0]} {student[1]}, ")
             # record the student's email
-            log_file.write(f"{student[3]}, ")
+            logFile.write(f"{student[3]}, ")
             # record if the student spoke but was not flagged
-            log_file.write(f"S{DELIMITER}\n")
+            logFile.write(f"S{DELIMITER}\n")
     # close the file
-    log_file.close()
+    logFile.close()
 ################################################################################
 
 
@@ -680,7 +680,7 @@ def updatePerforanceFile(students:list)->None:
     """
 
     # sort the list that is passed in so it lines up with the old performance_file order
-    students_sorted = sorted(students, key=itemgetter(1))
+    studentsSorted = sorted(students, key=itemgetter(1))
 
     ##############################################################
     # This is the case when there is no current performance file #
@@ -688,45 +688,45 @@ def updatePerforanceFile(students:list)->None:
     ##############################################################
     if "Performance-File.csv" not in listdir("Data"):
         # Open file
-        performance_file = open("Data/Performance-File.csv", "w")
+        performanceFile = open("Data/Performance-File.csv", "w")
         # write header information to file
-        performance_file.write("Performance File for Cold Call Assist Program\n")
-        performance_file.write(f"Date:,{str(date.today()).replace('-', '/')}\n")
-        performance_file.write("First Name,Last Name,UO ID,Email,")
-        performance_file.write("Times Called,Times Flagged,Absences,")
-        performance_file.write("List of Dates Spoken\n")
+        performanceFile.write("Performance File for Cold Call Assist Program\n")
+        performanceFile.write(f"Date:,{str(date.today()).replace('-', '/')}\n")
+        performanceFile.write("First Name,Last Name,UO ID,Email,")
+        performanceFile.write("Times Called,Times Flagged,Absences,")
+        performanceFile.write("List of Dates Spoken\n")
         # loop through passed in student information
-        for student in students_sorted:
+        for student in studentsSorted:
             # add first name
-            performance_file.write(f"{student[0]},")
+            performanceFile.write(f"{student[0]},")
             # add last name
-            performance_file.write(f"{student[1]},")
+            performanceFile.write(f"{student[1]},")
             # add id number
-            performance_file.write(f"{student[2]},")
+            performanceFile.write(f"{student[2]},")
             # add email
-            performance_file.write(f"{student[3]},") # add the email
+            performanceFile.write(f"{student[3]},") # add the email
             # add the contributions line (initial contributions)
-            performance_file.write(f"{student[8]},")
+            performanceFile.write(f"{student[8]},")
             # add the number of times flagged for the first session
-            performance_file.write(f"{student[7]},")
+            performanceFile.write(f"{student[7]},")
             # add 1 to absences if absent for first session
             if student[5] == "False":
                 # 1 because they were absent
-                performance_file.write(f"1,")
+                performanceFile.write(f"1,")
             else:
                 # 0 because they were present
-                performance_file.write(f"0,")
+                performanceFile.write(f"0,")
             # if the student spoke at all
             if int(student[8]) > 0:
-                performance_file.write(f"{str(date.today()).replace('-', '/')}") # add the date
+                performanceFile.write(f"{str(date.today()).replace('-', '/')}") # add the date
                 # if not spoken
             else:
                 # add a dash for the day
-                performance_file.write("-") # add a dash
+                performanceFile.write("-") # add a dash
             # write a newline for formatting
-            performance_file.write("\n")
+            performanceFile.write("\n")
         # Close file and return None
-        performance_file.close()
+        performanceFile.close()
         return None
 
     ###############################################################
@@ -734,104 +734,104 @@ def updatePerforanceFile(students:list)->None:
     # This will be the case for all sessions other than the first #
     ###############################################################
     # when the file exists but needs to be updated after the session
-    performance_file = open("Data/Performance-File.csv", "r")
+    performanceFile = open("Data/Performance-File.csv", "r")
     # skip the head and collumns lines
-    performance_file.readline()
-    performance_file.readline()
-    performance_file.readline()
+    performanceFile.readline()
+    performanceFile.readline()
+    performanceFile.readline()
     # Initialize a list that will hold data from the previous file
-    prev_file = list()
+    prevFile = list()
     # loops through the student data
-    for student in performance_file:
+    for student in performanceFile:
         # put each student in the old performance_file into a list and split each
         # of their fields into a a seperate element of the internal list
-        prev_file.append(student.strip().split(","))
+        prevFile.append(student.strip().split(","))
     # close the file
-    performance_file.close()
+    performanceFile.close()
     # sort the list by last name so it lines up with the data that is passed in
-    prev_file_sorted = sorted(prev_file, key=itemgetter(1))
+    prevFileSorted = sorted(prevFile, key=itemgetter(1))
 
     # go through each student from the current session and check if they spoke
     # if they did add the date to the list that will be written to the performance_file
     # this includes incrementing the contributions field, as well as the flag field (when applicable)
     # j will represent the old performance_file increment location
     j = 0
-    for i in range(len(students_sorted)):
+    for i in range(len(studentsSorted)):
         # if not a new student
-        if students_sorted[i][1] == prev_file_sorted[j][1]:
+        if studentsSorted[i][1] == prevFileSorted[j][1]:
             # if the student spoke
-            if int(students_sorted[i][8]) > 0:
+            if int(studentsSorted[i][8]) > 0:
                 # add the number of times the student contributed in the current session to the total
-                prev_file_sorted[j][4] = str((int(students_sorted[i][9]) + int(students_sorted[i][8])))
+                prevFileSorted[j][4] = str((int(studentsSorted[i][9]) + int(studentsSorted[i][8])))
                 # add the date to the list of dates because the student spoke
-                prev_file_sorted[j].append(str(date.today()).replace('-', '/'))
+                prevFileSorted[j].append(str(date.today()).replace('-', '/'))
             # the student did not speak
             else:
                 # add a dash because they did not speak
-                prev_file_sorted[j].append("-")
+                prevFileSorted[j].append("-")
             # if the student was flagged
-            if int(students_sorted[i][7]) > 0:
+            if int(studentsSorted[i][7]) > 0:
                 # increment flagged
-                prev_file_sorted[j][5] = str(int(prev_file_sorted[j][5]) + int(students_sorted[i][7]))
+                prevFileSorted[j][5] = str(int(prevFileSorted[j][5]) + int(studentsSorted[i][7]))
             # if the student was absent
-            if students_sorted[i][5] == "False":
+            if studentsSorted[i][5] == "False":
                 # increment absent
-                prev_file_sorted[j][6] = str(int(prev_file_sorted[j][6]) + 1)
+                prevFileSorted[j][6] = str(int(prevFileSorted[j][6]) + 1)
             # increment j because not a new student
             j += 1
         # if there is a new student
         else:
             # create a new list that will represent the student in the performance file
-            new_student = [students_sorted[i][0], students_sorted[i][1],
-                    students_sorted[i][2], students_sorted[i][3],
-                    students_sorted[i][8], students_sorted[i][7]]
+            newStudent = [studentsSorted[i][0], studentsSorted[i][1],
+                    studentsSorted[i][2], studentsSorted[i][3],
+                    studentsSorted[i][8], studentsSorted[i][7]]
             # add 1 to absences if absent for first session
-            if students_sorted[i][5] == "False":
+            if studentsSorted[i][5] == "False":
                 # 1 because they were absent
-                new_student.append("1")
+                newStudent.append("1")
             else:
                 # 0 because they were present
-                new_student.append("0")
+                newStudent.append("0")
             # if the student spoke at all
-            if int(students_sorted[i][8]) > 0:
-                new_student.append(f"{str(date.today()).replace('-', '/')}") # add the date
+            if int(studentsSorted[i][8]) > 0:
+                newStudent.append(f"{str(date.today()).replace('-', '/')}") # add the date
             # the student did not speak
             else:
                 # add a dash because they did not speak
-                new_student.append("-")
+                newStudent.append("-")
             # add the new student to the list
-            prev_file_sorted.append(new_student)
+            prevFileSorted.append(newStudent)
 
     #################################################
     # Now the system has updated data and is ready  #
     # to write to the performance file              #
     #################################################
     # create a new file, overwriting the old one
-    performance_file = open("Data/Performance-File.csv", "w")
+    performanceFile = open("Data/Performance-File.csv", "w")
     # write header information to file
-    performance_file.write("Performance File for Cold Call Assist Program\n")
-    performance_file.write(f"Date:,{str(date.today()).replace('-', '/')}\n")
-    performance_file.write("First Name,Last Name,UO ID,Email,")
-    performance_file.write("Times Called,Times Flagged,Absences,")
-    performance_file.write("List of Dates Spoken\n")
+    performanceFile.write("Performance File for Cold Call Assist Program\n")
+    performanceFile.write(f"Date:,{str(date.today()).replace('-', '/')}\n")
+    performanceFile.write("First Name,Last Name,UO ID,Email,")
+    performanceFile.write("Times Called,Times Flagged,Absences,")
+    performanceFile.write("List of Dates Spoken\n")
     # resort the list based on last name
-    prev_file_sorted = sorted(prev_file_sorted, key=itemgetter(1))
+    prevFileSorted = sorted(prevFileSorted, key=itemgetter(1))
     # loop through each student
-    for student in prev_file_sorted:
+    for student in prevFileSorted:
         # loop through the data for each student
         for i, item in enumerate(student):
             # if the last field
             if i == len(student) - 1:
                 # write to the file with no camma at the end
-                performance_file.write(f"{item}")
+                performanceFile.write(f"{item}")
             # when not the last field
             else:
                 # write to the file with camma at the end
-                performance_file.write(f"{item},")
+                performanceFile.write(f"{item},")
         # write new line for Excel file formatting
-        performance_file.write("\n")
+        performanceFile.write("\n")
     # close the file
-    performance_file.close()
+    performanceFile.close()
     # return a None value because return value not used
     return None
 ################################################################################
@@ -851,7 +851,7 @@ def _testReadRoster():
 
 def _testWriteToSavedBootRoster():
     # writeToSavedBootRoster
-    test_function_input = [
+    testFunctionInput = [
             # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN   FC CC   PC   PF   AC
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', '4', '1', '5', '4', '0'],
             ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', '2', '1', '5', '4', '0'],
@@ -859,13 +859,13 @@ def _testWriteToSavedBootRoster():
             ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', '1', '0', '2', '1', '0'],
             ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', '2', '0', '5', '4', '0']
             ]
-    writeToSavedBootRoster(test_function_input)
+    writeToSavedBootRoster(testFunctionInput)
     # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
     #    'nook', '848fsdfhkjhe8f9', 'True', '6', '5']
 
 def _testWriteToLogFiles():
     # writeToLogFile tests
-    test_function_input = [
+    testFunctionInput = [
             # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN   FC CC   PC   PF   AC
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', '4', '1', '5', '4', '0'],
             ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', '2', '1', '5', '4', '0'],
@@ -873,12 +873,12 @@ def _testWriteToLogFiles():
             ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', '1', '0', '2', '1', '0'],
             ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', '2', '0', '5', '4', '0']
             ]
-    writeToLogFile(test_function_input)
+    writeToLogFile(testFunctionInput)
     # this should produce:
     # A valid LogFile
 
 def _testUpdatePerformanceFile():
-    test_function_input = [
+    testFunctionInput = [
             # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN   FC CC   PC   PF   AC
             ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', '4', '1', '5', '4', '0'],
             ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', '2', '1', '5', '4', '0'],
@@ -887,7 +887,7 @@ def _testUpdatePerformanceFile():
             ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', '2', '0', '5', '4', '0']
             ]
     # update performance file test
-    updatePerforanceFile(test_function_input)
+    updatePerforanceFile(testFunctionInput)
 
 def _testCheckValidRoster():
     valid_bool = _checkValidRoster("initial_roster.txt")
