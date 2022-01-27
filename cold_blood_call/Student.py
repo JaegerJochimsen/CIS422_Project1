@@ -20,18 +20,18 @@ class Student(object):
     Members:
         Member Name:                : Type  : Default Val  -> Description
         -----------------------------------------------------------------
-        self.__first_name             : str   : None         -> student first name
-        self.__last_name              : str   : None         -> student last name
-        self.__id_num                 : str   : None         -> student id_number 
-        self.__email                  : str   : None         -> student email address
-        self.__phonetic               : str   : None         -> student preferred first name pronunciation
-        self.__present                : bool  : True         -> present is if student is in class or not 
-        self.__spoken                 : bool  : False        -> represents whether or not student has spoken recently (this class or end of last class)
-        self.__flag_count             : int   : 0            -> represents whether or not the student has been flagged by instructor
-        self.__current_contributions  : int   : 0            -> number of times student has contributed to class discussion for current session
-        self.__previous_contributions : int   : 0            -> number of total times student has contributed to class discussion
-        self.__previous_flags         : int   : 0            -> number of total times student has been flagged by instructor
-        self.__previous_absence       : int   : 0            -> number of total times student has been marked absent
+        self.__firstName            : str   : None         -> student first name
+        self.__lastName             : str   : None         -> student last name
+        self.__idNum                : str   : None         -> student id_number 
+        self.__email                : str   : None         -> student email address
+        self.__phonetic             : str   : None         -> student preferred first name pronunciation
+        self.__present              : bool  : True         -> present is if student is in class or not 
+        self.__spoken               : bool  : False        -> represents whether or not student has spoken recently (this class or end of last class)
+        self.__flagCount            : int   : 0            -> represents whether or not the student has been flagged by instructor
+        self.__currentContributions : int   : 0            -> number of times student has contributed to class discussion for current session
+        self.__previousContributions: int   : 0            -> number of total times student has contributed to class discussion
+        self.__previousFlags        : int   : 0            -> number of total times student has been flagged by instructor
+        self.__previousAbsence      : int   : 0            -> number of total times student has been marked absent
 
     Methods:
         Example Student : student = Student("Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", True, False, True, 1, 3, 4, 0)
@@ -48,13 +48,13 @@ class Student(object):
             Description:    getSpoken(self)->bool                       :   return the spoken field of the Student object
             Usage:          student.getSpoken()                         ->  False
 
-            Description:    incrementFlag(self, n:int = 1)->None        :   increment Student __flag_count field by n; return None
+            Description:    incrementFlag(self, n:int = 1)->None        :   increment Student __flagCount field by n; return None
             Usage:          student.incrementFlag()                     ->  None
             
             Description:    setSpoken(self, status:bool)->None          :   set Student object member field to status; return None
             Usage:          student.setSpoken(True)                     ->  None
 
-            Description:    incrementContributions(self, n:int)->None   :   increment the Student object current_contributions field by n; n = 1 by
+            Description:    incrementContributions(self, n:int)->None   :   increment the Student object currentContributions field by n; n = 1 by
                                                                             default
             Usage:          student.incrementContributions(5)           ->  None
 
@@ -70,28 +70,28 @@ class Student(object):
     """
     def __init__(self, first_name:str = None, last_name:str = None,
             id_num:str = None, email:str = None, phonetic:str = None,
-            present:bool = True, spoken:bool = False, previous_contributions:int = 0,
-            previous_flags:int = 0, previous_absences:int = 0):
+            present:bool = True, spoken:bool = False, previousContributions:int = 0,
+            previousFlags:int = 0, previousAbsences:int = 0):
 
-        self.__first_name = first_name
-        self.__last_name = last_name
-        self.__id_num = id_num    # this could be int maybe?
+        self.__firstName = first_name
+        self.__lastName = last_name
+        self.__idNum = id_num    # this could be int maybe?
         self.__email = email
         self.__phonetic = phonetic
         self.__present = present
         self.__spoken = spoken
-        self.__flag_count = 0    # default to unflagged on class start FIXME! Documentation
-        self.__current_contributions = 0
-        self.__previous_contributions = previous_contributions  # number of contributions throughout the term
-        self.__previous_flags = previous_flags # number of flags throughout the term
-        self.__previous_absence = previous_absences
+        self.__flagCount = 0    # default to unflagged on class start FIXME! Documentation
+        self.__currentContributions = 0
+        self.__previousContributions = previousContributions  # number of contributions throughout the term
+        self.__previousFlags = previousFlags # number of flags throughout the term
+        self.__previousAbsence = previousAbsences
 
     def toStrList(self)->list:
         """Produce list of strings representing the attributes of the Student object"""
-        return [self.__first_name, self.__last_name, self.__id_num, self.__email,
+        return [self.__firstName, self.__lastName, self.__idNum, self.__email,
                 self.__phonetic, str(self.__present), str(self.__spoken),
-                str(self.__flag_count), str(self.__current_contributions),
-                str(self.__previous_contributions), str(self.__previous_flags), str(self.__previous_absence)]
+                str(self.__flagCount), str(self.__currentContributions),
+                str(self.__previousContributions), str(self.__previousFlags), str(self.__previousAbsence)]
 
     def getPresent(self)->bool:
         return self.__present_code
@@ -100,7 +100,7 @@ class Student(object):
         return self.__spoken
 
     def incrementFlag(self, n:int = 1)->None:
-        self.__flag_count += n
+        self.__flagCount += n
         return None
 
     def setSpoken(self, status:bool)->None:
@@ -108,7 +108,7 @@ class Student(object):
         return None
 
     def incrementContributions(self, n:int = 1)->None:
-        self.__current_contributions += n
+        self.__currentContributions += n
         return None
 
     def setPresent(self, status:bool)->None:
@@ -116,11 +116,11 @@ class Student(object):
         return None
 
     def incrementAbsences(self, n:int=1)->None:
-        self.__previous_absence += n
+        self.__previousAbsence += n
         return None
 
     def __str__(self):
-        return f"{self.__first_name} {self.__last_name}"
+        return f"{self.__firstName} {self.__lastName}"
 
 def main():
     """Testing"""
