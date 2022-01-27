@@ -159,9 +159,9 @@ class InstructorInterface():
         # Key listeners as part of the Tkinter library, waits for key press
         self._topBar.bind('<Right>', self._rightArrowKey)
         self._topBar.bind('<Left>', self._leftArrowKey)
-        self._topBar.bind('<,>', self._chooseWithoutFlag)
-        self._topBar.bind('<.>', self._chooseWithFlag)
-        self._topBar.bind('</>', self._chooseAbsent)
+        self._topBar.bind('<comma>', self._chooseWithoutFlag)
+        self._topBar.bind('<period>', self._chooseWithFlag)
+        self._topBar.bind('<slash>', self._chooseAbsent)
 
         # Gets native screen resolution width and height
         self.screen_w = self._topBar.winfo_screenwidth()
