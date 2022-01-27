@@ -511,19 +511,19 @@ class Classroom():
             write to files.
         """
         # compile list of ALL Student objects
-        master_list = self.postDeck + self.preDeck + self.deck + self.absent
+        masterList = self.postDeck + self.preDeck + self.deck + self.absent
 
         # init list for holding Student info lists
-        student_list = list()
+        studentList = list()
 
         # for each of the Student objects
-        for student in master_list:
+        for student in masterList:
 
             # add the current Student object's information as a list
             # of strings to the return list
-            student_list.append(student.toStrList())
+            studentList.append(student.toStrList())
 
-        return student_list
+        return studentList
 
 
 
