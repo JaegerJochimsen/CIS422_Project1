@@ -15,7 +15,7 @@ Members:
     ------------------------------------------------------------------------------------------------------------------------------------------
     self._topBar            : tkinter       : Tk()                  -> the main tkinter window that will hold the names and accept input
 
-    self.text_colors    : list[string]  : ["white", "white",    -> The color array defining the color of text for each student name on the window
+    self.textColors    : list[string]  : ["white", "white",    -> The color array defining the color of text for each student name on the window
                                            "white", "white"]
 
     self.deck           : list[Student] : deck(parameter)       -> a list of Student objects that show who are currently on deck
@@ -24,7 +24,7 @@ Members:
 
     self.moveToPost     : method        : moveToPost(parameter) -> a method given to the class on initialization, used to modify deck upon user input
 
-    self.highlight_list : list[bool]    : [True, False,         -> A list of bools showing which label is indexed on the GUI.
+    self.highlightList : list[bool]    : [True, False,         -> A list of bools showing which label is indexed on the GUI.
                                            False, False]
 
 
@@ -60,7 +60,7 @@ Methods:
     Usage:          self._topBar.bind(<Left>)                                       |
                                                                                 |
     Description:    Upon user left arrow input, calls self._decreaseCounter()   |
-                    to change the highlighted index, changes the highlight_list |
+                    to change the highlighted index, changes the highlightList |
                     with the new index and calls self._displayText() to refresh |
                     the GUI window.                                             |
                                                                                 |
@@ -70,7 +70,7 @@ Methods:
     Usage:          self._topBar.bind(<Right>)                                      |
                                                                                 |
     Description:    Upon user right arrow input, calls self._increaseCounter()  |
-                    to change the highlighted index, changes the highlight_list |
+                    to change the highlighted index, changes the highlightList |
                     with the new index and calls self._displayText() to refresh |
                     the GUI window.                                             |
                                                                                 |
@@ -145,7 +145,7 @@ class InstructorInterface():
         self._topBar = tk.Tk()
 
         # All text starts as white by default
-        self.text_colors = ["white", "white", "white", "white"]
+        self.textColors = ["white", "white", "white", "white"]
         self.deck = deck
         self.roster = None
         self.moveToPost = None
@@ -153,7 +153,7 @@ class InstructorInterface():
         self.rosterConfirmed = 0
 
         # Leftmost value is True (highlighted) by default
-        self.highlight_list = [True, False, False, False]
+        self.highlightList = [True, False, False, False]
         self.highlight_counter = 0
 
         # Key listeners as part of the Tkinter library, waits for key press
@@ -189,9 +189,9 @@ class InstructorInterface():
         """
 
         # Sets the color for the highligted student to red
-        for i in range(len(self.highlight_list)):
-            if (self.highlight_list[i] is True):
-                self.text_colors[i] = "red"
+        for i in range(len(self.highlightList)):
+            if (self.highlightList[i] is True):
+                self.textColors[i] = "red"
 
         # If the input is not a valid deck, it is an error message, show it
         if not isinstance(self.deck,list):
@@ -199,23 +199,23 @@ class InstructorInterface():
             self.canvas.pack(fill=BOTH, expand=True)
         else:
             # If the input is a valid deck,create the name labels and show them on top bar
-            self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(5,15, text=self.deck[0], fill = self.textColors[0], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.textColors[1], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.textColors[2], font = ('Helvetica 15 bold'), anchor='w')
+            self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.textColors[3], font = ('Helvetica 15 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
 
 
     """
     Deletes all old text objects and replaces them with updated ones based on the
-    text_colors list. This is called after every key press event to reflect which name should be highlighted.
+    textColors list. This is called after every key press event to reflect which name should be highlighted.
     """
     def _displayText(self):
         self.canvas.delete("all")
-        self.canvas.create_text(5,15, text=self.deck[0], fill = self.text_colors[0], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.text_colors[1], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.text_colors[2], font = ('Helvetica 15 bold'), anchor='w')
-        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.text_colors[3], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(5,15, text=self.deck[0], fill = self.textColors[0], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.textColors[1], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.textColors[2], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.textColors[3], font = ('Helvetica 15 bold'), anchor='w')
 
 
     """
@@ -247,16 +247,16 @@ class InstructorInterface():
         # Set the boolean list to reflect which index
         # in the list we want to be highlighted
         self._decreaseCounter()
-        self.highlight_list[self.highlight_counter+1] = False
-        self.highlight_list[self.highlight_counter] = True
+        self.highlightList[self.highlight_counter+1] = False
+        self.highlightList[self.highlight_counter] = True
 
-        # Update the text_colors list to reflect which name on Deck
+        # Update the textColors list to reflect which name on Deck
         # should be red/highlighted
-        for i in range(len(self.highlight_list)):
-            if (self.highlight_list[i] is True):
-                self.text_colors[i] = "red"
+        for i in range(len(self.highlightList)):
+            if (self.highlightList[i] is True):
+                self.textColors[i] = "red"
             else:
-                self.text_colors[i] = "white"
+                self.textColors[i] = "white"
 
         # After updating the data structures, call the function
         # that will display the text accordingly
@@ -271,16 +271,16 @@ class InstructorInterface():
         # Set the boolean list to reflect which index
         # in the list we want to be highlighted
         self._increaseCounter()
-        self.highlight_list[self.highlight_counter-1] = False
-        self.highlight_list[self.highlight_counter] = True
+        self.highlightList[self.highlight_counter-1] = False
+        self.highlightList[self.highlight_counter] = True
 
-        # Update the text_colors list to reflect which name on Deck
+        # Update the textColors list to reflect which name on Deck
         # should be red/highlighted
-        for i in range(len(self.highlight_list)):
-            if (self.highlight_list[i] is True):
-                self.text_colors[i] = "red"
+        for i in range(len(self.highlightList)):
+            if (self.highlightList[i] is True):
+                self.textColors[i] = "red"
             else:
-                self.text_colors[i] = "white"
+                self.textColors[i] = "white"
 
         # After updating the data structures, call the function
         # that will display the text accordingly
@@ -293,8 +293,8 @@ class InstructorInterface():
     def _chooseWithFlag(self, event):
         # Moves the highlighted student to the post-deck,
         # which moves them off the Deck.
-        for i in range(len(self.highlight_list)):
-            if (self.highlight_list[i] is True):
+        for i in range(len(self.highlightList)):
+            if (self.highlightList[i] is True):
                 self.moveToPost(i,True)
                 break
         # Displays the text after modifying relevant data structures
@@ -311,8 +311,8 @@ class InstructorInterface():
     def _chooseWithoutFlag(self, event):
         # Moves the highlighted student to the post-Deck,
         # which moves them off the Deck.
-        for i in range(len(self.highlight_list)):
-            if (self.highlight_list[i] is True):
+        for i in range(len(self.highlightList)):
+            if (self.highlightList[i] is True):
                 self.moveToPost(i)
                 break
         # Displays the text after modifying relevant data structures
@@ -325,8 +325,8 @@ class InstructorInterface():
     while marking them as absent and removing them from the active students.
     """
     def _chooseAbsent(self,event):
-        for i in range(len(self.highlight_list)):
-            if (self.highlight_list[i] is True):
+        for i in range(len(self.highlightList)):
+            if (self.highlightList[i] is True):
                 self.markAbsent(i)
                 break
         # Displays the text after modifying relevant data structures
