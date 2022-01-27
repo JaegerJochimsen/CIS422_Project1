@@ -1,13 +1,32 @@
 """
 File: DataStream.py
+
 Description: Contains functions that allows the system to interace with files
     in order to save/maintain/read data. (Also contains test for this module)
+    The file will take interact with student data in two forms:
+
+    1. Lists of lists where the inner lists contain string with data about each
+    student.
+    2. Files where each line contains tab or comma delimited data about the
+    students.
+
+    The primary job of this module is to read/convert data in the two forms in
+    order to tranfer the data from short term memory during progam execution to
+    longterm storage when the program is not in execution. The file also stores
+    well formatted data in the form of .csv files for the user to be able to use
+    Excel to read them.
+
 Dependencies: None
+
 Author(s): Nick Johnstone
-Dates: 1/12/2022, 1/13/2022, 1/14/2022, 1/15/2022, 1/16/2022, 1/17/2022
-       1/18/2022
-Credit: N/A
+
+Date Created: 1/11/2022
+
+Dates Modified: 1/12/2022, 1/13/2022, 1/14/2022, 1/15/2022, 1/16/2022, 1/17/2022
+       1/18/2022, 1/22/2022, 1/24/2022
 """
+
+# import statments for python standard libraries
 import sys
 from os import listdir, getcwd, mkdir, path
 from datetime import date, datetime
@@ -19,6 +38,7 @@ from shutil import rmtree
 # Delimiter represents how each field in the files are separated
 DELIMITER = '\t'
 
+################################################################################
 def saveRosterInfo(rosterFile:str)->None:
     """
     Parameter:
@@ -61,8 +81,9 @@ def saveRosterInfo(rosterFile:str)->None:
     roster_info.write(f"{upload_time}\n")
     # close the file
     roster_info.close()
+################################################################################
 
-
+################################################################################
 def resetSystem()->None:
     """
     Parameter:
@@ -138,8 +159,10 @@ def checkRosterChange()->(str, bool) or (None, None):
     return (roster_info_list[0], True)
     # close file
     roster_info.close()
+################################################################################
 
 
+################################################################################
 def _fixRoster(rosterFile: str)->list:
     """
     Parameter:
@@ -244,8 +267,10 @@ def _fixRoster(rosterFile: str)->list:
     new_roster = sorted(saved_roster_sorted, key=itemgetter(1))
     # return the resulting roster
     return new_roster
+################################################################################
 
 
+################################################################################
 def _checkValidRoster(rosterFile:str)->str:
     """
     Parameter:
@@ -305,8 +330,10 @@ def _checkValidRoster(rosterFile:str)->str:
     open_roster.close()
     # will only reach here if roster is valid to return
     return "VALID"
+################################################################################
 
 
+################################################################################
 def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool):
     """
     Parameter:
@@ -368,6 +395,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     # variable to represent if it is the first bootup of the system
     initial = True
     # check if the system datafile exists
+    # READ FROM THE .sysData/saved_boot.txt ON SUSEQUENT BOOTUPS
     if "saved_boot.txt" in listdir(".sysData/"):
         # assign the roster to the system's store data file
         roster = open(".sysData/saved_boot.txt", "r")
@@ -385,8 +413,6 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
             # return the student data and False because the roster was not
             # initial bootup
             return (student_list, False)
-        # debug statement to help error checking
-        #print("READING SAVED BOOT")
     # check if the defualt name for the initial roster exists
     elif "initial_roster.txt" in listdir():
         # roster_status stores the validity of the initial roster
@@ -400,6 +426,7 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
         else:
             # return the initial data and True because first bootup
             return (roster_status, True)
+    # INITIAL CASE MOST OF THE TIME
     # if a roster with an alternate name is being used
     elif rosterFile != "initial_roster.txt":
         # roster_status stores the validity of the initial roster
@@ -417,6 +444,10 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     # no roster is provided, return a message that prompts the user to input a file
     else:
         return ("Please provide an initial roster", True)
+
+    ################################################################
+    # Here the program begins to fill the a list with student data #
+    ################################################################
     # initialize a list that will hold each student
     student_list = list()
     # parse through each line in the roster file
@@ -444,8 +475,10 @@ def readRoster(rosterFile:str="initial_roster.txt")->(list, bool) or (str, bool)
     # return the list sorted by last name
     sorted_student_list = sorted(student_list, key=itemgetter(1))
     return (sorted_student_list, initial)
+################################################################################
 
 
+################################################################################
 def writeToSavedBootRoster(students:list)->None:
     """
     Parameter:
@@ -515,8 +548,10 @@ def writeToSavedBootRoster(students:list)->None:
             new_roster.write(f"{student[11]}\n")
     # close file
     new_roster.close()
+################################################################################
 
 
+################################################################################
 def writeToLogFile(students:list)->None:
     """
     Parameter:
@@ -600,6 +635,7 @@ def writeToLogFile(students:list)->None:
             log_file.write(f"S{DELIMITER}\n")
     # close the file
     log_file.close()
+################################################################################
 
 
 def updatePerforanceFile(students:list)->None:
@@ -646,7 +682,10 @@ def updatePerforanceFile(students:list)->None:
     # sort the list that is passed in so it lines up with the old performance_file order
     students_sorted = sorted(students, key=itemgetter(1))
 
-    # This is the case when there is no current performance file
+    ##############################################################
+    # This is the case when there is no current performance file #
+    # This will only be trigger on initial bootup                #
+    ##############################################################
     if "Performance-File.csv" not in listdir("Data"):
         # Open file
         performance_file = open("Data/Performance-File.csv", "w")
@@ -689,6 +728,11 @@ def updatePerforanceFile(students:list)->None:
         # Close file and return None
         performance_file.close()
         return None
+
+    ###############################################################
+    # This is the case  where the performance file already exists #
+    # This will be the case for all sessions other than the first #
+    ###############################################################
     # when the file exists but needs to be updated after the session
     performance_file = open("Data/Performance-File.csv", "r")
     # skip the head and collumns lines
@@ -757,7 +801,11 @@ def updatePerforanceFile(students:list)->None:
                 new_student.append("-")
             # add the new student to the list
             prev_file_sorted.append(new_student)
-    #ready to write to file
+
+    #################################################
+    # Now the system has updated data and is ready  #
+    # to write to the performance file              #
+    #################################################
     # create a new file, overwriting the old one
     performance_file = open("Data/Performance-File.csv", "w")
     # write header information to file
@@ -786,7 +834,15 @@ def updatePerforanceFile(students:list)->None:
     performance_file.close()
     # return a None value because return value not used
     return None
+################################################################################
 
+
+
+################################################################################
+#                       BEGINING OF TEST CASE SECTION                          #
+################################################################################
+
+# MAKE SURE TO RUN `mkdir Data .sysData` TO BUILD DATA DIRECTORY WHEN TESTING
 
 def _testReadRoster():
     # readRoster tests
@@ -796,12 +852,12 @@ def _testReadRoster():
 def _testWriteToSavedBootRoster():
     # writeToSavedBootRoster
     test_function_input = [
-            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
-            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '1', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', 'False', '0', '2', '1'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', 'False', '0', '5', '4']
+            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN   FC CC   PC   PF   AC
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', '4', '1', '5', '4', '0'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', '2', '1', '5', '4', '0'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', '2', '0', '5', '4', '0'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', '1', '0', '2', '1', '0'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', '2', '0', '5', '4', '0']
             ]
     writeToSavedBootRoster(test_function_input)
     # this should produce: ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu',
@@ -810,27 +866,27 @@ def _testWriteToSavedBootRoster():
 def _testWriteToLogFiles():
     # writeToLogFile tests
     test_function_input = [
-            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
-            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '1', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', 'False', '0', '2', '1'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', 'False', '0', '5', '4']
+            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN   FC CC   PC   PF   AC
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', '4', '1', '5', '4', '0'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', '2', '1', '5', '4', '0'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', '2', '0', '5', '4', '0'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', '1', '0', '2', '1', '0'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', '2', '0', '5', '4', '0']
             ]
     writeToLogFile(test_function_input)
     # this should produce:
-    # X	Nick Johnstone	nsj@uoregon.edu
+    # A valid LogFile
 
 def _testUpdatePerformanceFile():
-    # update performance file test
     test_function_input = [
-            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN  FLAGGED CC   PC   PF
-            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', 'True', '1', '5', '4'],
-            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', 'False', '1', '5', '4'],
-            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', 'False', '0', '5', '4'],
-            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', 'False', '0', '2', '1'],
-            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', 'False', '0', '5', '4']
+            # FN       LN           UO ID           EMAIL         PONETIC PRESENT SPOKEN   FC CC   PC   PF   AC
+            ['Nick', 'Johnstone', '951******', 'nsj@uoregon.edu', 'nook', 'True', 'True', '4', '1', '5', '4', '0'],
+            ['Jaeger', 'Jochimsen', '951******', 'jaegerj@uoregon.edu', 'jeeeee', 'True', 'True', '2', '1', '5', '4', '0'],
+            ['Kai', 'Xiong', '951******', 'kxiong@uoregon.edu', 'ki', 'False', 'True', '2', '0', '5', '4', '0'],
+            ['Mert', 'Yapucuoglu', '951******', 'merty@uoregon.edu', 'mart', 'True', 'False', '1', '0', '2', '1', '0'],
+            ['Stephen', 'Levekis', '951******', 'slevecki@uoregon.edu', 'steve', 'False', 'False', '2', '0', '5', '4', '0']
             ]
+    # update performance file test
     updatePerforanceFile(test_function_input)
 
 def _testCheckValidRoster():
@@ -841,9 +897,9 @@ def _testCheckValidRoster():
 if __name__ == "__main__":
     """Testing"""
     if not __debug__:
-        _testReadRoster()
+        #_testReadRoster()
         #_testWriteToSavedBootRoster()
-        #_testWriteToLogFiles()
+        _testWriteToLogFiles()
         #_testUpdatePerformanceFile()
         #_testCheckValidRoster()
 
