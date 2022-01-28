@@ -42,9 +42,6 @@ class Student(object):
             Usage:          student.toStrList()                         ->  ["Joe", "Summers", "951******", "jSummers@email.com", "Jo-ee", "True", "False",
                                                                             "True", "1", "3", "4","0"] 
 
-            Description:    getPresent(self)->bool                      :   return the present field of the Student object
-            Usage:          student.getPresent()                        ->  True
-
             Description:    getSpoken(self)->bool                       :   return the spoken field of the Student object
             Usage:          student.getSpoken()                         ->  False
 
@@ -93,8 +90,6 @@ class Student(object):
                 str(self.__flagCount), str(self.__currentContributions),
                 str(self.__previousContributions), str(self.__previousFlags), str(self.__previousAbsence)]
 
-    def getPresent(self)->bool:
-        return self.__present_code
 
     def getSpoken(self)->bool:
         return self.__spoken
