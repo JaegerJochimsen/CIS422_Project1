@@ -73,7 +73,8 @@ class ColdCallSystem:
         ourGUI.insertDeck(self.ourClassroom.getDeck(),            # feed the GUI with the deck and needed classroom methods and start the program
                           self.ourClassroom.moveToPost,
                           self.ourClassroom.markAbsent,
-                          self.rosterModified)
+                          self.rosterModified,
+                          resetSystem)
 
     def _exitAndSave(self):
         save = self.ourClassroom.mergeDecksToList()   # save the current student info on the post-deck/pre-deck/on-deck

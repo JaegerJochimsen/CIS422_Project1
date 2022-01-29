@@ -134,16 +134,23 @@ Methods:
                                                                                 |
     ----------------------------------------------------------------------------|-------------------------------------------------
 """
+# Import Tkinter library to create GUI windows
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
+
+# Importing sys to exit out of program if user terminates or resets
+import sys
+
+#Importing time use sleep to wait on notifications before closing
+import time
 
 class InstructorInterface():
     def __init__(self, deck=""):
 
         # The main GUI window object
         self._topBar = tk.Tk()
-        
+
         # The main GUI window title name
         self._topBar.title("Cold Call System")
 
@@ -200,13 +207,7 @@ class InstructorInterface():
         if not isinstance(self.deck,list):
             self.canvas.create_text(5,15, text=self.deck, fill = "white", font = ('Helvetica 18 bold'), anchor='w')
             self.canvas.pack(fill=BOTH, expand=True)
-        else:
-            # If the input is a valid deck,create the name labels and show them on top bar
-            self.canvas.create_text(5,15, text=self.deck[0], fill = self.textColors[0], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.textColors[1], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.textColors[2], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.textColors[3], font = ('Helvetica 15 bold'), anchor='w')
-            self.canvas.pack(fill=BOTH, expand=True)
+
 
 
     """
@@ -219,6 +220,7 @@ class InstructorInterface():
         self.canvas.create_text(self.win_w/4, 15, text=self.deck[1], fill = self.textColors[1], font = ('Helvetica 15 bold'), anchor='w')
         self.canvas.create_text(self.win_w/2, 15, text=self.deck[2], fill = self.textColors[2], font = ('Helvetica 15 bold'), anchor='w')
         self.canvas.create_text(((self.win_w*3) /4), 15, text=self.deck[3], fill = self.textColors[3], font = ('Helvetica 15 bold'), anchor='w')
+        self.canvas.pack(side=tk.LEFT, fill=BOTH, expand=True)
 
 
     """
@@ -366,12 +368,15 @@ class InstructorInterface():
     out of the deck. Refreshes the GUI window with the provided deck names with
     self._displayText(). And starts the GUI functionality with self._startGUI()
     """
-    def insertDeck(self, deck, moveToPost, markAbsent, rosterModified):
+    def insertDeck(self, deck, moveToPost, markAbsent, rosterModified, resetSystem):
         self.deck = deck
         self.moveToPost = moveToPost
         self.markAbsent = markAbsent
         self.rosterModified = rosterModified
+        self.resetSystem = resetSystem
         self._displayText()
+        self.resetButton = Button(self.canvas, text="Reset", command=self._systemReset)
+        self.resetButton.pack(side=tk.RIGHT)
         if self.rosterModified:
             self._showRosterModified()
         self._startGUI()
@@ -380,15 +385,16 @@ class InstructorInterface():
     """
     Called by insertDeck function when the top bar deck is created. This method
     creates a window to notify the user that the save file has been modified
-    from outside.
+    from outside. It also accepts a new message in order to be used for other
+    notifications.
     """
-    def _showRosterModified(self):
+    def _showRosterModified(self, message = "Roster changes detected."):
         self.modificationNotification = Tk()
         self.modificationNotification.title("Notification")
         dimensions = "%dx%d+%d+%d" % (400, 60, self.screen_w*2/5, self.screen_h/3)
         self.modificationNotification.geometry(dimensions)
         canvas = Canvas(self.modificationNotification, width=50, height=50, bg="black")
-        canvas.create_text(5,15, text="Roster changes detected.",
+        canvas.create_text(5,15, text=message,
                 fill = "white", font = ('Helvetica 18 bold'), anchor='w')
         canvas.pack(fill=BOTH, expand=True)
 
@@ -459,6 +465,7 @@ class InstructorInterface():
         self._rosterConfirmWindow.destroy()
         self._topBar.destroy()
 
+
     """
     Called by: ColdCall.py
 
@@ -479,11 +486,18 @@ class InstructorInterface():
     Will be called by ColdCall.py in order to change the error message on the
     top window.
     """
-    def changeMessage(self,message):
+    def changeMessage(self, message):
         self.canvas.delete("all")                                                                                  #Clear the canvas GUI
         self.canvas.create_text(5,15, text=message, fill = "white", font = ('Helvetica 18 bold'), anchor='w') #create a text with the errorMessage
         self.canvas.pack(fill=BOTH, expand=True)
 
+
+    def _systemReset(self):
+        self._showRosterModified("Resetting the system")
+
+        time.sleep(4)
+        self.resetSystem()
+        sys.exit()
 
     """
     Closes the GUI.
