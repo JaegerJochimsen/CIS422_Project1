@@ -143,6 +143,9 @@ class InstructorInterface():
 
         # The main GUI window object
         self._topBar = tk.Tk()
+        
+        # The main GUI window title name
+        self._topBar.title("Cold Call System")
 
         # All text starts as white by default
         self.textColors = ["white", "white", "white", "white"]
