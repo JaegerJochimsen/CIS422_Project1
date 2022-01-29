@@ -50,6 +50,7 @@ def saveRosterInfo(rosterFile:str)->None:
 
     Calls:
         os  -   getcwd()
+        sys - exit()
 
     Modifies:
         N/A
@@ -75,6 +76,12 @@ def saveRosterInfo(rosterFile:str)->None:
     rosterInfo = open(".sysData/roster_info.txt", "w")
     # write the roster file name
     rosterInfo.write(f"{rosterFile}\n")
+    # if there was an error, exit the program
+    if isinstance(rosterFile, tuple):
+        # erase system data
+        rmtree(".sysData/")
+        # exit system
+        sys.exit()
     # save the time that it was last modified
     uploadTime = path.getmtime(rosterFile)
     # write the modification time to the file
